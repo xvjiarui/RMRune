@@ -216,6 +216,8 @@ void ImgCP::ImageConsumer()
 		while (pIdx - cIdx == 0);
 		Mat original_img; 
 		data[cIdx % BUFFER_SIZE].img.copyTo(original_img);
+		imshow("fuckt", original_img);
+		waitKey(0);
 		if (!countTime)
 			startTime = getTickCount();
 		unsigned int frameNum = data[cIdx % BUFFER_SIZE].frame;
@@ -228,6 +230,7 @@ void ImgCP::ImageConsumer()
 			cout << "Cannot detect 9 sudokus." << endl;
 			continue;
 		}
+		cout << "--------------------------------\n" << targetIdx << "----------------------------------" << endl;
 		int x = ptz_camera_x + 150;
 		int y = ptz_camera_y + 150;
 		int z = ptz_camera_z + 150;
@@ -246,7 +249,8 @@ void ImgCP::ImageConsumer()
 
 		try {
 			manifoldGPIO::gpioGetValue(runeToggleButton, &runeGPIO);
-			RuneDetector::RuneType runeType = (runeGPIO == manifoldGPIO::low)? RuneDetector::RUNE_S : RuneDetector::RUNE_B;
+			//RuneDetector::RuneType runeType = (runeGPIO == manifoldGPIO::low)? RuneDetector::RUNE_S : RuneDetector::RUNE_B;
+			RuneDetector::RuneType runeType = (runeGPIO == manifoldGPIO::low)? RuneDetector::RUNE_S : RuneDetector::RUNE_S;
 			int targetIdx = runeDetector.getTarget(original_img, runeType).second;
 			if (targetIdx == -1)
 			{

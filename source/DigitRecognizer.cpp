@@ -358,14 +358,15 @@ vector<pair<double, int> > DigitRecognizer::process_primary(const Mat& img)
 	Mat digitImg;
 	Mat kmeanImg;
 	kmeanPreprocess(img).copyTo(kmeanImg);
+	//preprocess(img).copyTo(kmeanImg);
 	if (fitDigit(kmeanImg, digitImg))
 	{
 		/*
 		knnRecognize_primary(digitImg);
 		*/
 		//return knnRecognize_primary(digitImg);
-		//return cannyRecognize_primary(digitImg);
 		return cannyRecognize_primary(digitImg);
+		//return similarityRecognize_primary(digitImg);
 	}
 	return vector<pair<double, int> >();
 }
@@ -628,10 +629,10 @@ vector<pair<double, int> > DigitRecognizer::knnRecognize_primary(const Mat& img)
 
 vector<pair<double, int> > DigitRecognizer::cannyRecognize_primary(const Mat& inputImg)
 {
+	cout << "fuck" << endl;
 	Mat img;
 	resize(inputImg, img, Size(40, 60));
 	morphologyEx(img, img, MORPH_CLOSE, getStructuringElement(MORPH_RECT,Size(3,3)));
-	waitKey(0);
 	//Canny(img, img, 1, 2);
 	//vertical
 	const int midCol = 19;
@@ -739,6 +740,7 @@ vector<pair<double, int> > DigitRecognizer::cannyRecognize_primary(const Mat& in
 	}
 	cout << "------------------------------------" << endl;
 	*/
+	cout << "fuck" << endl;
 	return resVector;
 }
 
