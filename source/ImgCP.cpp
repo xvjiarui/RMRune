@@ -191,6 +191,9 @@ void ImgCP::ImageConsumer()
 	//UART init
 	serialSetup();
 	serialStart();
+	setGimbalAngle(0, 0, 0);
+	cout << "sending... " << endl;
+	sendGimbalAngle();
 #endif
 
 #ifdef ADJUST_COORDINATE

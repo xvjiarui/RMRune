@@ -8,5 +8,5 @@ fi
 
 echo in > /sys/class/gpio/gpio157/direction
 
-./main c
+sudo ./main c
 exit 0
