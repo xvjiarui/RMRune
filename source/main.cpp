@@ -26,14 +26,14 @@ int main(int argc, char** argv )
     namedWindow("Original Image", WINDOW_AUTOSIZE );
     imshow("Original Image", original_img);
 
-	for(int i = 0; i < mnistRecognizer.mnistImgs->size(); i++) {
-		if ( !mnistRecognizer.mnistImgs->at(i).data) {
+	for(int i = 0; i < mnistRecognizer.mnistImgs.size(); i++) {
+		if ( !mnistRecognizer.mnistImgs.at(i).data) {
 			printf("No single image data \n");
 			return -1;
 		}
 		namedWindow(to_string(i),  WINDOW_AUTOSIZE );
-		imshow(to_string(i), mnistRecognizer.mnistImgs->at(i));
-		cout << mnistRecognizer.mnistLabels->at(i) << endl;
+		imshow(to_string(i), mnistRecognizer.mnistImgs.at(i));
+		cout << mnistRecognizer.mnistLabels.at(i) << endl;
 	}
 
     waitKey(0);
