@@ -13,16 +13,18 @@ class MnistRecognizer
 public:
 	MnistRecognizer(const string& dictionary);
 	void predict(const Mat& img);
-	void clear();
+	Point getCenter(int label);
+	int getLabel(int index);
 	~MnistRecognizer();	
 	vector<Mat> mnistImgs;
-	vector<Point> mnistCenters;
-	vector<int> mnistLabels;
 private:
 	int recognize(const Mat& img);
 	void preprocess();
+	void clear();
 	Mat imgCopy;
 	network<sequential> nn;
+	map<int, Point> mnistCenters; //<Label, Center>
+	map<int, int> mnistLabels; // <Index, Label>
 
 	int offset_x;
 	int offset_y;

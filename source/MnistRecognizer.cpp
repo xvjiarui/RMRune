@@ -46,6 +46,28 @@ MnistRecognizer::MnistRecognizer(const string& dictionary)
 	nn.load(Model_Path);
 }
 
+void MnistRecognizer::predict(const Mat& img)
+{
+	imgCopy = img;
+	preprocess();
+}
+
+Point MnistRecognizer::getCenter(int label)
+{
+	return mnistCenters[label];
+}
+
+int MnistRecognizer::getLabel(int index)
+{
+	return mnistLabels[index];
+}
+
+void MnistRecognizer::clear()
+{
+	mnistImgs.clear();
+	mnistCenters.clear();
+}
+
 MnistRecognizer::~MnistRecognizer()
 {
 }
@@ -66,14 +88,15 @@ int MnistRecognizer::recognize(const Mat& img)
 	}
 
 	sort(scores.begin(), scores.end(), greater<pair<double, int>>());
-	cout << endl << endl;
-	for (int i = 0; i < scores.size(); i++)
-		cout << "Score: " << scores.at(i).first << "     Predicted Label: " << scores.at(i).second << endl;
+	// cout << endl << endl;
+	// for (int i = 0; i < scores.size(); i++)
+	// 	cout << "Score: " << scores.at(i).first << "     Predicted Label: " << scores.at(i).second << endl;
 	return scores.at(0).second;
 }
 
 void MnistRecognizer::preprocess()
 {
+	clear();
 	Mat img = imgCopy;
 	GaussianBlur(img, img, Size(9, 9) , 0);
 	cvtColor(img, img, CV_BGR2GRAY);
@@ -96,7 +119,6 @@ void MnistRecognizer::preprocess()
 		contoursPolys.push_back(curContoursPoly);
 		boundRects.push_back(boundingRect(Mat(curContoursPoly)));
 		croppedBoundRects.push_back(cropRect(boundRects.at(i), offset_x, offset_y, -offset_x, -offset_y));
-		mnistCenters.push_back(Point(croppedBoundRects.at(i).x, croppedBoundRects.at(i).y));
 	}
 
 	/* Check Rect Height-Width Ratio */
@@ -107,7 +129,7 @@ void MnistRecognizer::preprocess()
 		cout << "Centre " << i << " (" << boundRects.at(i).x << "," << boundRects.at(i).y << ")" << endl;
 	}
 
-	for (int i = 0; i < contours.size(); i++) {
+	for (int i = 0; i < croppedBoundRects.size(); i++) {
 		rectangle( img, croppedBoundRects.at(i), Scalar(255, 255, 255), -1, 8, 0 );
 	}
 
@@ -122,24 +144,10 @@ void MnistRecognizer::preprocess()
 		cvtColor(curMnistImg, curMnistImg, CV_BGR2GRAY);
 		threshold(curMnistImg, curMnistImg, 120, 255, 3);
 		mnistImgs.push_back(curMnistImg);
+		mnistLabels[i] = recognize(curMnistImg);
+		mnistCenters[mnistLabels[i]] = Point(croppedBoundRects.at(i).x + croppedBoundRects.at(i).width/2, 
+			croppedBoundRects.at(i).y + croppedBoundRects.at(i).height);
 		cout << "Size " << i << ": " << curMnistImg.size() << boundRects.at(i).size()  << endl;
 	}
-}
-
-void MnistRecognizer::predict(const Mat& img)
-{
-	imgCopy = img;
-	preprocess();
-	for (int i = 0; i < mnistImgs.size(); ++i)
-	{
-		mnistLabels.push_back(recognize(mnistImgs.at(i)));
-	}
-}
-
-void MnistRecognizer::clear()
-{
-	mnistImgs.clear();
-	mnistCenters.clear();
-	mnistLabels.clear();
 }
 
