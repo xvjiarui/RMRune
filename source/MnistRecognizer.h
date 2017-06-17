@@ -13,10 +13,11 @@ class MnistRecognizer
 public:
 	MnistRecognizer(const string& dictionary);
 	void predict(const Mat& img);
+	void clear();
 	~MnistRecognizer();	
-	vector<Mat>* mnistImgs;
-	vector<Point>* mnistCenters;
-	vector<int>* mnistLabels;
+	vector<Mat> mnistImgs;
+	vector<Point> mnistCenters;
+	vector<int> mnistLabels;
 private:
 	int recognize(const Mat& img);
 	void preprocess();
