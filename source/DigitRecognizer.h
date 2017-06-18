@@ -1,6 +1,7 @@
 #pragma once
 
 #include <opencv2/opencv.hpp>
+#include <unordered_map>
 
 using namespace std;
 using namespace cv;
@@ -13,12 +14,15 @@ public:
 	~DigitRecognizer();	
 	vector<Mat> digitImgs;
 	vector<int> digitLabels;
+
 private:
 	int recognize(const Mat& img);
 	void preprocess();
 	void clear();
 	Mat imgCopy;
-
+	unordered_map<int, int> segmentTable;
+	vector<Rect> segmentRects;
+	
 	int offsetX;
 	int offsetY;
 	int thresh;
@@ -31,6 +35,7 @@ private:
     Scalar redUpperRange1;
     Scalar redLowerRange2;
     Scalar redUpperRange2;
+
 
 	RNG rng; // random number generator
 

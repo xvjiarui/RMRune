@@ -48,24 +48,25 @@ MnistRecognizer::MnistRecognizer(const string& dictionary)
 
 void MnistRecognizer::predict(const Mat& img)
 {
-	imgCopy = img;
+	img.copyTo(imgCopy);
 	preprocess();
 }
 
 Point MnistRecognizer::getCenter(int label)
 {
-	return mnistCenters[label];
+	return mnistCenters.at(label);
 }
 
 int MnistRecognizer::getLabel(int index)
 {
-	return mnistLabels[index];
+	return mnistLabels.at(index);
 }
 
 void MnistRecognizer::clear()
 {
 	mnistImgs.clear();
 	mnistCenters.clear();
+	mnistLabels.clear();
 }
 
 MnistRecognizer::~MnistRecognizer()
@@ -88,22 +89,21 @@ int MnistRecognizer::recognize(const Mat& img)
 	}
 
 	sort(scores.begin(), scores.end(), greater<pair<double, int>>());
-	// cout << endl << endl;
-	// for (int i = 0; i < scores.size(); i++)
-	// 	cout << "Score: " << scores.at(i).first << "     Predicted Label: " << scores.at(i).second << endl;
+	cout << endl << endl;
+	for (int i = 0; i < scores.size(); i++)
+		cout << "Score: " << scores.at(i).first << "     Predicted Label: " << scores.at(i).second << endl;
 	return scores.at(0).second;
 }
 
 void MnistRecognizer::preprocess()
 {
 	clear();
-	Mat img = imgCopy;
-	GaussianBlur(img, img, Size(9, 9) , 0);
+	Mat img;
+	GaussianBlur(imgCopy, img, Size(9, 9) , 0);
 	cvtColor(img, img, CV_BGR2GRAY);
 	Canny(img, img, thresh, thresh * 2, 3);
 
-	Mat structuringElement = getStructuringElement(MORPH_RECT, Size(8, 8));
-	dilate(img, img, structuringElement);
+	dilate(img, img, getStructuringElement(MORPH_RECT, Size(8, 8)));
 
 	vector<vector<Point> > contours;
 	vector<Vec4i> hierarchy;
@@ -134,7 +134,9 @@ void MnistRecognizer::preprocess()
 	}
 
 	cvtColor(img, img, CV_GRAY2BGR);
-	bitwise_and(imgCopy, img, img);
+	Mat temp;
+	GaussianBlur(imgCopy, temp, Size(9, 9), 0);
+	bitwise_and(temp, img, img);
 
 	/* Convert one whole image to 9 small images */
 	for (int i = 0; i < croppedBoundRects.size(); i++) {
@@ -142,11 +144,14 @@ void MnistRecognizer::preprocess()
 		img(croppedBoundRects.at(i)).copyTo(curMnistImg);
 		resize(curMnistImg, curMnistImg, Size(28, 28));
 		cvtColor(curMnistImg, curMnistImg, CV_BGR2GRAY);
-		threshold(curMnistImg, curMnistImg, 120, 255, 3);
+		Mat binary;
+		// threshold(curMnistImg, binary, 150, 255, THRESH_BINARY);
+		// addWeighted(binary, 1.0, curMnistImg, 1.0, 0.0, curMnistImg);
+		threshold(curMnistImg, curMnistImg, 120, 255, THRESH_TOZERO);
 		mnistImgs.push_back(curMnistImg);
-		mnistLabels[i] = recognize(curMnistImg);
-		mnistCenters[mnistLabels[i]] = Point(croppedBoundRects.at(i).x + croppedBoundRects.at(i).width/2, 
-			croppedBoundRects.at(i).y + croppedBoundRects.at(i).height);
+		mnistLabels.insert(pair<int, int> (i, recognize(curMnistImg)));
+		mnistCenters.insert(pair<int, Point> (mnistLabels.at(i), 
+			Point(croppedBoundRects.at(i).x + croppedBoundRects.at(i).width/2, croppedBoundRects.at(i).y + croppedBoundRects.at(i).height)));
 		cout << "Size " << i << ": " << curMnistImg.size() << boundRects.at(i).size()  << endl;
 	}
 }
