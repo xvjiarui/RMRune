@@ -28,7 +28,7 @@ DigitRecognizer::DigitRecognizer()
     segmentTable = {
     	{119, 0},
     	{18, 1},
-    	{94, 2},
+    	{93, 2},
     	{91, 3},
     	{58, 4},
     	{107, 5},
@@ -175,6 +175,12 @@ void DigitRecognizer::preprocess()
 		approxPolyDP( digitContours.at(i), curDigitContoursPoly, 3, true );
 		digitContoursPolys.push_back(curDigitContoursPoly);
 		digitBoundRects.push_back(boundingRect(Mat(curDigitContoursPoly)));
+		/* Check whether it is a one */
+		if (digitBoundRects.at(i).width < 0.05 * digitBoardRect.width)
+		{
+			digitBoundRects.at(i).width = 0.15 * digitBoardRect.width;
+			digitBoundRects.at(i) -= Point(0.1 * digitBoardRect.width, 0);
+		}
 	}
 
 	sort(digitBoundRects.begin(), digitBoundRects.end(), sortL2R);
@@ -189,6 +195,8 @@ void DigitRecognizer::preprocess()
 	// for (int i = 0; i < digitBoundRects.size(); i++) {
 	// 	rectangle( img, digitBoundRects.at(i), Scalar(255, 255, 255));
 	// }
+	// imshow("rect", img);
+	// waitKey(0);
 	// for (int i = 0; i < digitBoundRects.size(); ++i)
 	// {
 	// 	Mat curImg = img(digitSingleRect);

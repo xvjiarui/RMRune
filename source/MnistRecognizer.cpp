@@ -129,24 +129,14 @@ void MnistRecognizer::preprocess()
 		cout << "Centre " << i << " (" << boundRects.at(i).x << "," << boundRects.at(i).y << ")" << endl;
 	}
 
-	for (int i = 0; i < croppedBoundRects.size(); i++) {
-		rectangle( img, croppedBoundRects.at(i), Scalar(255, 255, 255), -1, 8, 0 );
-	}
-
-	cvtColor(img, img, CV_GRAY2BGR);
-	Mat temp;
-	GaussianBlur(imgCopy, temp, Size(9, 9), 0);
-	bitwise_and(temp, img, img);
 
 	/* Convert one whole image to 9 small images */
+	GaussianBlur(imgCopy, img, Size(9, 9), 0);
 	for (int i = 0; i < croppedBoundRects.size(); i++) {
 		Mat curMnistImg;
 		img(croppedBoundRects.at(i)).copyTo(curMnistImg);
 		resize(curMnistImg, curMnistImg, Size(28, 28));
 		cvtColor(curMnistImg, curMnistImg, CV_BGR2GRAY);
-		Mat binary;
-		// threshold(curMnistImg, binary, 150, 255, THRESH_BINARY);
-		// addWeighted(binary, 1.0, curMnistImg, 1.0, 0.0, curMnistImg);
 		threshold(curMnistImg, curMnistImg, 120, 255, THRESH_TOZERO);
 		mnistImgs.push_back(curMnistImg);
 		mnistLabels.insert(pair<int, int> (i, recognize(curMnistImg)));

@@ -15,15 +15,16 @@ int V_L = 0;
 int H_H = 255;
 int S_H = 255;
 int V_H = 255;
-// void LowerBound(int, void* )
-// {
-//     Mat temp;
-//     inRange(show, Scalar(H_L, S_L, V_L) , Scalar(H_H, S_H, V_H), temp);  
-//     imshow("temp", temp);
-//     cout << "H:" << H_L << " " << H_H << endl;
-//     cout << "S:" << S_L << " " << S_H << endl;
-//     cout << "V:" << V_L << " " << V_H << endl;
-// }
+Mat show;
+void boundFilter(int, void* )
+{
+    Mat temp;
+    inRange(show, Scalar(H_L, S_L, V_L) , Scalar(H_H, S_H, V_H), temp);  
+    imshow("temp", temp);
+    cout << "H:" << H_L << " " << H_H << endl;
+    cout << "S:" << S_L << " " << S_H << endl;
+    cout << "V:" << V_L << " " << V_H << endl;
+}
 
 int main(int argc, char** argv )
 {
@@ -44,31 +45,8 @@ int main(int argc, char** argv )
     resize(original_img, original_img, Size(480, 640));
     namedWindow("Original Image", WINDOW_AUTOSIZE );
     imshow("Original Image", original_img);
-    if (strcmp(argv[1], "1") == 0)
+    if (strcmp(argv[1], "0") == 0)
     {
-        digitRecognizer.predict(original_img);
-        for (int i = 0; i < digitRecognizer.digitLabels.size(); ++i)
-        {
-            cout << digitRecognizer.digitLabels.at(i) << flush;
-        }
-
-        // namedWindow("Lower_H", WINDOW_AUTOSIZE);
-        // namedWindow("Lower_S", WINDOW_AUTOSIZE);
-        // namedWindow("Lower_V", WINDOW_AUTOSIZE);
-        // namedWindow("Higher_H", WINDOW_AUTOSIZE);
-        // namedWindow("Higher_S", WINDOW_AUTOSIZE);
-        // namedWindow("Higher_V", WINDOW_AUTOSIZE);
-        // createTrackbar( "Lower_H", "Lower_H", &H_L, 255, LowerBound); 
-        // createTrackbar( "Lower_S", "Lower_S", &S_L, 255, LowerBound); 
-        // createTrackbar( "Lower_V", "Lower_V", &V_L, 255, LowerBound); 
-        // createTrackbar( "Higher_H", "Higher_H", &H_H, 255, LowerBound); 
-        // createTrackbar( "Higher_S", "Higher_S", &S_H, 255, LowerBound); 
-        // createTrackbar( "Higher_V", "Higher_V", &V_H, 255, LowerBound); 
-        // LowerBound(0, 0);
-    }
-    else
-    {
-
         mnistRecognizer.predict(original_img);
 
         for (int i = 0; i < mnistRecognizer.mnistImgs.size(); i++) {
@@ -80,6 +58,32 @@ int main(int argc, char** argv )
             imshow(to_string(i), mnistRecognizer.mnistImgs.at(i));
             cout << mnistRecognizer.getLabel(i) << endl;
         }
+    }
+    else if (strcmp(argv[1], "1") == 0)
+    {
+        digitRecognizer.predict(original_img);
+        for (int i = 0; i < digitRecognizer.digitLabels.size(); ++i)
+        {
+            cout << digitRecognizer.digitLabels.at(i) << flush;
+        }
+
+    }
+    else
+    {
+        show = original_img;
+        namedWindow("Lower_H", WINDOW_AUTOSIZE);
+        namedWindow("Lower_S", WINDOW_AUTOSIZE);
+        namedWindow("Lower_V", WINDOW_AUTOSIZE);
+        namedWindow("Higher_H", WINDOW_AUTOSIZE);
+        namedWindow("Higher_S", WINDOW_AUTOSIZE);
+        namedWindow("Higher_V", WINDOW_AUTOSIZE);
+        createTrackbar( "Lower_H", "Lower_H", &H_L, 255, boundFilter); 
+        createTrackbar( "Lower_S", "Lower_S", &S_L, 255, boundFilter); 
+        createTrackbar( "Lower_V", "Lower_V", &V_L, 255, boundFilter); 
+        createTrackbar( "Higher_H", "Higher_H", &H_H, 255, boundFilter); 
+        createTrackbar( "Higher_S", "Higher_S", &S_H, 255, boundFilter); 
+        createTrackbar( "Higher_V", "Higher_V", &V_H, 255, boundFilter); 
+        boundFilter(0, 0);
     } 
 
     waitKey(0);
