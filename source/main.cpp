@@ -71,6 +71,7 @@ int main(int argc, char** argv )
     else
     {
         show = original_img;
+        GaussianBlur(show, show, Size(9, 9) , 0);
         namedWindow("Lower_H", WINDOW_AUTOSIZE);
         namedWindow("Lower_S", WINDOW_AUTOSIZE);
         namedWindow("Lower_V", WINDOW_AUTOSIZE);

@@ -147,15 +147,6 @@ void DigitRecognizer::preprocess()
 	bitwise_and(imgCopy, img, img);
 
 	imgCopy(digitBoardRect).copyTo(img);
-	// imgCopy(digitBoardRect).copyTo(show);
-	// cvtColor(show, show, CV_BGR2HSV);
-	// GaussianBlur(img, img, Size(9, 9) , 0);
-	// erode(img, img, getStructuringElement(MORPH_RECT, Size(3, 3)));
-    // Mat temp1, temp2;
-    // inRange(hsvFrame, redLowerRange1, redUpperRange1, temp1);  
-    // inRange(hsvFrame, redLowerRange2, redUpperRange2, temp2);  
-    // addWeighted(temp1, 1.0, temp2, 1.0, 0.0, hsvFrame);
-    // morphologyEx(hsvFrame, hsvFrame, MORPH_OPEN, getStructuringElement(MORPH_ELLIPSE, Size(1, 5)));
 
     Mat hsvFrame;
     cvtColor(img, hsvFrame, CV_BGR2HSV);

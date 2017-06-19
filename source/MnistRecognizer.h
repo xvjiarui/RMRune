@@ -29,6 +29,8 @@ private:
 	int offset_x;
 	int offset_y;
 	int thresh;
+	Scalar lowerFilterRange;
+	Scalar upperFilterRange;
 
 	RNG rng; // random number generator
 	string Model_Path;
