@@ -22,6 +22,8 @@ IN THE SOFTWARE.
 #include <vector>
 #include <utility>
 
+typedef cv::Rect_<float> Rect2f;
+
 class RuneDetector {
 public:
 	struct Point2fWithIdx {
@@ -61,7 +63,7 @@ protected:
     std::pair<int, int> chooseTarget(const cv::Mat & image, const std::vector<cv::RotatedRect> & sudoku_rects);
 	std::pair<int, int> chooseMnistTarget(const cv::Mat & image, const std::vector<cv::RotatedRect> & sudoku_rects);
 
-	int findTargetORB(cv::Mat * cells);
+	// int findTargetORB(cv::Mat * cells);
     int findTargetEdge(cv::Mat * cells);
     int findTargetCanny(cv::Mat * cells);
 

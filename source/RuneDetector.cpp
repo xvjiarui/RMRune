@@ -148,58 +148,58 @@ bool RuneDetector::checkSudoku(const vector<vector<Point2i>> & contours, vector<
 	return sudoku_rects.size() == 9;
 }
 
-int RuneDetector::findTargetORB(cv::Mat * cells){
-	Mat descriptor[9];
-	vector<vector<KeyPoint> > keypoints;
-	keypoints.resize(9);
-	Ptr<ORB> orb = cv::ORB::create(100, 1, 1, 10, 0, 2, 1, 17);
-	BFMatcher matcher(NORM_HAMMING, 0);
-	int match_count[9][9] = { { 0 } };
+// int RuneDetector::findTargetORB(cv::Mat * cells){
+// 	Mat descriptor[9];
+// 	vector<vector<KeyPoint> > keypoints;
+// 	keypoints.resize(9);
+// 	Ptr<ORB> orb = cv::ORB::create(100, 1, 1, 10, 0, 2, 1, 17);
+// 	BFMatcher matcher(NORM_HAMMING, 0);
+// 	int match_count[9][9] = { { 0 } };
 
-	for (size_t i = 0; i < 9; i++)	{
-		vector<KeyPoint> & kp = keypoints[i];
-		Mat & desp = descriptor[i];
-		orb->detectAndCompute(cells[i], Mat(), kp, desp);
-		//FAST(cell[idx], kp, 10);
-		//Ptr<xfeatures2d::BriefDescriptorExtractor> brief = cv::xfeatures2d::BriefDescriptorExtractor::create();
-		//brief->compute(cell[idx], kp, desp);
+// 	for (size_t i = 0; i < 9; i++)	{
+// 		vector<KeyPoint> & kp = keypoints[i];
+// 		Mat & desp = descriptor[i];
+// 		orb->detectAndCompute(cells[i], Mat(), kp, desp);
+// 		//FAST(cell[idx], kp, 10);
+// 		//Ptr<xfeatures2d::BriefDescriptorExtractor> brief = cv::xfeatures2d::BriefDescriptorExtractor::create();
+// 		//brief->compute(cell[idx], kp, desp);
 
-        if (desp.rows < 2)
-            return -1;
+//         if (desp.rows < 2)
+//             return -1;
 
-		// feature matching
-		for (size_t k = 0; k < i; k++){
-			vector<vector<DMatch> > matches;
-			matcher.knnMatch(desp, descriptor[k], matches, 2);
-			int cnt = 0;
-			for (size_t n = 0; n < matches.size(); n++)	{
-				vector<DMatch> & m = matches[n];
-				DMatch & dm1 = m[0];
-				DMatch & dm2 = m[1];
-				if (dm1.distance / dm2.distance < 0.8){
-					cnt++;
-				}
-			}
-			match_count[i][k] = cnt;
-			match_count[k][i] = cnt;
-		}
-	}
+// 		// feature matching
+// 		for (size_t k = 0; k < i; k++){
+// 			vector<vector<DMatch> > matches;
+// 			matcher.knnMatch(desp, descriptor[k], matches, 2);
+// 			int cnt = 0;
+// 			for (size_t n = 0; n < matches.size(); n++)	{
+// 				vector<DMatch> & m = matches[n];
+// 				DMatch & dm1 = m[0];
+// 				DMatch & dm2 = m[1];
+// 				if (dm1.distance / dm2.distance < 0.8){
+// 					cnt++;
+// 				}
+// 			}
+// 			match_count[i][k] = cnt;
+// 			match_count[k][i] = cnt;
+// 		}
+// 	}
 
-    // choose the minimun match cell as the target
-	float avg_cnt[9] = {};
-	int min_idx = -1;
-	float min_cnt = 65535;
-	for (size_t i = 0; i < 9; i++){
-		for (size_t j = 0; j < 9; j++){
-			avg_cnt[i] += match_count[i][j];
-		}
-		if (avg_cnt[i] < min_cnt){
-			min_cnt = avg_cnt[i];
-			min_idx = i;
-		}
-	}
-	return min_idx;
-}
+//     // choose the minimun match cell as the target
+// 	float avg_cnt[9] = {};
+// 	int min_idx = -1;
+// 	float min_cnt = 65535;
+// 	for (size_t i = 0; i < 9; i++){
+// 		for (size_t j = 0; j < 9; j++){
+// 			avg_cnt[i] += match_count[i][j];
+// 		}
+// 		if (avg_cnt[i] < min_cnt){
+// 			min_cnt = avg_cnt[i];
+// 			min_idx = i;
+// 		}
+// 	}
+// 	return min_idx;
+// }
 
 //int RuneDetector::findTargetCanny(cv::Mat * cells){
 //    int min_count = 65535;
@@ -556,8 +556,8 @@ pair<int, int> RuneDetector::chooseTargetPerspective(const Mat & image, const ve
 	int half_w_gap = (width_avg - cell_width) / 2, half_h_gap = (height_avg - cell_height) / 2;
     int offset_x = 0.05 * cell_width + 0.5;
     int offset_y = 0.05 * cell_height + 0.5;
-	int width_start[] = { half_w_gap, (_width - cell_width) / 2, _width - cell_width - half_w_gap };
-    int height_start[] = { half_h_gap, (_height - cell_height) / 2, _height - cell_height - half_h_gap };
+	int width_start[] = { half_w_gap, int((_width - cell_width) / 2), int(_width - cell_width - half_w_gap) };
+    int height_start[] = { half_h_gap, int((_height - cell_height) / 2), int(_height - cell_height - half_h_gap) };
 
 	Mat cell[9];
 	for (size_t i = 0; i < 3; i++){
@@ -570,11 +570,11 @@ pair<int, int> RuneDetector::chooseTargetPerspective(const Mat & image, const ve
 	}
 
     int idx = -1;
-    if (type == RUNE_ORB)
-        idx = findTargetORB(cell);
-    else if (type == RUNE_GRAD)
+    // if (type == RUNE_ORB)
+    //     idx = findTargetORB(cell);
+    if (type == RUNE_GRAD)
         idx = findTargetEdge(cell);
-    else if (type = RUNE_CANNY)
+    else if (type == RUNE_CANNY)
         idx = findTargetCanny(cell);
 
     //int idxx = findTargetCanny(cell);
@@ -619,11 +619,11 @@ pair<int, int> RuneDetector::chooseTarget(const Mat & image, const vector<Rotate
 	}
 
     int idx = -1;
-    if (type == RUNE_ORB)
-        idx = findTargetORB(cell);
-    else if (type == RUNE_GRAD)
+    // if (type == RUNE_ORB)
+    //     idx = findTargetORB(cell);
+    if (type == RUNE_GRAD)
         idx = findTargetEdge(cell);
-    else if (type = RUNE_CANNY)
+    else if (type == RUNE_CANNY)
         idx = findTargetCanny(cell);
 
     //int idxx = findTargetCanny(cell);
