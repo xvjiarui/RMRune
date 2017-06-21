@@ -17,8 +17,8 @@ public:
 	int getLabel(int index);
 	~MnistRecognizer();	
 	vector<Mat> mnistImgs;
-private:
 	int recognize(const Mat& img);
+private:
 	void preprocess();
 	void clear();
 	Mat imgCopy;

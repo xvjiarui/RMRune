@@ -18,6 +18,7 @@ IN THE SOFTWARE.
 #pragma once
 #include "opencv2/core/core.hpp"
 #include "opencv2/highgui/highgui.hpp"
+#include "MnistRecognizer.h"
 
 #include <vector>
 #include <utility>
@@ -37,7 +38,7 @@ public:
 	typedef enum {RUNE_S, RUNE_B} RuneType;
 
 public:
-    RuneDetector(int cell_width = 127, int cell_height = 71, bool perspective = false, Methed_Type m_type = RUNE_CANNY){
+    RuneDetector(int cell_width = 127, int cell_height = 71, bool perspective = false, Methed_Type m_type = RUNE_CANNY) : mnistRecognizer("LeNet-model"){
 		sudoku_width = cell_width;
 		sudoku_height = cell_height;
         use_perspective = perspective;
@@ -78,5 +79,7 @@ private:
     bool use_perspective;
     Methed_Type type;
 	cv::Mat src;
+	MnistRecognizer mnistRecognizer;
+
 };
 
