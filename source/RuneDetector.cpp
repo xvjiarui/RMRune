@@ -406,8 +406,15 @@ pair <int, int> RuneDetector::chooseMnistTarget(const Mat & image, const vector<
 	Mat image_persp;
 	warpPerspective(image, image_persp, perspective_mat, Size(_width, _height));
 
-	Rect2f r1(0, 0, _width / 102.0 * 28.0, _height / 60.0 * 16.0);
-	testCell[0] = image_persp(r1);
+	float x_offset = _width / 102.0 * 37.0;
+	float y_offset = _height / 60.0 * 22.0;
+
+	for (int i = 0; i < 3; i++){
+		for (int j = 0; j < 3; j++){
+			Rect2f r(x_offset * j, y_offset * i, _width / 102.0 * 28.0, _height / 60.0 * 16.0);
+			testCell[i * 3 + j] = image_persp(r);
+		}
+	}
 	return make_pair(0,0);
 }
 

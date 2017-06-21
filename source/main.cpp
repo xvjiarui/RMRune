@@ -48,8 +48,9 @@ int main(int argc, char** argv )
     float ratio = 0.5;
     RuneDetector a(127 * ratio, 71 * ratio,  true);
     a.getTarget(original_img, RuneDetector::RUNE_B);
-    for (int i = 0; i < 1; i++){
+    for (int i = 0; i < 9; i++){
         imshow(to_string(i), a.testCell[i]);
+        waitKey(0);
     }
     waitKey(0);
     return 0;
