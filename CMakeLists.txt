@@ -27,4 +27,4 @@ AUX_SOURCE_DIRECTORY(${PROJECT_SOURCE_DIR}/source SRC)
 
 find_package( OpenCV REQUIRED )
 add_executable( function_test ${SRC})
-target_link_libraries( function_test ${OpenCV_LIBS})
+target_link_libraries( function_test -lpthread ${OpenCV_LIBS})

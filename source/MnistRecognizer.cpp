@@ -38,11 +38,8 @@ Rect cropRect(Rect rect,
 MnistRecognizer::MnistRecognizer(const string& dictionary)
 {
 	offset_x = 5;
-	offset_y = 3;
-	thresh = 155;
-
-	lowerFilterRange = Scalar(225, 0, 228);
-	upperFilterRange = Scalar(255, 255, 255);
+	offset_y = 5;
+	thresh = 182;
 
 	rng = RNG(12345);
 	Model_Path = "LeNet-model";
@@ -103,21 +100,24 @@ void MnistRecognizer::preprocess()
 	clear();
 	Mat img;
 	GaussianBlur(imgCopy, img, Size(9, 9) , 0);
-	// inRange(img, lowerFilterRange, upperFilterRange, img);
-	// erode(img, img, getStructuringElement(MORPH_RECT, Size(5, 5)));
 	cvtColor(img, img, CV_BGR2GRAY);
-	Canny(img, img, thresh, thresh * 2, 3, true);
+	Canny(img, img, thresh, thresh * 2, 3);
+
 	dilate(img, img, getStructuringElement(MORPH_RECT, Size(8, 8)));
 
 	vector<vector<Point> > contours;
 	vector<Vec4i> hierarchy;
 	findContours( img, contours, hierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE, Point(0, 0) );
 
+	vector<vector<Point> > contoursPolys;
 	vector<Rect> boundRects;
 	vector<Rect> croppedBoundRects;
 
 	for ( int i = 0; i < contours.size(); i++ ) {
-		boundRects.push_back(minAreaRect(contours.at(i)).boundingRect());
+		vector<Point> curContoursPoly;
+		approxPolyDP( contours.at(i), curContoursPoly, 3, true );
+		contoursPolys.push_back(curContoursPoly);
+		boundRects.push_back(boundingRect(Mat(curContoursPoly)));
 		croppedBoundRects.push_back(cropRect(boundRects.at(i), offset_x, offset_y, -offset_x, -offset_y));
 	}
 
@@ -129,20 +129,24 @@ void MnistRecognizer::preprocess()
 		cout << "Centre " << i << " (" << boundRects.at(i).x << "," << boundRects.at(i).y << ")" << endl;
 	}
 
+	for (int i = 0; i < croppedBoundRects.size(); i++) {
+		rectangle( img, croppedBoundRects.at(i), Scalar(255, 255, 255), -1, 8, 0 );
+	}
+
+	cvtColor(img, img, CV_GRAY2BGR);
+	Mat temp;
+	GaussianBlur(imgCopy, temp, Size(9, 9), 0);
+	bitwise_and(temp, img, img);
 
 	/* Convert one whole image to 9 small images */
-	GaussianBlur(imgCopy, img, Size(9, 9), 0);
-	// for (int i = 0; i < contours.size(); ++i)
-	// {
-	// 	rectangle(img, croppedBoundRects.at(i), Scalar(255, 255, 255));
-	// }
-	// imshow("min", img);
-	// waitKey(0);
 	for (int i = 0; i < croppedBoundRects.size(); i++) {
 		Mat curMnistImg;
 		img(croppedBoundRects.at(i)).copyTo(curMnistImg);
 		resize(curMnistImg, curMnistImg, Size(28, 28));
 		cvtColor(curMnistImg, curMnistImg, CV_BGR2GRAY);
+		Mat binary;
+		// threshold(curMnistImg, binary, 150, 255, THRESH_BINARY);
+		// addWeighted(binary, 1.0, curMnistImg, 1.0, 0.0, curMnistImg);
 		threshold(curMnistImg, curMnistImg, 120, 255, THRESH_TOZERO);
 		mnistImgs.push_back(curMnistImg);
 		mnistLabels.insert(pair<int, int> (i, recognize(curMnistImg)));
