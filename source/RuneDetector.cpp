@@ -412,7 +412,7 @@ pair <int, int> RuneDetector::chooseMnistTarget(const Mat & image, const vector<
 	for (int i = 0; i < 3; i++){
 		for (int j = 0; j < 3; j++){
 			Rect2f r(x_offset * j, y_offset * i, _width / 102.0 * 28.0, _height / 60.0 * 16.0);
-			testCell[i * 3 + j] = image_persp(r);
+			sudoku_imgs.push_back(image_persp(r));
 		}
 	}
 	return make_pair(0,0);
