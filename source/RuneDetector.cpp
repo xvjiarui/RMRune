@@ -535,10 +535,6 @@ pair<int, int> RuneDetector::chooseTargetPerspective(const Mat & image, const ve
 			vec_p.push_back(Point2f(x / s, y / s));
 		}
 		Rect2f r = boundingRect(vec_p);
-		r.x = (r.x < 0 ? 0 : r.x);
-		r.y = (r.y < 0 ? 0 : r.y);
-		cout << r << endl;
-		testCell[i] = image_persp(r);
 		height_avg += r.height;
 		width_avg += r.width;
 	}
