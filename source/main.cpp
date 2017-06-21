@@ -46,11 +46,10 @@ int main(int argc, char** argv )
     namedWindow("Original Image", WINDOW_AUTOSIZE );
     imshow("Original Image", original_img);
     float ratio = 0.5;
-    RuneDetector a(127 * ratio, 71 * ratio,  true);
-    a.getTarget(original_img, RuneDetector::RUNE_B);
+    RuneDetector runeDetector(127 * ratio, 71 * ratio,  true);
+    runeDetector.getTarget(original_img, RuneDetector::RUNE_B);
     for (int i = 0; i < 9; i++){
-        imshow(to_string(i), a.testCell[i]);
-        waitKey(0);
+        imshow(to_string(i), runeDetector.getSudokuImgs(i));
     }
     waitKey(0);
     return 0;

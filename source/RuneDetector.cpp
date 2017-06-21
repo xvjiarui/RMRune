@@ -412,10 +412,12 @@ pair <int, int> RuneDetector::chooseMnistTarget(const Mat & image, const vector<
 	for (int i = 0; i < 3; i++){
 		for (int j = 0; j < 3; j++){
 			Rect2f r(x_offset * j, y_offset * i, _width / 102.0 * 28.0, _height / 60.0 * 16.0);
-			testCell[i * 3 + j] = image_persp(r);
-			threshold(testCell[i * 3 + j], testCell[i * 3 + j], 120, 255, THRESH_BINARY);
-			resize(testCell[i * 3 + j], testCell[i * 3 + j], Size(28, 28));
-			cout << mnistRecognizer.recognize(testCell[i * 3 + j]) << endl;
+			Mat temp;
+			temp = image_persp(r);
+			threshold(temp, temp, 120, 255, THRESH_BINARY);
+			resize(temp, temp, Size(28, 28));
+			cout << mnistRecognizer.recognize(temp) << endl;
+			sudoku_imgs.push_back(temp);
 		}
 	}
 	return make_pair(0,0);

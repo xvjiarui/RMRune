@@ -32,7 +32,6 @@ public:
 		size_t idx;
 		Point2fWithIdx(const cv::Point2f _p, size_t _idx) :p(_p), idx(_idx){}
 	};
-	cv::Mat testCell[9];
 
     typedef enum {RUNE_ORB, RUNE_GRAD, RUNE_CANNY} Methed_Type;
 	typedef enum {RUNE_S, RUNE_B} RuneType;
@@ -44,13 +43,11 @@ public:
         use_perspective = perspective;
         type = m_type;
 	}
-	cv::RotatedRect getRect(int idx){
-		return sudoku_rects[idx];
-	}
-	const cv::RotatedRect & getRect(int idx) const {
-		return sudoku_rects[idx];
-	}
+	cv::RotatedRect getRotateRect(int idx){ return sudoku_rects.at(idx); }
+	const cv::RotatedRect & getRotateRect(int idx) const { return sudoku_rects.at(idx); }
 
+	cv::Mat getSudokuImgs(int idx){ return sudoku_imgs.at(idx); }
+	const cv::Mat & getSudokuImgs(int idx) const { return sudoku_imgs.at(idx); }
     /**
      * @brief getTarget
      * @param image
@@ -73,7 +70,8 @@ protected:
 	cv::Mat transformSudokuPerspective(const cv::Mat & image, const std::vector<cv::RotatedRect> & sudoku_rects);
 
 private:
-	std::vector<cv::RotatedRect> sudoku_rects;
+	std::vector<cv::RotatedRect> sudoku_rects; // before perspective transform
+	std::vector<cv::Mat> sudoku_imgs;
 	int sudoku_width;	 // pixel
 	int sudoku_height;   // pixel
     bool use_perspective;
