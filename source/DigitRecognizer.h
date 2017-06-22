@@ -6,6 +6,8 @@
 using namespace std;
 using namespace cv;
 
+typedef cv::Rect_<float> Rect2f;
+
 class DigitRecognizer
 {
 public:

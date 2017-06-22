@@ -19,11 +19,11 @@ IN THE SOFTWARE.
 #include "opencv2/core/core.hpp"
 #include "opencv2/highgui/highgui.hpp"
 #include "MnistRecognizer.h"
+#include "DigitRecognizer.h"
 
 #include <vector>
 #include <utility>
 
-typedef cv::Rect_<float> Rect2f;
 
 class RuneDetector {
 public:
@@ -78,6 +78,7 @@ private:
     Methed_Type type;
 	cv::Mat src;
 	MnistRecognizer mnistRecognizer;
+	DigitRecognizer digitRecognizer;
 
 };
 

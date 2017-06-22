@@ -62,17 +62,21 @@ pair<int, int> RuneDetector::getTarget(const cv::Mat & image, RuneType rt){
     imshow("contours", show);
 #endif
 	sudoku_rects.clear();
-	if (checkSudoku(contours, sudoku_rects)){
+	if (checkSudoku(contours, sudoku_rects))
+	{
 		if (rt == RUNE_B)
 		{
-			pair<int, int> idx = chooseMnistTarget(src, sudoku_rects);
+			pair<int, int> idx = chooseMnistTarget(image, sudoku_rects);
 		}
-		else{
-			if (use_perspective == true){
+		else
+		{
+			if (use_perspective == true)
+			{
 				pair<int, int> idx = chooseTargetPerspective(src, sudoku_rects);
 				return idx;
 			}
-			else{
+			else
+			{
 				pair<int, int> idx = chooseTarget(src, sudoku_rects);
 				return idx;
 			}
@@ -338,8 +342,10 @@ int RuneDetector::findTargetEdge(cv::Mat * cells){
 	return min_count_idx;
 }
 
-pair <int, int> RuneDetector::chooseMnistTarget(const Mat & image, const vector<RotatedRect> & sudoku_rects){
+pair <int, int> RuneDetector::chooseMnistTarget(const Mat & inputImg, const vector<RotatedRect> & sudoku_rects){
 // get 9(cell) X 4(corner) corner, and 9 cell's center
+	Mat image;
+	cvtColor(inputImg, image, CV_BGR2GRAY);
 	vector<Point2fWithIdx> centers;
 	vector<Point2f> corner;
 	Point2f center_avg;
@@ -456,11 +462,10 @@ pair <int, int> RuneDetector::chooseMnistTarget(const Mat & image, const vector<
 	perspective_mat = getPerspectiveTransform(src_p, dst_p);
 	Point2f perspective_center = MatDotPoint(perspective_mat, center_avg);
 	Mat perspective_image;
-	warpPerspective(image, perspective_image, perspective_mat, image.size());
-	// float digit_board_width = _width / (280.0*3) * 104.5 * 5;
-	// float digit_board_height = _height / (170.0*3) * 122.0;
+    GaussianBlur(inputImg, perspective_image, Size(9, 9) , 0);
+	warpPerspective(perspective_image, perspective_image, perspective_mat, inputImg.size());
 	Rect2f boardRect = Rect2f(perspective_center, Size2f(_width, _height));
-
+	digitRecognizer.predict(perspective_image, boardRect);
 
 
 	float x_offset = _width / 102.0 * 37.0;
