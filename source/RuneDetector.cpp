@@ -16,6 +16,7 @@ IN THE SOFTWARE.
 *******************************************************************************************************************/
 
 #include "RuneDetector.hpp"
+#include <algorithm>
 
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/calib3d/calib3d.hpp>
@@ -24,6 +25,7 @@ IN THE SOFTWARE.
 #include <iostream>
 
 //#define SHOW_IMAGE
+#define HARD_CODE
 
 using namespace cv;
 using namespace std;
@@ -98,12 +100,15 @@ bool RuneDetector::checkSudoku(const vector<vector<Point2i>> & contours, vector<
 		float ratio_cur = s.width / s.height;
 
 // warning: temporary disable
+#ifdef HARD_CODE
 		if (ratio_cur > 0.8 * ratio && ratio_cur < 1.2 * ratio &&
 			s.width > low_threshold * width && s.width < high_threshold * width &&
 			s.height > low_threshold * height && s.height < high_threshold * height &&
 			((rect.angle > -10 && rect.angle < 10) || rect.angle < -170 || rect.angle > 170)){
-		
-
+#else
+		if (ratio_cur > 0.8 * ratio && ratio_cur < 1.2 * ratio &&
+			((rect.angle > -10 && rect.angle < 10) || rect.angle < -170 || rect.angle > 170)){
+#endif
 			sudoku_rects.push_back(rect);
             centers.push_back(rect.center);
             //vector<Point2i> poly;
@@ -112,13 +117,21 @@ bool RuneDetector::checkSudoku(const vector<vector<Point2i>> & contours, vector<
 		}
 	}
 
-    cout << "sudoku num: " << sudoku << endl;
-
+#ifdef HARD_CODE
     if (sudoku > 15)
         return false;
-
+#else
+	cout << "Origin sudoku:" << sudoku << endl;
+#endif
     if(sudoku > 9){
-        float dist_map[15][15] = {0};
+		float** dist_map = new float*[sudoku];
+		for (int i = 0; i < sudoku; i++){
+			cout << i << endl;
+			dist_map[i] = new float[sudoku];
+			for (int j = 0; j < sudoku; j++){
+				dist_map[i][j] = 0;
+			}
+		}
         // calculate distance of each cell center
         for(int i = 0; i < sudoku; ++i){
             for (int j = i+1; j < sudoku; ++j){
@@ -142,6 +155,7 @@ bool RuneDetector::checkSudoku(const vector<vector<Point2i>> & contours, vector<
             }
         }
 
+
         // sort distance between each cell and the center cell
         vector<pair<float, int> > dist_center;
         for (int i = 0; i < sudoku; ++i){
@@ -149,12 +163,23 @@ bool RuneDetector::checkSudoku(const vector<vector<Point2i>> & contours, vector<
         }
         std::sort(dist_center.begin(), dist_center.end(), [](const pair<float, int> & p1, const pair<float, int> & p2) { return p1.first < p2.first; });
 
+		for (int i = 0; i < sudoku; i++){
+			delete [] dist_map[i];
+		}
+		delete [] dist_map;
+
         // choose the nearest 9 cell as suduku
         vector<RotatedRect> sudoku_rects_temp;
         for(int i = 0; i < 9; ++i){
             sudoku_rects_temp.push_back(sudoku_rects[dist_center[i].second]);
         }
         sudoku_rects_temp.swap(sudoku_rects);
+		#ifndef HARD_CODE
+		float max_width = 0, max_height = 0;
+		std::for_each(sudoku_rects.begin(), sudoku_rects.end(), [&](const RotatedRect& a){ cout << a.size; if(max_width < a.size.width) max_width = a.size.width; if (max_height < a.size.height) max_height = a.size.height; });
+		cout << max_width << "" << max_height << endl;
+		#endif
+		
     }
     cout << "sudoku n: " << sudoku_rects.size()  << endl;
 	return sudoku_rects.size() == 9;
@@ -442,6 +467,7 @@ pair <int, int> RuneDetector::chooseMnistTarget(const Mat & image, const vector<
 
 	float x_offset = _width / 102.0 * 37.0;
 	float y_offset = _height / 60.0 * 22.0;
+	vector<vector<pair<double, int> > > results;
 
 	for (int i = 0; i < 3; i++){
 		for (int j = 0; j < 3; j++){
@@ -449,10 +475,54 @@ pair <int, int> RuneDetector::chooseMnistTarget(const Mat & image, const vector<
 			Mat temp = image_persp(r);
 			threshold(temp, temp, 120, 255, THRESH_BINARY);
 			resize(temp, temp, Size(28, 28));
-			cout << mnistRecognizer.recognize(temp) << endl;
+			results.push_back(mnistRecognizer.recognize_primary(temp));
 			sudoku_imgs.push_back(temp);
 		}
 	}
+
+	vector<vector<pair<double, int> >::iterator> FinalResults;
+	deque<int> check_index;
+
+	for (int i = 0; i < results.size(); i++){
+		FinalResults.push_back(results.at(i).begin());
+		check_index.push_back(i);
+	}
+
+	for (deque<int>::iterator idxitr1 = check_index.begin(); idxitr1 != check_index.end(); idxitr1++){
+		for (int j = 0; j < results.size(); j++){
+			if (*idxitr1 == j) continue;
+			int i = *idxitr1;
+			if ((*(FinalResults.at(i))).second == (*(FinalResults.at(j))).second){
+				if ((*(FinalResults.at(i))).first < (*(FinalResults.at(j))).first && (FinalResults.at(i)) + 1 != results.at(i).end()){
+					(FinalResults.at(i))++;
+					check_index.insert(idxitr1 + 1, *idxitr1);
+					break; //recompare from beginning
+				}
+				else {
+					if (FinalResults.at(j) + 1 == results.at(j).end())
+					{
+						if ((FinalResults.at(i)) + 1 != results.at(i).end()){
+							(FinalResults.at(i))++;
+							check_index.insert(idxitr1 + 1, *idxitr1);
+							break; //recompare from beginning
+						}
+						else {
+							//both conflict > 10 times -> should be impossible to solve
+							return make_pair(-1, -1);
+						}
+					}
+					(FinalResults.at(j))++;
+					check_index.insert(idxitr1 + 1, j);
+				}
+			}
+		}
+	}
+
+	cout << "Results:" << endl;
+	for (int i = 0; i < FinalResults.size(); i++){
+		cout << (*(FinalResults.at(i))).second << endl;
+	}
+	
 	return make_pair(0,0);
 }
 
