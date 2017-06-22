@@ -42,9 +42,8 @@ void DigitRecognizer::predict(const Mat& inputImg, Rect sudokuPanel)
 {
 	clear();
 
-	float digit_board_width = _width / (280.0*3) * 104.5 * 5;
-	float digit_board_height = _height / (170.0*3) * 122.0;
-	Rect2f digitBoardRect = Rect2f(sudokuPanel.width / (280.0*3) * 104.5 * 5, sudokuPanel.height / (170.0*3) * 122.0);
+	// Rect2f digitBoardRect = Rect2f(sudokuPanel.width / (280.0*3) * 104.5 * 5, sudokuPanel.height / (170.0*3) * 122.0);
+	Rect2f digitBoardRect = sudokuPanel;
 	Mat img = inputImg(digitBoardRect);
 	imshow("digit_board", img);
 	waitKey(0);
@@ -69,7 +68,7 @@ void DigitRecognizer::predict(const Mat& inputImg, Rect sudokuPanel)
 		digitBoundRects.push_back(boundingRect(Mat(curDigitContoursPoly)));
 	}
 
-	sort(digitBoundRects.begin(), digitBoundRects.end(), [] (Rect a, Rectb) { return a.x < b.x});
+	sort(digitBoundRects.begin(), digitBoundRects.end(), [] (Rect a, Rect b) { return a.x < b.x; });
 	for (int i = 0; i < digitBoundRects.size(); ++i)
 	{
 		Mat curImg = img(digitBoundRects.at(i));
@@ -126,11 +125,6 @@ int DigitRecognizer::recognize(const Mat& img)
 	return ret;
 }
 
-
-void DigitRecognizer::preprocess()
-{
-
-}
 
 void DigitRecognizer::clear()
 {

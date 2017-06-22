@@ -448,20 +448,18 @@ pair <int, int> RuneDetector::chooseMnistTarget(const Mat & image, const vector<
 	warpPerspective(image, image_persp, perspective_mat, Size(_width, _height));
 	imshow("image_persp", image_persp);
 
-	// dst_p.clear();
-	// dst_p.push_back(_lu+Point2f(0.0, 0.0));
-	// dst_p.push_back(_lu+Point2f(0.0, _height));
-	// dst_p.push_back(_lu+Point2f(_width, 0.0));
-	// dst_p.push_back(_lu+Point2f(_width, _height));
-	// perspective_mat = getPerspectiveTransform(src_p, dst_p);
-	// Point2f perspective_center = MatDotPoint(perspective_mat, center_avg) + Point2f(-_width/3, -_height * 0.85);
-	// Mat perspective_image;
-	// warpPerspective(image, perspective_image, perspective_mat, image.size());
+	dst_p.clear();
+	dst_p.push_back(_lu+Point2f(0.0, 0.0));
+	dst_p.push_back(_lu+Point2f(0.0, _height));
+	dst_p.push_back(_lu+Point2f(_width, 0.0));
+	dst_p.push_back(_lu+Point2f(_width, _height));
+	perspective_mat = getPerspectiveTransform(src_p, dst_p);
+	Point2f perspective_center = MatDotPoint(perspective_mat, center_avg);
+	Mat perspective_image;
+	warpPerspective(image, perspective_image, perspective_mat, image.size());
 	// float digit_board_width = _width / (280.0*3) * 104.5 * 5;
 	// float digit_board_height = _height / (170.0*3) * 122.0;
-	// Mat digit_board = perspective_image(Rect2f(perspective_center, Size2f(digit_board_width, digit_board_height)));
-	// imshow("digit_board", digit_board);
-	// waitKey(0);
+	Rect2f boardRect = Rect2f(perspective_center, Size2f(_width, _height));
 
 
 

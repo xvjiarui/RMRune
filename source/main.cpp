@@ -55,11 +55,11 @@ int main(int argc, char** argv )
     return 0;
     if (strcmp(argv[1], "1") == 0)
     {
-        digitRecognizer.predict(original_img);
-        for (int i = 0; i < digitRecognizer.digitLabels.size(); ++i)
-        {
-            cout << digitRecognizer.digitLabels.at(i) << flush;
-        }
+        // digitRecognizer.predict(original_img);
+        // for (int i = 0; i < digitRecognizer.digitLabels.size(); ++i)
+        // {
+        //     cout << digitRecognizer.digitLabels.at(i) << flush;
+        // }
 
         // namedWindow("Lower_H", WINDOW_AUTOSIZE);
         // namedWindow("Lower_S", WINDOW_AUTOSIZE);
@@ -78,17 +78,17 @@ int main(int argc, char** argv )
     else
     {
 
-        mnistRecognizer.predict(original_img);
+    //     mnistRecognizer.predict(original_img);
 
-        for (int i = 0; i < mnistRecognizer.mnistImgs.size(); i++) {
-            if ( !mnistRecognizer.mnistImgs.at(i).data) {
-                printf("No single image data \n");
-                return -1;
-            }
-            namedWindow(to_string(i),  WINDOW_AUTOSIZE );
-            imshow(to_string(i), mnistRecognizer.mnistImgs.at(i));
-            cout << mnistRecognizer.getLabel(i) << endl;
-        }
+    //     for (int i = 0; i < mnistRecognizer.mnistImgs.size(); i++) {
+    //         if ( !mnistRecognizer.mnistImgs.at(i).data) {
+    //             printf("No single image data \n");
+    //             return -1;
+    //         }
+    //         namedWindow(to_string(i),  WINDOW_AUTOSIZE );
+    //         imshow(to_string(i), mnistRecognizer.mnistImgs.at(i));
+    //         cout << mnistRecognizer.getLabel(i) << endl;
+    //     }
     } 
 
     waitKey(0);
