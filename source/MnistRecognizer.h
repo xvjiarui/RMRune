@@ -18,6 +18,7 @@ public:
 	~MnistRecognizer();	
 	vector<Mat> mnistImgs;
 	int recognize(const Mat& img);
+	vector<pair<double, int> > recognize_primary(const Mat& img);
 private:
 	void preprocess();
 	void clear();

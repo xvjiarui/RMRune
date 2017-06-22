@@ -75,6 +75,10 @@ MnistRecognizer::~MnistRecognizer()
 
 int MnistRecognizer::recognize(const Mat& img)
 {
+	return recognize_primary(img).at(0).second;
+}
+vector<pair<double, int> > MnistRecognizer::recognize_primary(const Mat& img)
+{
 	vec_t data;
 	convert_image(img, -1.0, 1.0, 32, 32, data);
 
@@ -92,7 +96,7 @@ int MnistRecognizer::recognize(const Mat& img)
 	cout << endl << endl;
 	for (int i = 0; i < scores.size(); i++)
 		cout << "Score: " << scores.at(i).first << "     Predicted Label: " << scores.at(i).second << endl;
-	return scores.at(0).second;
+	return scores;
 }
 
 void MnistRecognizer::preprocess()
