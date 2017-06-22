@@ -448,24 +448,30 @@ pair <int, int> RuneDetector::chooseMnistTarget(const Mat & image, const vector<
 	}
 
 	vector<vector<pair<double, int> >::iterator> FinalResults;
+	deque<int> check_index;
 
 	for (int i = 0; i < results.size(); i++){
 		FinalResults.push_back(results.at(i).begin());
+		check_index.push_back(i);
 	}
 
-	for (int i = 0; i < FinalResults.size(); i++){
-		for (int j = 0; j < FinalResults.size(); j++){
-			if (i == j) continue;
+	for (deque<int>::iterator idxitr1 = check_index.begin(); idxitr1 != check_index.end(); idxitr1++){
+		for (int j = 0; j < results.size(); j++){
+			if (*idxitr1 == j) continue;
+			int i = *idxitr1;
 			if ((*(FinalResults.at(i))).second == (*(FinalResults.at(j))).second){
 				if ((*(FinalResults.at(i))).first < (*(FinalResults.at(j))).first && (FinalResults.at(i)) + 1 != results.at(i).end()){
 					(FinalResults.at(i))++;
-					j = -1; //recompare from beginning
+					check_index.insert(idxitr1 + 1, *idxitr1);
+					break; //recompare from beginning
 				}
 				else {
 					if (FinalResults.at(j) + 1 == results.at(j).end())
 					{
 						if ((FinalResults.at(i)) + 1 != results.at(i).end()){
 							(FinalResults.at(i))++;
+							check_index.insert(idxitr1 + 1, *idxitr1);
+							break; //recompare from beginning
 						}
 						else {
 							//both conflict > 10 times -> should be impossible to solve
@@ -473,6 +479,7 @@ pair <int, int> RuneDetector::chooseMnistTarget(const Mat & image, const vector<
 						}
 					}
 					(FinalResults.at(j))++;
+					check_index.insert(idxitr1 + 1, j);
 				}
 			}
 		}
