@@ -10,32 +10,20 @@ class DigitRecognizer
 {
 public:
 	DigitRecognizer();
-	void predict(const Mat& img);
+	void predict(const Mat& original_img, Rect sudoku_panel);
 	~DigitRecognizer();	
 	vector<Mat> digitImgs;
 	vector<int> digitLabels;
 
 private:
 	int recognize(const Mat& img);
-	void preprocess();
 	void clear();
 	Mat imgCopy;
 	unordered_map<int, int> segmentTable;
 	vector<Rect> segmentRects;
 	
-	int offsetX;
-	int offsetY;
-	int thresh;
-
-	Size2f ratioBM;
-	Size2f mnistLittleRectReal;
-	float digitBoardOffsetXReal;
-	float digitBoardOffsetYReal;
-    Scalar redLowerRange1;
-    Scalar redUpperRange1;
-    Scalar redLowerRange2;
-    Scalar redUpperRange2;
-
+    Scalar lowerBound;
+    Scalar upperBound;
 
 	RNG rng; // random number generator
 

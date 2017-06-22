@@ -37,19 +37,9 @@ Rect cropRect(Rect rect,
 
 MnistRecognizer::MnistRecognizer(const string& dictionary)
 {
-	offset_x = 5;
-	offset_y = 5;
-	thresh = 182;
-
 	rng = RNG(12345);
-	Model_Path = "LeNet-model";
+	Model_Path = dictionary;
 	nn.load(Model_Path);
-}
-
-void MnistRecognizer::predict(const Mat& img)
-{
-	img.copyTo(imgCopy);
-	preprocess();
 }
 
 Point MnistRecognizer::getCenter(int label)
@@ -93,66 +83,5 @@ int MnistRecognizer::recognize(const Mat& img)
 	for (int i = 0; i < scores.size(); i++)
 		cout << "Score: " << scores.at(i).first << "     Predicted Label: " << scores.at(i).second << endl;
 	return scores.at(0).second;
-}
-
-void MnistRecognizer::preprocess()
-{
-	clear();
-	Mat img;
-	GaussianBlur(imgCopy, img, Size(9, 9) , 0);
-	cvtColor(img, img, CV_BGR2GRAY);
-	Canny(img, img, thresh, thresh * 2, 3);
-
-	dilate(img, img, getStructuringElement(MORPH_RECT, Size(8, 8)));
-
-	vector<vector<Point> > contours;
-	vector<Vec4i> hierarchy;
-	findContours( img, contours, hierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE, Point(0, 0) );
-
-	vector<vector<Point> > contoursPolys;
-	vector<Rect> boundRects;
-	vector<Rect> croppedBoundRects;
-
-	for ( int i = 0; i < contours.size(); i++ ) {
-		vector<Point> curContoursPoly;
-		approxPolyDP( contours.at(i), curContoursPoly, 3, true );
-		contoursPolys.push_back(curContoursPoly);
-		boundRects.push_back(boundingRect(Mat(curContoursPoly)));
-		croppedBoundRects.push_back(cropRect(boundRects.at(i), offset_x, offset_y, -offset_x, -offset_y));
-	}
-
-	/* Check Rect Height-Width Ratio */
-	for (int i = 0; i < boundRects.size(); i++) {
-		int height = boundRects.at(i).height;
-		int width = boundRects.at(i).width;
-		cout << "Rect " << i << "Ratio = " << (float)height / (float)width << endl;
-		cout << "Centre " << i << " (" << boundRects.at(i).x << "," << boundRects.at(i).y << ")" << endl;
-	}
-
-	for (int i = 0; i < croppedBoundRects.size(); i++) {
-		rectangle( img, croppedBoundRects.at(i), Scalar(255, 255, 255), -1, 8, 0 );
-	}
-
-	cvtColor(img, img, CV_GRAY2BGR);
-	Mat temp;
-	GaussianBlur(imgCopy, temp, Size(9, 9), 0);
-	bitwise_and(temp, img, img);
-
-	/* Convert one whole image to 9 small images */
-	for (int i = 0; i < croppedBoundRects.size(); i++) {
-		Mat curMnistImg;
-		img(croppedBoundRects.at(i)).copyTo(curMnistImg);
-		resize(curMnistImg, curMnistImg, Size(28, 28));
-		cvtColor(curMnistImg, curMnistImg, CV_BGR2GRAY);
-		Mat binary;
-		// threshold(curMnistImg, binary, 150, 255, THRESH_BINARY);
-		// addWeighted(binary, 1.0, curMnistImg, 1.0, 0.0, curMnistImg);
-		threshold(curMnistImg, curMnistImg, 120, 255, THRESH_TOZERO);
-		mnistImgs.push_back(curMnistImg);
-		mnistLabels.insert(pair<int, int> (i, recognize(curMnistImg)));
-		mnistCenters.insert(pair<int, Point> (mnistLabels.at(i), 
-			Point(croppedBoundRects.at(i).x + croppedBoundRects.at(i).width/2, croppedBoundRects.at(i).y + croppedBoundRects.at(i).height)));
-		cout << "Size " << i << ": " << curMnistImg.size() << boundRects.at(i).size()  << endl;
-	}
 }
 

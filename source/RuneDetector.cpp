@@ -28,6 +28,18 @@ IN THE SOFTWARE.
 using namespace cv;
 using namespace std;
 
+cv::Point2f MatDotPoint(cv::Mat M, const cv::Point2f& p)
+{ 
+    cv::Mat_<double> src(3/*rows*/,1 /* cols */); 
+
+    src(0,0)=p.x; 
+    src(1,0)=p.y; 
+    src(2,0)=1.0; 
+
+    cv::Mat_<double> dst = M*src; //USE MATRIX ALGEBRA 
+    return cv::Point2f(dst(0,0),dst(1,0)); 
+} 
+
 pair<int, int> RuneDetector::getTarget(const cv::Mat & image, RuneType rt){
 	cvtColor(image, src, CV_BGR2GRAY);
 	Mat binary;
@@ -305,6 +317,7 @@ pair <int, int> RuneDetector::chooseMnistTarget(const Mat & image, const vector<
 // get 9(cell) X 4(corner) corner, and 9 cell's center
 	vector<Point2fWithIdx> centers;
 	vector<Point2f> corner;
+	Point2f center_avg;
 	for (size_t i = 0; i < sudoku_rects.size(); i++)	{
 		const RotatedRect & rect = sudoku_rects[i];
 		Point2f vecs[4];
@@ -313,7 +326,10 @@ pair <int, int> RuneDetector::chooseMnistTarget(const Mat & image, const vector<
 			corner.push_back(vecs[j]);
 		}
 		centers.push_back(Point2fWithIdx(rect.center, i));
+		center_avg += rect.center;
 	}
+
+	center_avg = Point2f(center_avg.x/sudoku_rects.size(), center_avg.y/sudoku_rects.size());
 
 	// arange sudoku cell to following order
 	// 0  1  2
@@ -405,6 +421,24 @@ pair <int, int> RuneDetector::chooseMnistTarget(const Mat & image, const vector<
 	Mat perspective_mat = getPerspectiveTransform(src_p, dst_p);
 	Mat image_persp;
 	warpPerspective(image, image_persp, perspective_mat, Size(_width, _height));
+	imshow("image_persp", image_persp);
+
+	// dst_p.clear();
+	// dst_p.push_back(_lu+Point2f(0.0, 0.0));
+	// dst_p.push_back(_lu+Point2f(0.0, _height));
+	// dst_p.push_back(_lu+Point2f(_width, 0.0));
+	// dst_p.push_back(_lu+Point2f(_width, _height));
+	// perspective_mat = getPerspectiveTransform(src_p, dst_p);
+	// Point2f perspective_center = MatDotPoint(perspective_mat, center_avg) + Point2f(-_width/3, -_height * 0.85);
+	// Mat perspective_image;
+	// warpPerspective(image, perspective_image, perspective_mat, image.size());
+	// float digit_board_width = _width / (280.0*3) * 104.5 * 5;
+	// float digit_board_height = _height / (170.0*3) * 122.0;
+	// Mat digit_board = perspective_image(Rect2f(perspective_center, Size2f(digit_board_width, digit_board_height)));
+	// imshow("digit_board", digit_board);
+	// waitKey(0);
+
+
 
 	float x_offset = _width / 102.0 * 37.0;
 	float y_offset = _height / 60.0 * 22.0;
@@ -412,8 +446,7 @@ pair <int, int> RuneDetector::chooseMnistTarget(const Mat & image, const vector<
 	for (int i = 0; i < 3; i++){
 		for (int j = 0; j < 3; j++){
 			Rect2f r(x_offset * j, y_offset * i, _width / 102.0 * 28.0, _height / 60.0 * 16.0);
-			Mat temp;
-			temp = image_persp(r);
+			Mat temp = image_persp(r);
 			threshold(temp, temp, 120, 255, THRESH_BINARY);
 			resize(temp, temp, Size(28, 28));
 			cout << mnistRecognizer.recognize(temp) << endl;
@@ -524,7 +557,9 @@ pair<int, int> RuneDetector::chooseTargetPerspective(const Mat & image, const ve
 	dst_p.push_back(Point2f(_width, 0.0));
 	dst_p.push_back(Point2f(_width, _height));
 
+
 	Mat perspective_mat = getPerspectiveTransform(src_p, dst_p);
+
 	Mat image_persp;
 	warpPerspective(image, image_persp, perspective_mat, Size(_width, _height));
 	// calculate the average width and hieght of each cell
