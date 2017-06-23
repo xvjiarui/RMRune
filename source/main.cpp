@@ -8,26 +8,33 @@
 #include "MnistRecognizer.h"
 #include "DigitRecognizer.h"
 #include "RuneDetector.hpp"
-
-
-int H_L = 0;
-int S_L = 0;
-int V_L = 0;
-int H_H = 255;
-int S_H = 255;
-int V_H = 255;
-// void LowerBound(int, void* )
-// {
-//     Mat temp;
-//     inRange(show, Scalar(H_L, S_L, V_L) , Scalar(H_H, S_H, V_H), temp);  
-//     imshow("temp", temp);
-//     cout << "H:" << H_L << " " << H_H << endl;
-//     cout << "S:" << S_L << " " << S_H << endl;
-//     cout << "V:" << V_L << " " << V_H << endl;
-// }
+#include "RMVideoCapture.hpp"
 
 int main(int argc, char** argv )
 {
+    RMVideoCapture cap("/dev/video0", 3);
+    cap.setVideoFormat(1280, 720, 1);
+    int exp_t = 64;
+    cap.setExposureTime(0, exp_t);//settings->exposure_time);
+    cap.startStream();
+    cap.info();
+    while(1){
+        Mat src;
+        cap >> src;
+        imshow("src", src);
+        char key = waitKey(20);
+        if (key == 'w'){
+            exp_t += 1;
+            cap.setExposureTime(0, exp_t);//settings->exposure_time);
+            cout << "current exp t:\t" << exp_t << endl;
+        }
+        else if(key == 's'){
+            exp_t -= 1;
+            cap.setExposureTime(0, exp_t);
+            cout << "current exp t:\t" << exp_t << endl;
+        }
+    }
+
     Mat original_img;
     if (argc != 3)
     {
@@ -52,47 +59,6 @@ int main(int argc, char** argv )
         imshow(to_string(i), runeDetector.getSudokuImgs(i));
     }
     waitKey(0);
-    return 0;
-    if (strcmp(argv[1], "1") == 0)
-    {
-        // digitRecognizer.predict(original_img);
-        // for (int i = 0; i < digitRecognizer.digitLabels.size(); ++i)
-        // {
-        //     cout << digitRecognizer.digitLabels.at(i) << flush;
-        // }
-
-        // namedWindow("Lower_H", WINDOW_AUTOSIZE);
-        // namedWindow("Lower_S", WINDOW_AUTOSIZE);
-        // namedWindow("Lower_V", WINDOW_AUTOSIZE);
-        // namedWindow("Higher_H", WINDOW_AUTOSIZE);
-        // namedWindow("Higher_S", WINDOW_AUTOSIZE);
-        // namedWindow("Higher_V", WINDOW_AUTOSIZE);
-        // createTrackbar( "Lower_H", "Lower_H", &H_L, 255, LowerBound); 
-        // createTrackbar( "Lower_S", "Lower_S", &S_L, 255, LowerBound); 
-        // createTrackbar( "Lower_V", "Lower_V", &V_L, 255, LowerBound); 
-        // createTrackbar( "Higher_H", "Higher_H", &H_H, 255, LowerBound); 
-        // createTrackbar( "Higher_S", "Higher_S", &S_H, 255, LowerBound); 
-        // createTrackbar( "Higher_V", "Higher_V", &V_H, 255, LowerBound); 
-        // LowerBound(0, 0);
-    }
-    else
-    {
-
-    //     mnistRecognizer.predict(original_img);
-
-    //     for (int i = 0; i < mnistRecognizer.mnistImgs.size(); i++) {
-    //         if ( !mnistRecognizer.mnistImgs.at(i).data) {
-    //             printf("No single image data \n");
-    //             return -1;
-    //         }
-    //         namedWindow(to_string(i),  WINDOW_AUTOSIZE );
-    //         imshow(to_string(i), mnistRecognizer.mnistImgs.at(i));
-    //         cout << mnistRecognizer.getLabel(i) << endl;
-    //     }
-    } 
-
-    waitKey(0);
-
     return 0;
 }
 
