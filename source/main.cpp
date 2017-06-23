@@ -37,8 +37,6 @@ int main(int argc, char** argv )
         return -1;
     }
     original_img = imread(argv[2]);
-    MnistRecognizer mnistRecognizer("LeNet-model");
-    DigitRecognizer digitRecognizer;
     if ( !original_img.data )
     {
         printf("No orignal image data \n");
@@ -68,10 +66,10 @@ int main(int argc, char** argv )
     }
     float ratio = 0.5;
     RuneDetector runeDetector(127 * ratio, 71 * ratio,  true);
-    runeDetector.getTarget(original_img, RuneDetector::RUNE_B);
-    for (int i = 0; i < 9; i++){
-        imshow(to_string(i), runeDetector.getSudokuImgs(i));
-    }
+    runeDetector.getTarget(original_img, static_cast<RuneDetector::RuneType>(stoi(argv[1], nullptr)));
+    // for (int i = 0; i < 9; i++){
+    //     imshow(to_string(i), runeDetector.getSudokuImgs(i));
+    // }
     waitKey(0);
     return 0;
 }

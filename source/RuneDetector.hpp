@@ -17,6 +17,7 @@ IN THE SOFTWARE.
 
 #pragma once
 #include "opencv2/core/core.hpp"
+#include "opencv2/opencv.hpp"
 #include "opencv2/highgui/highgui.hpp"
 #include "MnistRecognizer.h"
 #include "DigitRecognizer.h"
@@ -37,7 +38,7 @@ public:
 	typedef enum {RUNE_S, RUNE_B} RuneType;
 
 public:
-    RuneDetector(int cell_width = 127, int cell_height = 71, bool perspective = false, Methed_Type m_type = RUNE_CANNY) : mnistRecognizer("LeNet-model"){
+    RuneDetector(int cell_width = 127, int cell_height = 71, bool perspective = false, Methed_Type m_type = RUNE_ORB) : mnistRecognizer("LeNet-model"){
 		sudoku_width = cell_width;
 		sudoku_height = cell_height;
         use_perspective = perspective;
@@ -54,18 +55,18 @@ public:
      * @return ret.first is the index of the vector of sudoku rectangle,
      *         ret.second is the index of the obsolute position of target cell
      */
-	std::pair<int, int> getTarget(const cv::Mat & image, RuneType rt);
+	std::pair<int, int> getTarget(const cv::Mat & image, RuneType runeType);
 
 protected:
 	std::pair<int, int> chooseTargetPerspective(const cv::Mat & image, const std::vector<cv::RotatedRect> & sudoku_rects);
     std::pair<int, int> chooseTarget(const cv::Mat & image, const std::vector<cv::RotatedRect> & sudoku_rects);
 	std::pair<int, int> chooseMnistTarget(const cv::Mat & image, const std::vector<cv::RotatedRect> & sudoku_rects);
 
-	// int findTargetORB(cv::Mat * cells);
+	int findTargetORB(cv::Mat * cells);
     int findTargetEdge(cv::Mat * cells);
     int findTargetCanny(cv::Mat * cells);
 
-	cv::RotatedRect adjustRRect(const cv::RotatedRect & rect);
+	cv::RotatedRect adjustRotatedRect(const cv::RotatedRect & rect);
 	bool checkSudoku(const std::vector<std::vector<cv::Point2i> > & contours,std::vector<cv::RotatedRect> & sudoku_rects);
 	cv::Mat transformSudokuPerspective(const cv::Mat & image, const std::vector<cv::RotatedRect> & sudoku_rects);
 
