@@ -18,11 +18,13 @@ int main(int argc, char** argv )
     cap.setExposureTime(0, exp_t);//settings->exposure_time);
     cap.startStream();
     cap.info();
+	MnistRecognizer mnistRecognizer("LeNet-model");
+	DigitRecognizer digitRecognizer;
     while(1){
-        Mat src;
-        cap >> src;
-        imshow("src", src);
+        Mat original_img;
+        cap >> original_img;
         char key = waitKey(20);
+		/*
         if (key == 'w'){
             exp_t += 1;
             cap.setExposureTime(0, exp_t);//settings->exposure_time);
@@ -33,6 +35,19 @@ int main(int argc, char** argv )
             cap.setExposureTime(0, exp_t);
             cout << "current exp t:\t" << exp_t << endl;
         }
+		*/
+		//resize(original_img, original_img, Size(480, 640));
+		namedWindow("Original Image", WINDOW_AUTOSIZE );
+		imshow("Original Image", original_img);
+		float ratio = 1;
+		RuneDetector runeDetector(127 * ratio, 71 * ratio,  true);
+		try {
+		runeDetector.getTarget(original_img, RuneDetector::RUNE_B);
+		}
+		catch (cv::Exception)
+		{
+			continue;
+		}
     }
 
     Mat original_img;
@@ -42,8 +57,6 @@ int main(int argc, char** argv )
         return -1;
     }
     original_img = imread(argv[2]);
-    MnistRecognizer mnistRecognizer("LeNet-model");
-    DigitRecognizer digitRecognizer;
     if ( !original_img.data )
     {
         printf("No orignal image data \n");

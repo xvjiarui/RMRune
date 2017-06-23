@@ -24,8 +24,8 @@ IN THE SOFTWARE.
 #include <sys/ioctl.h>
 #include <sys/mman.h>
 
-#include "opencv2/highgui.hpp"
-#include "opencv2/imgproc.hpp"
+#include "opencv2/highgui/highgui.hpp"
+#include "opencv2/imgproc/imgproc.hpp"
 #include <iostream>
 
 RMVideoCapture::RMVideoCapture(const char * device, int size_buffer) : video_path(device) {

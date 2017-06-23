@@ -16,7 +16,7 @@ IN THE SOFTWARE.
 *******************************************************************************************************************/
 
 #pragma once
-#include "opencv2/core.hpp"
+#include "opencv2/core/core.hpp"
 
 class RMVideoCapture {
 public:
