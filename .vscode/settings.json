@@ -1,6 +1,7 @@
 {
     "files.associations": {
         "array": "cpp",
-        "tuple": "cpp"
+        "tuple": "cpp",
+        "*.ipp": "cpp"
     }
 }
