@@ -454,6 +454,7 @@ pair <int, int> RuneDetector::chooseMnistTarget(const Mat & inputImg, const vect
 	warpPerspective(image, image_persp, perspective_mat, Size(_width, _height));
 	imshow("image_persp", image_persp);
 
+	
 	dst_p.clear();
 	dst_p.push_back(_lu + Point2f(0.0, 0.0));
 	dst_p.push_back(_lu + Point2f(0.0, _height));
@@ -466,20 +467,53 @@ pair <int, int> RuneDetector::chooseMnistTarget(const Mat & inputImg, const vect
 	warpPerspective(perspective_image, perspective_image, perspective_mat, inputImg.size());
 	Rect2f boardRect = Rect2f(perspective_center, Size2f(_width, _height));
 	digitRecognizer.predict(perspective_image, boardRect);
+	
 
+	// calculate the average width and hieght of each cell
+	const double * pdata = (double *)perspective_mat.data;
+	float height_avg = 0.0, width_avg = 0.0;
+	for (size_t i = 0; i < sudoku_rects.size(); ++i) {
+		vector<Point2f> vec_p;
+		for (size_t j = 0; j < 4; j++) {
+			const Point2f & p = corner[i * 4 + j];
+			float x = pdata[0] * p.x + pdata[1] * p.y + pdata[2];
+			float y = pdata[3] * p.x + pdata[4] * p.y + pdata[5];
+			float s = pdata[6] * p.x + pdata[7] * p.y + pdata[8];
+			vec_p.push_back(Point2f(x / s, y / s));
+		}
+		Rect2f r = boundingRect(vec_p);
+		height_avg += r.height;
+		width_avg += r.width;
+	}
+	height_avg /= 9.0;
+	width_avg /= 9.0;
 
-	float x_offset = _width / 102.0 * 37.0;
-	float y_offset = _height / 60.0 * 22.0;
+    if(height_avg > _height / 3)
+        height_avg = 0.25 * _height;
+    if(width_avg > _width / 3)
+        width_avg = 0.25 * _width;
+
+	// get image of every cell, then compute ORB feature and match feature;
+	int cell_width = 0.98 * width_avg;
+	int cell_height = height_avg;
+	int half_w_gap = (width_avg - cell_width) / 2, half_h_gap = (height_avg - cell_height) / 2;
+	half_w_gap = 0; half_h_gap = 0;
+	int offset_x = 0;
+	int offset_y = 0;
+	int width_start[] = { half_w_gap, int((_width - cell_width) / 2), int(_width - cell_width - half_w_gap) };
+    int height_start[] = { half_h_gap, int((_height - cell_height) / 2), int(_height - cell_height - half_h_gap) };
+
+	Mat temp;
 	vector<vector<pair<double, int> > > results;
 
-	for (int i = 0; i < 3; i++) {
-		for (int j = 0; j < 3; j++) {
-			Rect2f r(x_offset * j, y_offset * i, _width / 102.0 * 28.0, _height / 60.0 * 16.0);
-			Mat temp = image_persp(r);
+	for (size_t i = 0; i < 3; i++){
+		for (size_t j = 0; j < 3; j++){
+			size_t idx = i * 3 + j;
+            Rect cell_roi(width_start[j]+offset_x, height_start[i]+offset_y, cell_width, cell_height);
+			image_persp(cell_roi).copyTo(temp);
 			threshold(temp, temp, 120, 255, THRESH_BINARY);
 			resize(temp, temp, Size(28, 28));
 			results.push_back(mnistRecognizer.recognize_primary(temp));
-			sudoku_imgs.push_back(temp);
 		}
 	}
 
@@ -522,11 +556,12 @@ pair <int, int> RuneDetector::chooseMnistTarget(const Mat & inputImg, const vect
 	}
 
 	cout << "Results:" << endl;
-	for (int i = 0; i < FinalResults.size(); i++) {
-		cout << (*(FinalResults.at(i))).second << endl;
+	for (int i = 0; i < FinalResults.size(); i++){
+		cout << (*(FinalResults.at(i))).second << ' ';
 	}
-
-	return make_pair(0, 0);
+	cout << endl;
+	
+	return make_pair(0,0);
 }
 
 pair<int, int> RuneDetector::chooseTargetPerspective(const Mat & image, const vector<RotatedRect> & sudoku_rects) {

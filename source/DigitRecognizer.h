@@ -12,7 +12,7 @@ class DigitRecognizer
 {
 public:
 	DigitRecognizer();
-	void predict(const Mat& original_img, Rect sudoku_panel);
+	void predict(const Mat& original_img, Rect2f sudoku_panel);
 	~DigitRecognizer();	
 	vector<Mat> digitImgs;
 	vector<int> digitLabels;

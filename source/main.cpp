@@ -8,6 +8,10 @@
 #include "MnistRecognizer.h"
 #include "DigitRecognizer.h"
 #include "RuneDetector.hpp"
+#define USING_TEST_VIDEO
+#ifndef USING_TEST_VIDEO
+    #include "RMVideoCapture.hpp"
+#endif
 
 // For Debug and Test 
 int H_L = 0;
@@ -30,12 +34,61 @@ void boundFilter(int, void* )
 
 int main(int argc, char** argv )
 {
-    Mat original_img;
     if (argc != 3)
     {
         cout << "Please specify the image and recognizer module!" << endl;
         return -1;
     }
+    #ifndef USING_TEST_VIDEO
+        RMVideoCapture cap("/dev/video0", 3);
+        cap.setVideoFormat(1280, 720, 1);
+        int exp_t = 64;
+        cap.setExposureTime(0, exp_t);//settings->exposure_time);
+        cap.startStream();
+        cap.info();
+    #else
+        cout << "USING_TEST_VIDEO" <<endl;
+        VideoCapture cap(argv[2]);
+    #endif
+    if (!cap.isOpened())
+    {
+        cout << "Could not open video!" << endl;
+        return -1;
+    }
+    cout << "Opened" <<endl;
+	MnistRecognizer mnistRecognizer("LeNet-model");
+	DigitRecognizer digitRecognizer;
+    while(1){
+        Mat original_img;
+        cap >> original_img;
+        char key = waitKey(20);
+		
+        #ifndef USING_TEST_VIDEO
+            if (key == 'w'){
+                exp_t += 1;
+                cap.setExposureTime(0, exp_t);//settings->exposure_time);
+                cout << "current exp t:\t" << exp_t << endl;
+            }
+            else if(key == 's'){
+                exp_t -= 1;
+                cap.setExposureTime(0, exp_t);
+                cout << "current exp t:\t" << exp_t << endl;
+            }
+        #endif
+		namedWindow("Original Image", WINDOW_AUTOSIZE );
+		imshow("Original Image", original_img);
+		float ratio = 1;
+		RuneDetector runeDetector(127 * ratio, 71 * ratio,  true);
+		try {
+		runeDetector.getTarget(original_img, RuneDetector::RUNE_B);
+		}
+		catch (cv::Exception)
+		{
+			continue;
+		}
+    }
+
+    Mat original_img;
     original_img = imread(argv[2]);
     if ( !original_img.data )
     {
@@ -66,10 +119,10 @@ int main(int argc, char** argv )
     }
     float ratio = 0.5;
     RuneDetector runeDetector(127 * ratio, 71 * ratio,  true);
-    runeDetector.getTarget(original_img, static_cast<RuneDetector::RuneType>(stoi(argv[1], nullptr)));
-    // for (int i = 0; i < 9; i++){
-    //     imshow(to_string(i), runeDetector.getSudokuImgs(i));
-    // }
+    runeDetector.getTarget(original_img, RuneDetector::RUNE_B);
+    for (int i = 0; i < 9; i++){
+        imshow(to_string(i), runeDetector.getSudokuImgs(i));
+    }
     waitKey(0);
     return 0;
 }

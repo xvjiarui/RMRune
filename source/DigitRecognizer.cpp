@@ -10,7 +10,7 @@ DigitRecognizer::DigitRecognizer()
 
 	rng = RNG(12345);
 
-    lowerBound = Scalar(0, 0, 176);
+    lowerBound = Scalar(0, 0, 180);
     upperBound = Scalar(255, 255, 255);
 
     segmentTable = {
@@ -38,14 +38,14 @@ DigitRecognizer::DigitRecognizer()
 
 }
 
-void DigitRecognizer::predict(const Mat& inputImg, Rect sudokuPanel)
+void DigitRecognizer::predict(const Mat& inputImg, Rect2f sudokuPanel)
 {
 	clear();
 
 	Rect2f digitBoardRect = sudokuPanel;
-	digitBoardRect.width = sudokuPanel.width / (280.0*3)*90*5;
-	digitBoardRect.height = sudokuPanel.height / (170.0*3)*122.0;
-	digitBoardRect -= Point2f(sudokuPanel.width / 4, sudokuPanel.height * 0.85);
+	digitBoardRect.width = sudokuPanel.width / (283.0*3)*90*5;
+	digitBoardRect.height = sudokuPanel.height / (173.0*3)*122.0;
+	digitBoardRect -= Point2f(sudokuPanel.width / 4, sudokuPanel.height * 0.8);
 	Mat img = inputImg(digitBoardRect);
 	Mat temp;
 	inputImg.copyTo(temp);
@@ -67,16 +67,20 @@ void DigitRecognizer::predict(const Mat& inputImg, Rect sudokuPanel)
 	vector<Rect> digitBoundRects;
 	int digitAvgWidth = 0;
 	int digitAvgCount = 0;
+	float lowerThreshold = 0.6;
+	float upperThreshold = 1.4;
 	for ( int i = 0; i < digitContours.size(); i++ ) 
 	{
 		vector<Point> curDigitContoursPoly;
 		approxPolyDP( digitContours.at(i), curDigitContoursPoly, 3, true );
 		digitContoursPolys.push_back(curDigitContoursPoly);
-		digitBoundRects.push_back(boundingRect(Mat(curDigitContoursPoly)));
-		if (!(digitBoundRects.at(i).width < digitBoardRect.width*0.1))
+		Rect curBoundingRect = boundingRect(Mat(curDigitContoursPoly));
+		float ratio = (float) curBoundingRect.width / (float) curBoundingRect.height;	
+		if (ratio < 0.5 * upperThreshold && ratio > 0.5 *lowerThreshold)
 		{
-			digitAvgWidth += digitBoundRects.at(i).width;
 			digitAvgCount++;
+			digitAvgWidth += curBoundingRect.width;
+			digitBoundRects.push_back(curBoundingRect);
 		}
 	}
 
@@ -86,14 +90,14 @@ void DigitRecognizer::predict(const Mat& inputImg, Rect sudokuPanel)
 	}
 	else return;
 
-	for (int i = 0; i < digitBoundRects.size(); ++i)
-	{
-		if (digitBoundRects.at(i).width < digitBoardRect.width * 0.1)
-		{
-			digitBoundRects.at(i).width = digitAvgWidth;
-			digitBoundRects.at(i) -= Point(digitAvgWidth* 0.7, 0);
-		}
-	}
+	// for (int i = 0; i < digitBoundRects.size(); ++i)
+	// {
+	// 	if (digitBoundRects.at(i).width < digitBoardRect.width * 0.1)
+	// 	{
+	// 		digitBoundRects.at(i).width = digitAvgWidth;
+	// 		digitBoundRects.at(i) -= Point(digitAvgWidth* 0.7, 0);
+	// 	}
+	// }
 
 	sort(digitBoundRects.begin(), digitBoundRects.end(), [] (Rect a, Rect b) { return a.x < b.x; });
 	for (int i = 0; i < digitBoundRects.size(); ++i)
@@ -102,11 +106,13 @@ void DigitRecognizer::predict(const Mat& inputImg, Rect sudokuPanel)
 		resize(curImg, curImg, Size(40, 60));
 		digitImgs.push_back(curImg);
 	}
+	cout << "Digit: " << digitImgs.size() << endl;
 	for (int i = 0; i < digitImgs.size(); ++i)
 	{
 		digitLabels.push_back(recognize(digitImgs.at(i)));
-		cout << digitLabels.at(i) << endl;
+		cout << digitLabels.at(i);
 	}
+	cout << endl;
 	for (int i = 0; i < digitBoundRects.size(); i++) {
 		rectangle( img, digitBoundRects.at(i), Scalar(255, 255, 255));
 	}
