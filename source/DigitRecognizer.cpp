@@ -57,19 +57,12 @@ void DigitRecognizer::predict(const Mat& inputImg, const Rect2f & sudokuPanel)
 	vector<vector<Point> > digitContours;
 	vector<Vec4i> digitHierarchy;
 	findContours( grayImg, digitContours, digitHierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE, Point(0, 0) );
-	Mat drawing = Mat::zeros( grayImg.size(), CV_8UC3 );
-	  for( int i = 0; i< digitContours.size(); i++ )
-		       {
-				          Scalar color = Scalar( rng.uniform(0, 255), rng.uniform(0,255), rng.uniform(0,255) );
-						         drawContours( drawing, digitContours, i, color, 2, 8, digitHierarchy, 0, Point() );
-								      }
-	  imshow("Contours", drawing);
 
 	vector<vector<Point> > digitContoursPolys;
 	vector<Rect2f> digitBoundRects;
 	int digitAvgWidth = 0;
 	int digitAvgCount = 0;
-	float lowerThreshold = 1.2;
+	float lowerThreshold = 1;
 	float upperThreshold = 1.6;
 	for ( int i = 0; i < digitContours.size(); i++ ) 
 	{
@@ -88,22 +81,28 @@ void DigitRecognizer::predict(const Mat& inputImg, const Rect2f & sudokuPanel)
 	{
 		return;
 	}
+	Mat digitBoardImg = img;
+	// for (int i = 0; i < digitBoundRects.size(); i++) {
+	// 	rectangle( digitBoardImg, digitBoundRects.at(i), Scalar(255, 255, 255));
+	// }
+	// imshow("digitBoardRect", digitBoardImg);
+	// waitKey(0);
 	sort(digitBoundRects.begin(), digitBoundRects.end(), [] (Rect a, Rect b) { return a.x < b.x; });
-	digitBoardRect = Rect2f(digitBoundRects.at(0).tl(), digitBoundRects.at(digitBoundRects.size()-1).br());
-	int widthGap = (digitBoardRect.width - digitAvgWidth)/4;
-	digitAvgWidth /= digitBoundRects.size();
-	digitBoundRects.clear();
-	for (int i = 0; i < 5; ++i)
-	{
-		Rect2f curRect = Rect2f(0, 0, digitAvgWidth, digitBoardRect.height);
-		curRect = curRect + Point2f(i * (digitAvgWidth + widthGap), 0);
-		digitBoundRects.push_back(curRect);
-	}
-	Mat digitBoardImg = img(digitBoardRect);
-	for (int i = 0; i < digitBoundRects.size(); i++) {
-		rectangle( digitBoardImg, digitBoundRects.at(i), Scalar(255, 255, 255));
-	}
-	imshow("digitBoardRect", digitBoardImg);
+	// digitBoardRect = Rect2f(digitBoundRects.at(0).tl(), digitBoundRects.at(digitBoundRects.size()-1).br());
+	// int widthGap = (digitBoardRect.width - digitAvgWidth)/4;
+	// digitAvgWidth /= digitBoundRects.size();
+	// digitBoundRects.clear();
+	// for (int i = 0; i < 5; ++i)
+	// {
+	// 	Rect2f curRect = Rect2f(0, 0, digitAvgWidth, digitBoardRect.height);
+	// 	curRect = curRect + Point2f(i * (digitAvgWidth + widthGap), 0);
+	// 	digitBoundRects.push_back(curRect);
+	// }
+	// Mat digitBoardImg = img(digitBoardRect);
+	// for (int i = 0; i < digitBoundRects.size(); i++) {
+	// 	rectangle( digitBoardImg, digitBoundRects.at(i), Scalar(255, 255, 255));
+	// }
+	// imshow("digitBoardRect", digitBoardImg);
 
     Mat hsvFrame;
     cvtColor(digitBoardImg, hsvFrame, CV_BGR2HSV);
@@ -149,7 +148,7 @@ int DigitRecognizer::recognize(const Mat& img)
 	}
 	try
 	{
-		ret = segmentTable[ret];
+		ret = segmentTable.at(ret);
 	}
 	catch (out_of_range e)
 	{
