@@ -10,7 +10,7 @@ DigitRecognizer::DigitRecognizer()
 
 	rng = RNG(12345);
 
-    lowerBound = Scalar(0, 0, 180);
+    lowerBound = Scalar(0, 0, 200);
     upperBound = Scalar(255, 255, 255);
 
     segmentTable = {
@@ -38,37 +38,32 @@ DigitRecognizer::DigitRecognizer()
 
 }
 
-void DigitRecognizer::predict(const Mat& inputImg, Rect2f sudokuPanel)
+void DigitRecognizer::predict(const Mat& inputImg, const Rect2f & sudokuPanel)
 {
 	clear();
 
 	Rect2f digitBoardRect = sudokuPanel;
-	digitBoardRect.width = sudokuPanel.width / (283.0*3)*90*5;
-	digitBoardRect.height = sudokuPanel.height / (173.0*3)*122.0;
-	digitBoardRect -= Point2f(sudokuPanel.width / 4, sudokuPanel.height * 0.8);
+	digitBoardRect.width = sudokuPanel.width / (280.0*3)*90*5;
+	digitBoardRect.height = sudokuPanel.height / (160.0*3)*122.0;
+	digitBoardRect -= Point2f(sudokuPanel.width * 0.22, sudokuPanel.height * 0.8);
 	Mat img = inputImg(digitBoardRect);
-	Mat temp;
-	inputImg.copyTo(temp);
-	rectangle(temp, digitBoardRect, Scalar(255, 255, 255));
-	imshow("inputImg", inputImg);
-	imshow("digit_board", img);
+	Mat grayImg;
+	cvtColor(img, grayImg, CV_BGR2GRAY);
+	GaussianBlur(grayImg, grayImg, Size(9, 9), 0);
+	Canny(grayImg, grayImg, 120, 120*2, 3);
+	imshow("Canny", grayImg);
 
-    Mat hsvFrame;
-    cvtColor(img, hsvFrame, CV_BGR2HSV);
-    inRange(hsvFrame, lowerBound, upperBound, hsvFrame);
-    hsvFrame.copyTo(img);
-    imshow("hsvFrame", hsvFrame);
 
 	vector<vector<Point> > digitContours;
 	vector<Vec4i> digitHierarchy;
-	findContours( hsvFrame, digitContours, digitHierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE, Point(0, 0) );
+	findContours( grayImg, digitContours, digitHierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE, Point(0, 0) );
 
 	vector<vector<Point> > digitContoursPolys;
-	vector<Rect> digitBoundRects;
+	vector<Rect2f> digitBoundRects;
 	int digitAvgWidth = 0;
 	int digitAvgCount = 0;
-	float lowerThreshold = 0.6;
-	float upperThreshold = 1.4;
+	float lowerThreshold = 1.2;
+	float upperThreshold = 1.6;
 	for ( int i = 0; i < digitContours.size(); i++ ) 
 	{
 		vector<Point> curDigitContoursPoly;
@@ -76,33 +71,43 @@ void DigitRecognizer::predict(const Mat& inputImg, Rect2f sudokuPanel)
 		digitContoursPolys.push_back(curDigitContoursPoly);
 		Rect curBoundingRect = boundingRect(Mat(curDigitContoursPoly));
 		float ratio = (float) curBoundingRect.width / (float) curBoundingRect.height;	
+		cout << ratio << endl;
 		if (ratio < 0.5 * upperThreshold && ratio > 0.5 *lowerThreshold)
 		{
-			digitAvgCount++;
 			digitAvgWidth += curBoundingRect.width;
 			digitBoundRects.push_back(curBoundingRect);
 		}
 	}
-
-	if (digitAvgCount)
+	if (digitBoundRects.size() != 5)
 	{
-		digitAvgWidth /= digitAvgCount;
+		return;
 	}
-	else return;
-
-	// for (int i = 0; i < digitBoundRects.size(); ++i)
-	// {
-	// 	if (digitBoundRects.at(i).width < digitBoardRect.width * 0.1)
-	// 	{
-	// 		digitBoundRects.at(i).width = digitAvgWidth;
-	// 		digitBoundRects.at(i) -= Point(digitAvgWidth* 0.7, 0);
-	// 	}
-	// }
-
 	sort(digitBoundRects.begin(), digitBoundRects.end(), [] (Rect a, Rect b) { return a.x < b.x; });
+	digitBoardRect = Rect2f(digitBoundRects.at(0).tl(), digitBoundRects.at(digitBoundRects.size()-1).br());
+	int widthGap = (digitBoardRect.width - digitAvgWidth)/4;
+	digitAvgWidth /= digitBoundRects.size();
+	digitBoundRects.clear();
+	for (int i = 0; i < 5; ++i)
+	{
+		Rect2f curRect = Rect2f(0, 0, digitAvgWidth, digitBoardRect.height);
+		curRect = curRect + Point2f(i * (digitAvgWidth + widthGap), 0);
+		digitBoundRects.push_back(curRect);
+	}
+	Mat digitBoardImg = img(digitBoardRect);
+	for (int i = 0; i < digitBoundRects.size(); i++) {
+		rectangle( digitBoardImg, digitBoundRects.at(i), Scalar(255, 255, 255));
+	}
+	imshow("digitBoardRect", digitBoardImg);
+
+    Mat hsvFrame;
+    cvtColor(digitBoardImg, hsvFrame, CV_BGR2HSV);
+    inRange(hsvFrame, lowerBound, upperBound, hsvFrame);
+    hsvFrame.copyTo(digitBoardImg);
+    imshow("hsvFrame", hsvFrame);
+
 	for (int i = 0; i < digitBoundRects.size(); ++i)
 	{
-		Mat curImg = img(digitBoundRects.at(i));
+		Mat curImg = digitBoardImg(digitBoundRects.at(i));
 		resize(curImg, curImg, Size(40, 60));
 		digitImgs.push_back(curImg);
 	}
@@ -113,17 +118,7 @@ void DigitRecognizer::predict(const Mat& inputImg, Rect2f sudokuPanel)
 		cout << digitLabels.at(i);
 	}
 	cout << endl;
-	for (int i = 0; i < digitBoundRects.size(); i++) {
-		rectangle( img, digitBoundRects.at(i), Scalar(255, 255, 255));
-	}
-	imshow("img", img);
-	// for (int i = 0; i < digitBoundRects.size(); ++i)
-	// {
-	// 	Mat curImg = img(digitSingleRect);
-	// 	resize(curImg, curImg, Size(40, 60));
-	// 	digitImgs.push_back(curImg);
-	// 	digitSingleRect.x += digitSingleRect.width;
-	// }
+	
 }
 
 DigitRecognizer::~DigitRecognizer()

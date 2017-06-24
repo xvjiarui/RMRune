@@ -463,8 +463,7 @@ pair <int, int> RuneDetector::chooseMnistTarget(const Mat & inputImg, const vect
 	perspective_mat = getPerspectiveTransform(src_p, dst_p);
 	Point2f perspective_center = MatDotPoint(perspective_mat, center_avg);
 	Mat perspective_image;
-	GaussianBlur(inputImg, perspective_image, Size(9, 9) , 0);
-	warpPerspective(perspective_image, perspective_image, perspective_mat, inputImg.size());
+	warpPerspective(inputImg, perspective_image, perspective_mat, inputImg.size());
 	Rect2f boardRect = Rect2f(perspective_center, Size2f(_width, _height));
 	digitRecognizer.predict(perspective_image, boardRect);
 	
