@@ -57,6 +57,13 @@ void DigitRecognizer::predict(const Mat& inputImg, const Rect2f & sudokuPanel)
 	vector<vector<Point> > digitContours;
 	vector<Vec4i> digitHierarchy;
 	findContours( grayImg, digitContours, digitHierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE, Point(0, 0) );
+	Mat drawing = Mat::zeros( grayImg.size(), CV_8UC3 );
+	  for( int i = 0; i< digitContours.size(); i++ )
+		       {
+				          Scalar color = Scalar( rng.uniform(0, 255), rng.uniform(0,255), rng.uniform(0,255) );
+						         drawContours( drawing, digitContours, i, color, 2, 8, digitHierarchy, 0, Point() );
+								      }
+	  imshow("Contours", drawing);
 
 	vector<vector<Point> > digitContoursPolys;
 	vector<Rect2f> digitBoundRects;

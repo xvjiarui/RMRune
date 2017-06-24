@@ -1,13 +1,22 @@
 <?xml version="1.0"?>
 <opencv_storage>
-<!--
-Rune-related settings
--->
 <CellRatio>1.</CellRatio>
 <CellWidth>127</CellWidth>
 <CellHeight>71</CellHeight>
-<!--
-Camera-related settings
--->
-<ExposureTime>30</ExposureTime>
+<ExposureTime>64</ExposureTime>
+<CameraMatrix type_id="opencv-matrix">
+  <rows>3</rows>
+  <cols>3</cols>
+  <dt>d</dt>
+  <data>
+    1.3715002501873005e+03 0. 7.1479024229520655e+02 0.
+    1.3786365009516044e+03 4.1543237527217627e+02 0. 0. 1.</data></CameraMatrix>
+<DistortionMatrix type_id="opencv-matrix">
+  <rows>1</rows>
+  <cols>5</cols>
+  <dt>d</dt>
+  <data>
+    -5.0921721554883126e-01 7.2276025099216512e-01
+    5.5787433068027912e-03 -3.7665870727476014e-03
+    -1.3105697867404533e+00</data></DistortionMatrix>
 </opencv_storage>

@@ -22,6 +22,8 @@ void Settings::load() {
     fin["CellRatio"] >> Settings::runesetting.CellRatio;
     fin["CellWidth"] >> Settings::runesetting.CellWidth;
     fin["CellHeight"] >> Settings::runesetting.CellHeight;
+	fin["CameraMatrix"] >> Settings::camerasetting.CameraMatrix;
+	fin["DistortionMatrix"] >> Settings::camerasetting.DistortionMatrix;
     fin.release();
 }
 
@@ -33,4 +35,6 @@ void Settings::save() {
     fout << "CellHeight" << Settings::runesetting.CellHeight;
     // fout.writeComment(string("Camera-related settings\n"));
     fout << "ExposureTime" << Settings::camerasetting.ExposureTime;
+	fout << "CameraMatrix" << Settings::camerasetting.CameraMatrix;
+	fout << "DistortionMatrix" << Settings::camerasetting.DistortionMatrix;
 }

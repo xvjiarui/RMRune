@@ -18,6 +18,8 @@ class Settings {
 
         struct CameraSetting {
             int ExposureTime;
+			cv::Mat CameraMatrix;
+			cv::Mat DistortionMatrix;
         } camerasetting;
     private:
         std::string filename;
