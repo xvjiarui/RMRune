@@ -83,11 +83,10 @@ vector<pair<double, int> > MnistRecognizer::recognize_primary(const Mat& img)
 	}
 
 	sort(scores.begin(), scores.end(), greater<pair<double, int>>());
-	cout << endl << endl;
-/*
+	/*
 	for (int i = 0; i < scores.size(); i++)
 		cout << "Score: " << scores.at(i).first << "     Predicted Label: " << scores.at(i).second << endl;
-*/
+		*/
 	return scores;
 }
 

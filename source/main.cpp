@@ -9,22 +9,74 @@
 #include "DigitRecognizer.h"
 #include "RuneDetector.hpp"
 #include "RMVideoCapture.hpp"
+#include "Settings.hpp"
+
+#define CAMERA_MODE
+//#define VIDEO_MODE
+//#define IMAGE_MODE
+
+//#define RESET_SETTINGS
 
 int main(int argc, char** argv )
 {
+    Settings settings("./Settings/Settings.xml");
+
+    #ifdef RESET_SETTINGS
+    settings.runesetting.CellWidth = 127;
+    settings.runesetting.CellHeight = 71;
+    settings.runesetting.CellRatio = 1;
+    settings.camerasetting.ExposureTime = 64;
+    settings.save();
+    return 0;
+    #endif
+
+    settings.load();
+    MnistRecognizer mnistRecognizer("LeNet-model");
+	DigitRecognizer digitRecognizer;
+    Mat original_img;
+    RuneDetector runeDetector(settings.runesetting.CellWidth * settings.runesetting.CellRatio, 
+                              settings.runesetting.CellHeight * settings.runesetting.CellRatio,  true);
+
+    #ifdef IMAGE_MODE
+
+    if (argc != 2)
+    {
+        cout << "Please specify the path!" << endl;
+        return -1;
+    }
+    original_img = imread(argv[1]);
+    resize(original_img, original_img, Size(480, 640));
+    namedWindow("Original Image", WINDOW_AUTOSIZE );
+    imshow("Original Image", original_img);
+    runeDetector.getTarget(original_img, RuneDetector::RUNE_B);
+    waitKey(0);
+
+    #elif defined(VIDEO_MODE)
+
+    if (argc != 2)
+    {
+        cout << "Please specify the path!" << endl;
+        return -1;
+    }
+    VideoCapture cap(argv[1]);
+    
+    #else
+    
     RMVideoCapture cap("/dev/video0", 3);
     cap.setVideoFormat(1280, 720, 1);
-    int exp_t = 64;
-    cap.setExposureTime(0, exp_t);//settings->exposure_time);
+    cap.setExposureTime(0, settings.camerasetting.ExposureTime);//settings->exposure_time);
     cap.startStream();
     cap.info();
-	MnistRecognizer mnistRecognizer("LeNet-model");
-	DigitRecognizer digitRecognizer;
-    while(1){
-        Mat original_img;
+
+    #endif
+
+    #ifndef IMAGE_MODE
+
+    while(1)
+    {
         cap >> original_img;
         char key = waitKey(20);
-		/*
+        /*
         if (key == 'w'){
             exp_t += 1;
             cap.setExposureTime(0, exp_t);//settings->exposure_time);
@@ -35,43 +87,20 @@ int main(int argc, char** argv )
             cap.setExposureTime(0, exp_t);
             cout << "current exp t:\t" << exp_t << endl;
         }
-		*/
-		//resize(original_img, original_img, Size(480, 640));
-		namedWindow("Original Image", WINDOW_AUTOSIZE );
-		imshow("Original Image", original_img);
-		float ratio = 1;
-		RuneDetector runeDetector(127 * ratio, 71 * ratio,  true);
-		try {
-		runeDetector.getTarget(original_img, RuneDetector::RUNE_B);
-		}
-		catch (cv::Exception)
-		{
-			continue;
-		}
+        */
+        namedWindow("Original Image", WINDOW_AUTOSIZE );
+        imshow("Original Image", original_img);
+        try {
+            runeDetector.getTarget(original_img, RuneDetector::RUNE_B);
+        }
+        catch (cv::Exception)
+        {
+            continue;
+        }
+        cout << endl;
     }
 
-    Mat original_img;
-    if (argc != 3)
-    {
-        cout << "Please specify the image and recognizer module!" << endl;
-        return -1;
-    }
-    original_img = imread(argv[2]);
-    if ( !original_img.data )
-    {
-        printf("No orignal image data \n");
-        return -1;
-    }
-    resize(original_img, original_img, Size(480, 640));
-    namedWindow("Original Image", WINDOW_AUTOSIZE );
-    imshow("Original Image", original_img);
-    float ratio = 0.5;
-    RuneDetector runeDetector(127 * ratio, 71 * ratio,  true);
-    runeDetector.getTarget(original_img, RuneDetector::RUNE_B);
-    for (int i = 0; i < 9; i++){
-        imshow(to_string(i), runeDetector.getSudokuImgs(i));
-    }
-    waitKey(0);
+    #endif
+
     return 0;
 }
-

@@ -2,6 +2,7 @@
     "files.associations": {
         "array": "cpp",
         "tuple": "cpp",
-        "*.ipp": "cpp"
+        "*.ipp": "cpp",
+        "iostream": "cpp"
     }
 }

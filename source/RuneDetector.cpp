@@ -181,7 +181,7 @@ bool RuneDetector::checkSudoku(const vector<vector<Point2i>> & contours, vector<
 		#endif
 		
     }
-    cout << "sudoku n: " << sudoku_rects.size()  << endl;
+    cout << "sudoku n: " << sudoku_rects.size()  << ' ';
 	return sudoku_rects.size() == 9;
 }
 
@@ -553,11 +553,11 @@ pair <int, int> RuneDetector::chooseMnistTarget(const Mat & image, const vector<
 		}
 	}
 
-	cout << "Results:" << endl;
+	cout << "(";
 	for (int i = 0; i < FinalResults.size(); i++){
 		cout << (*(FinalResults.at(i))).second << ' ';
 	}
-	cout << endl;
+	cout << ")" << endl;
 	
 	return make_pair(0,0);
 }

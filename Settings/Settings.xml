@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<opencv_storage>
+<!--
+Rune-related settings
+-->
+<CellRatio>1.</CellRatio>
+<CellWidth>127</CellWidth>
+<CellHeight>71</CellHeight>
+<!--
+Camera-related settings
+-->
+<ExposureTime>64</ExposureTime>
+</opencv_storage>
