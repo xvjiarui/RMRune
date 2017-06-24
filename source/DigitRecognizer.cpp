@@ -71,7 +71,6 @@ void DigitRecognizer::predict(const Mat& inputImg, const Rect2f & sudokuPanel)
 		digitContoursPolys.push_back(curDigitContoursPoly);
 		Rect curBoundingRect = boundingRect(Mat(curDigitContoursPoly));
 		float ratio = (float) curBoundingRect.width / (float) curBoundingRect.height;	
-		cout << ratio << endl;
 		if (ratio < 0.5 * upperThreshold && ratio > 0.5 *lowerThreshold)
 		{
 			digitAvgWidth += curBoundingRect.width;

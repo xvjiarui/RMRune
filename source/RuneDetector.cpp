@@ -183,9 +183,9 @@ bool RuneDetector::checkSudoku(const vector<vector<Point2i>> & contours, vector<
 		std::for_each(sudoku_rects.begin(), sudoku_rects.end(), [&](const RotatedRect & a) { cout << a.size; if (max_width < a.size.width) max_width = a.size.width; if (max_height < a.size.height) max_height = a.size.height; });
 		cout << max_width << "" << max_height << endl;
 #endif
-
-	}
-	cout << "sudoku n: " << sudoku_rects.size()  << endl;
+		
+    }
+    cout << "sudoku n: " << sudoku_rects.size()  << ' ';
 	return sudoku_rects.size() == 9;
 }
 
@@ -554,11 +554,11 @@ pair <int, int> RuneDetector::chooseMnistTarget(const Mat & inputImg, const vect
 		}
 	}
 
-	cout << "Results:" << endl;
+	cout << "(";
 	for (int i = 0; i < FinalResults.size(); i++){
 		cout << (*(FinalResults.at(i))).second << ' ';
 	}
-	cout << endl;
+	cout << ")" << endl;
 	
 	return make_pair(0,0);
 }
