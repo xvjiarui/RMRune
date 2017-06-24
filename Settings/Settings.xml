@@ -9,5 +9,5 @@ Rune-related settings
 <!--
 Camera-related settings
 -->
-<ExposureTime>64</ExposureTime>
+<ExposureTime>30</ExposureTime>
 </opencv_storage>

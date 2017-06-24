@@ -193,7 +193,7 @@ int RuneDetector::findTargetORB(cv::Mat * cells) {
 	Mat descriptor[9];
 	vector<vector<KeyPoint> > keypoints;
 	keypoints.resize(9);
-	ORB orb = ORB::ORB(100, 1, 1, 10, 0, 2, 1, 17);
+	ORB orb(100, 1, 1, 10, 0, 2, 1, 17);
 	BFMatcher matcher(NORM_HAMMING, 0);
 	int match_count[9][9] = { { 0 } };
 
