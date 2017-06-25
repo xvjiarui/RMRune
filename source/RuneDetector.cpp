@@ -24,7 +24,7 @@ IN THE SOFTWARE.
 
 #include <iostream>
 
-//#define SHOW_IMAGE
+#define SHOW_IMAGE
 #define HARD_CODE
 
 using namespace cv;
@@ -54,8 +54,7 @@ pair<int, int> RuneDetector::getTarget(const cv::Mat & image, RuneType rune_type
 	vector<Vec4i> hierarchy;
 	findContours(binary, contours, hierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE);
 #ifdef SHOW_IMAGE
-	Mat show;
-	image.copyTo(show);
+	Mat show(image.size(), CV_8UC3, Scalar(0,0,0));
 	for (int i = 0; i < contours.size(); ++i) {
 		drawContours(show, contours, i, CV_RGB(rand() % 255, rand() % 255, rand() % 255), 3, CV_FILLED);
 	}
@@ -64,6 +63,20 @@ pair<int, int> RuneDetector::getTarget(const cv::Mat & image, RuneType rune_type
 	sudoku_rects.clear();
 	if (checkSudoku(contours, sudoku_rects))
 	{
+		cout << "good" << endl;
+		for (int i = 0; i < digit_rects.size(); i++)
+		{
+			Point2f pts[4];
+			digit_rects[i].points(pts);
+			vector<Point2f> pts2;
+			for (int i = 0; i < 4; i++)
+			{
+				pts2.push_back(pts[i]);
+			}
+			Rect a = boundingRect(pts2);
+			imshow("hihi", image(a));
+			waitKey(0);
+		}
 		if (rune_type == RUNE_B)
 		{
 			pair<int, int> idx = chooseMnistTarget(image, sudoku_rects);
@@ -82,6 +95,7 @@ pair<int, int> RuneDetector::getTarget(const cv::Mat & image, RuneType rune_type
 			}
 		}
 	}
+	
 	return make_pair(-1, -1);
 }
 
@@ -93,6 +107,10 @@ bool RuneDetector::checkSudoku(const vector<vector<Point2i>> & contours, vector<
 	float height = sudoku_height;
 	float ratio = 28.0 / 16.0;
 	int sudoku = 0;
+
+	float digitRatio = 1.7;
+	float digitWidth = 27;
+	float digitHeight = 15;
 
 	float low_threshold = 0.6;
 	float high_threshold = 1.2;
@@ -118,19 +136,39 @@ bool RuneDetector::checkSudoku(const vector<vector<Point2i>> & contours, vector<
 			//vector<Point2i> poly;
 			//approxPolyDP(contours[i], poly, 20, true);
 			++sudoku;
+		} 
+
+		/*
+		else {
+			//the debugging code to quickly find suitable ratio and width which is prepared for possible debug
+			Mat show(Size(480, 640), CV_8UC3, Scalar(0,0,0));
+			drawContours(show, contours, i, CV_RGB(rand() % 255, rand() % 255, rand() % 255), 3, CV_FILLED);
+			imshow("hi", show);
+			cout << ratio_cur << endl;
+			waitKey(0);
 		}
+		*/
+		
+		
+		else if (ratio_cur > 0.8 * digitRatio && ratio_cur < 1.2 * digitRatio &&
+					 s.width > 0.8 * digitWidth && s.width < 1.2 * digitWidth &&
+					 s.height > 0.8 * digitHeight && s.height < 1.2 * digitHeight && 1)
+		        // ((rect.angle > -10 && rect.angle < 10) || rect.angle < -170 || rect.angle > 170))
+		{
+			digit_rects.push_back(rect);
+		}
+		
 	}
 
 #ifdef HARD_CODE
 	if (sudoku > 15)
 		return false;
-#else
-	cout << "Origin sudoku:" << sudoku << endl;
+	if (digit_rects.size() > 10)
+		return false;
 #endif
 	if (sudoku > 9) {
 		float** dist_map = new float*[sudoku];
 		for (int i = 0; i < sudoku; i++) {
-			cout << i << endl;
 			dist_map[i] = new float[sudoku];
 			for (int j = 0; j < sudoku; j++) {
 				dist_map[i][j] = 0;
@@ -185,10 +223,64 @@ bool RuneDetector::checkSudoku(const vector<vector<Point2i>> & contours, vector<
 #endif
 		
     }
-    cout << "sudoku n: " << sudoku_rects.size()  << ' ';
-	return sudoku_rects.size() == 9;
-}
+    cout << "sudoku n: " << sudoku_rects.size()  << endl;
 
+	if (digit_rects.size() > 5)
+	{
+		float** dist_map = new float*[digit_rects.size()];
+		for (int i = 0; i < digit_rects.size(); i++) {
+			dist_map[i] = new float[digit_rects.size()];
+			for (int j = 0; j < digit_rects.size(); j++) {
+				dist_map[i][j] = 0;
+			}
+		}
+		// calculate distance of each cell center
+		for (int i = 0; i < digit_rects.size(); ++i) {
+			for (int j = i + 1; j < digit_rects.size(); ++j) {
+				float d = sqrt((digit_rects.at(i).center.x - digit_rects.at(j).center.x) * (digit_rects.at(i).center.x - digit_rects.at(j).center.x) + ((digit_rects.at(i).center.y - digit_rects.at(j).center.y) * (digit_rects.at(i).center.y - digit_rects.at(j).center.y)));
+				dist_map[i][j] = d;
+				dist_map[j][i] = d;
+			}
+		}
+
+		// choose the minimun distance cell as center cell
+		int center_idx = 0;
+		float min_dist = 100000000;
+		for (int i = 0; i < digit_rects.size(); ++i) {
+			float cur_d = 0;
+			for (int j = 0; j < digit_rects.size(); ++j) {
+				cur_d += dist_map[i][j];
+			}
+			if (cur_d < min_dist) {
+				min_dist = cur_d;
+				center_idx = i;
+			}
+		}
+		cout << center_idx << endl;
+
+
+		// sort distance between each cell and the center cell
+		vector<pair<float, int> > dist_center;
+		for (int i = 0; i < digit_rects.size(); ++i) {
+			dist_center.push_back(make_pair(dist_map[center_idx][i], i));
+		}
+		std::sort(dist_center.begin(), dist_center.end(), [](const pair<float, int> & p1, const pair<float, int> & p2) { return p1.first < p2.first; });
+
+		for (int i = 0; i < digit_rects.size(); i++) {
+			delete [] dist_map[i];
+		}
+		delete [] dist_map;
+
+		// choose the nearest 9 cell as suduku
+		vector<RotatedRect> digit_rects_temp;
+		for (int i = 0; i < 5; ++i) {
+			digit_rects_temp.push_back(digit_rects[dist_center[i].second]);
+		}
+		digit_rects_temp.swap(digit_rects);
+	}
+	return sudoku_rects.size() == 9 && digit_rects.size() == 5;
+}
+/*
 int RuneDetector::findTargetORB(cv::Mat * cells) {
 	Mat descriptor[9];
 	vector<vector<KeyPoint> > keypoints;
@@ -241,6 +333,7 @@ int RuneDetector::findTargetORB(cv::Mat * cells) {
 	}
 	return min_idx;
 }
+*/
 
 // int RuneDetector::findTargetCanny(cv::Mat * cells){
 //    int min_count = 65535;
@@ -713,8 +806,10 @@ pair<int, int> RuneDetector::chooseTargetPerspective(const Mat & image, const ve
 	}
 
 	int idx = -1;
+	/*
 	if (type == RUNE_ORB)
 		idx = findTargetORB(cell);
+		*/
 	if (type == RUNE_GRAD)
 		idx = findTargetEdge(cell);
 	else if (type == RUNE_CANNY)
@@ -762,8 +857,10 @@ pair<int, int> RuneDetector::chooseTarget(const Mat & image, const vector<Rotate
 	}
 
 	int idx = -1;
+	/*
 	if (type == RUNE_ORB)
 	    idx = findTargetORB(cell);
+		*/
 	if (type == RUNE_GRAD)
 		idx = findTargetEdge(cell);
 	else if (type == RUNE_CANNY)

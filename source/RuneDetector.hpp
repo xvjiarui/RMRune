@@ -72,6 +72,7 @@ protected:
 
 private:
 	std::vector<cv::RotatedRect> sudoku_rects; // before perspective transform
+	std::vector<cv::RotatedRect> digit_rects; // before perspective transform
 	std::vector<cv::Mat> sudoku_imgs;
 	int sudoku_width;	 // pixel
 	int sudoku_height;   // pixel
