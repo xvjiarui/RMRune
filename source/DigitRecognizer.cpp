@@ -10,13 +10,13 @@ DigitRecognizer::DigitRecognizer()
 
 	rng = RNG(12345);
 
-    lowerBound = Scalar(0, 0, 180);
+    lowerBound = Scalar(0, 0, 173);
     upperBound = Scalar(255, 255, 255);
 
     segmentTable = {
     	{119, 0},
     	{18, 1},
-    	{94, 2},
+    	{93, 2},
     	{91, 3},
     	{58, 4},
     	{107, 5},
@@ -29,11 +29,11 @@ DigitRecognizer::DigitRecognizer()
     segmentRects = {
     	Rect(Point(5, 0), Point(35, 5)), // 0
     	Rect(Point(5, 0), Point(10, 30)), // 1
-    	Rect(Point(30, 0), Point(35, 30)), //2
+    	Rect(Point(32, 0), Point(37, 30)), //2
 	    Rect(Point(5, 27), Point(35, 32)), // 3
-	    Rect(Point(2, 30), Point(7, 60)), // 4
-	    Rect(Point(27, 30), Point(32, 60)), //5
-	    Rect(Point(5, 55), Point(35, 60)) // 6
+	    Rect(Point(2, 28), Point(7, 58)), // 4
+	    Rect(Point(27, 28), Point(32, 58)), //5
+	    Rect(Point(5, 53), Point(35, 58)) // 6
     };
 
 }
@@ -43,11 +43,12 @@ void DigitRecognizer::predict(const Mat& inputImg, const Rect2f & sudokuPanel)
 	clear();
 
 	Rect2f digitBoardRect = sudokuPanel;
-	digitBoardRect.width = sudokuPanel.width / (280.0*3)*90*5;
-	digitBoardRect.height = sudokuPanel.height / (160.0*3)*122.0;
-	digitBoardRect -= Point2f(sudokuPanel.width * 0.22, sudokuPanel.height * 0.8);
+	digitBoardRect.width = sudokuPanel.width / (280.0*3)*104.5*5;
+	digitBoardRect.height = sudokuPanel.height / (160.0*3)*125.0;
+	digitBoardRect -= Point2f(sudokuPanel.width * 0.25, sudokuPanel.height * 0.8);
 	Mat img = inputImg(digitBoardRect);
 	Mat grayImg;
+	Mat digitBoardImg = img;
 	cvtColor(img, grayImg, CV_BGR2GRAY);
 	GaussianBlur(grayImg, grayImg, Size(9, 9), 0);
 	Canny(grayImg, grayImg, 120, 120*2, 3);
@@ -60,8 +61,8 @@ void DigitRecognizer::predict(const Mat& inputImg, const Rect2f & sudokuPanel)
 
 	vector<vector<Point> > digitContoursPolys;
 	vector<Rect2f> digitBoundRects;
+	vector<Rect2f> oneBoundRects;
 	int digitAvgWidth = 0;
-	int digitAvgCount = 0;
 	float lowerThreshold = 1;
 	float upperThreshold = 1.6;
 	for ( int i = 0; i < digitContours.size(); i++ ) 
@@ -69,19 +70,31 @@ void DigitRecognizer::predict(const Mat& inputImg, const Rect2f & sudokuPanel)
 		vector<Point> curDigitContoursPoly;
 		approxPolyDP( digitContours.at(i), curDigitContoursPoly, 3, true );
 		digitContoursPolys.push_back(curDigitContoursPoly);
-		Rect curBoundingRect = boundingRect(Mat(curDigitContoursPoly));
+		Rect2f curBoundingRect = boundingRect(Mat(curDigitContoursPoly));
 		float ratio = (float) curBoundingRect.width / (float) curBoundingRect.height;	
 		if (ratio < 0.5 * upperThreshold && ratio > 0.5 *lowerThreshold)
 		{
 			digitAvgWidth += curBoundingRect.width;
 			digitBoundRects.push_back(curBoundingRect);
 		}
+		else if ( ratio < 0.32 && ratio > 0.25)
+		{
+			cout << "One Ratio: " << ratio << endl;
+			oneBoundRects.push_back(curBoundingRect);
+		}
 	}
+	digitAvgWidth /= digitBoundRects.size();
 	if (digitBoundRects.size() != 5)
 	{
-		return;
+		if (digitBoundRects.size() == 4 && oneBoundRects.size() == 1)
+		{
+			Rect2f curBoundingRect = oneBoundRects.at(0);
+			curBoundingRect.width = digitAvgWidth;
+			curBoundingRect -= Point2f(0.6 * digitAvgWidth, 0);
+			digitBoundRects.push_back(curBoundingRect);
+		}
+		else return;
 	}
-	Mat digitBoardImg = img;
 	// for (int i = 0; i < digitBoundRects.size(); i++) {
 	// 	rectangle( digitBoardImg, digitBoundRects.at(i), Scalar(255, 255, 255));
 	// }
@@ -136,6 +149,9 @@ DigitRecognizer::~DigitRecognizer()
 int DigitRecognizer::recognize(const Mat& img)
 {
 	int ret = 0;
+	Mat temp;
+	img.copyTo(temp);
+
 	for (int i = 0; i < segmentRects.size(); ++i)
 	{
 		ret <<= 1;
@@ -145,6 +161,7 @@ int DigitRecognizer::recognize(const Mat& img)
 		{
 			ret += 1;
 		}
+		rectangle(temp, segmentRects.at(i), Scalar(255, 255, 255));
 	}
 	try
 	{
@@ -152,9 +169,9 @@ int DigitRecognizer::recognize(const Mat& img)
 	}
 	catch (out_of_range e)
 	{
-		cout << "Cannot recognize" << endl;
 		return -1;
 	}
+	imshow("temp", temp);
 	return ret;
 }
 
