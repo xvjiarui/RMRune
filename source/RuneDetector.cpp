@@ -63,6 +63,7 @@ pair<int, int> RuneDetector::getTarget(const cv::Mat & image, RuneType rune_type
 	sudoku_rects.clear();
 	if (checkSudoku(contours, sudoku_rects))
 	{
+		/*
 		cout << "good" << endl;
 		for (int i = 0; i < digit_rects.size(); i++)
 		{
@@ -77,6 +78,7 @@ pair<int, int> RuneDetector::getTarget(const cv::Mat & image, RuneType rune_type
 			imshow("hihi", image(a));
 			waitKey(0);
 		}
+		*/
 		if (rune_type == RUNE_B)
 		{
 			pair<int, int> idx = chooseMnistTarget(image, sudoku_rects);
@@ -548,6 +550,7 @@ pair <int, int> RuneDetector::chooseMnistTarget(const Mat & inputImg, const vect
 	imshow("image_persp", image_persp);
 
 	
+	/*
 	dst_p.clear();
 	dst_p.push_back(_lu + Point2f(0.0, 0.0));
 	dst_p.push_back(_lu + Point2f(0.0, _height));
@@ -559,6 +562,47 @@ pair <int, int> RuneDetector::chooseMnistTarget(const Mat & inputImg, const vect
 	warpPerspective(inputImg, perspective_image, perspective_mat, inputImg.size());
 	Rect2f boardRect = Rect2f(perspective_center, Size2f(_width, _height));
 	digitRecognizer.predict(perspective_image, boardRect);
+	*/
+	sort(digit_rects.begin(), digit_rects.end(), [](const RotatedRect& a, const RotatedRect& b) { return a.center.x < b.center.x;});
+
+	Point2f digit_lu, digit_rd, digit_ld, digit_ru;
+	float digits_width, digits_height; 
+
+	
+	vector<Mat> digit_images;
+	Mat temp;
+	for (int i = 0; i < digit_rects.size(); i++)
+	{
+		Rect rect = digit_rects[i].boundingRect();
+		/*
+		digit_lu = rect.tl();
+		digit_rd = rect.br();
+		digit_ld = Point2f(digit_lu.x, digit_rd.y);
+		digit_ru = Point2f(digit_rd.x, digit_lu.y);
+		digits_width = max(digit_ru.x - digit_lu.x, digit_rd.x - digit_ld.x);
+		digits_height = max(digit_ru.y - digit_rd.y, digit_lu.y - digit_ld.y); 
+		src_p.clear();
+		src_p.push_back(digit_lu);
+		src_p.push_back(digit_ld);
+		src_p.push_back(digit_ru);
+		src_p.push_back(digit_rd);
+
+		dst_p.clear();
+		dst_p.push_back(Point2f(0.0, 0.0));
+		dst_p.push_back(Point2f(0.0, digits_height));
+		dst_p.push_back(Point2f(digits_width, 0.0));
+		dst_p.push_back(Point2f(digits_width, digits_height));
+		perspective_mat = getPerspectiveTransform(src_p, dst_p);
+		*/
+
+		temp = image(rect);
+		warpPerspective(temp, temp, perspective_mat, rect.size());
+		digit_images.push_back(temp);
+		imshow("test", temp);
+		waitKey(0);
+	}
+
+
 	
 
 	// calculate the average width and hieght of each cell
@@ -595,7 +639,6 @@ pair <int, int> RuneDetector::chooseMnistTarget(const Mat & inputImg, const vect
 	int width_start[] = { half_w_gap, int((_width - cell_width) / 2), int(_width - cell_width - half_w_gap) };
     int height_start[] = { half_h_gap, int((_height - cell_height) / 2), int(_height - cell_height - half_h_gap) };
 
-	Mat temp;
 	vector<vector<pair<double, int> > > results;
 
 	for (size_t i = 0; i < 3; i++){
