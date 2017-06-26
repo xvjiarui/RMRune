@@ -31,8 +31,8 @@
 
 
 // #define CAMERA_MODE
-// #define VIDEO_MODE
-#define IMAGE_MODE
+#define VIDEO_MODE
+// #define IMAGE_MODE
 
 //#define RESET_SETTINGS
 #ifdef CAMERA_MODE
