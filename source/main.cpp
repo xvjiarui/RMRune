@@ -5,6 +5,7 @@
 #include <string>
 #include <highgui.h>
 
+#include "Settings.hpp"
 #include "MnistRecognizer.h"
 #include "DigitRecognizer.h"
 #include "RuneDetector.hpp"
@@ -28,7 +29,6 @@
 //     cout << "V:" << V_L << " " << V_U << endl;
 // }
 
-#include "Settings.hpp"
 
 //#define CAMERA_MODE
 // #define VIDEO_MODE
@@ -44,10 +44,11 @@ int main(int argc, char** argv )
     Settings settings("./Settings/Settings.xml");
 
     #ifdef RESET_SETTINGS
-    settings.runesetting.CellWidth = 127;
-    settings.runesetting.CellHeight = 71;
-    settings.runesetting.CellRatio = 1;
-    settings.camerasetting.ExposureTime = 64;
+    settings.load();
+    settings.runesetting.DigitHeight = 15;
+    settings.runesetting.DigitWidth = 27;
+    settings.runesetting.DigitRatio = 1;
+    settings.runesetting.RuneSType = 0;
     settings.save();
     return 0;
     #endif
@@ -56,8 +57,7 @@ int main(int argc, char** argv )
     MnistRecognizer mnistRecognizer("LeNet-model");
 	DigitRecognizer digitRecognizer;
     Mat original_img;
-    RuneDetector runeDetector(settings.runesetting.CellWidth * settings.runesetting.CellRatio, 
-                              settings.runesetting.CellHeight * settings.runesetting.CellRatio,  true);
+    RuneDetector runeDetector(settings.runesetting);
 
     #ifdef IMAGE_MODE
 
@@ -116,6 +116,10 @@ int main(int argc, char** argv )
             runeDetector.getTarget(original_img, RuneDetector::RUNE_B);
         }
         catch (cv::Exception)
+        {
+            continue;
+        }
+        catch (exception)
         {
             continue;
         }

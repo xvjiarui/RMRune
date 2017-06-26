@@ -9,18 +9,23 @@ class Settings {
         void save();
         void load();
         void SetFileName(const std::string& fn);
-
-        struct RuneSetting {
+        struct RuneSetting
+        {
             float CellRatio;
             int CellWidth;
             int CellHeight;
+            int DigitWidth;
+            int DigitHeight;
+            float DigitRatio;
+            short RuneSType; //0 1 2
         } runesetting;
-
-        struct CameraSetting {
+        struct CameraSetting
+        {
             int ExposureTime;
-			cv::Mat CameraMatrix;
-			cv::Mat DistortionMatrix;
+            cv::Mat CameraMatrix;
+            cv::Mat DistortionMatrix;
         } camerasetting;
-    private:
+
+      private:
         std::string filename;
 };

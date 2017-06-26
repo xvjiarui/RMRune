@@ -25,7 +25,6 @@ IN THE SOFTWARE.
 #include <iostream>
 
 #define SHOW_IMAGE
-#define HARD_CODE
 
 using namespace cv;
 using namespace std;
@@ -39,7 +38,7 @@ cv::Point2f MatDotPoint(cv::Mat M, const cv::Point2f& p)
 	src(2, 0) = 1.0;
 
 	cv::Mat_<double> dst = M * src; //USE MATRIX ALGEBRA
-	return cv::Point2f(dst(0, 0) / dst(2, 0), dst(1, 0) / dst(2, 0));
+	return cv::Point2f(dst(0, 0), dst(1, 0));
 }
 
 pair<int, int> RuneDetector::getTarget(const cv::Mat & image, RuneType rune_type) {
@@ -63,25 +62,10 @@ pair<int, int> RuneDetector::getTarget(const cv::Mat & image, RuneType rune_type
 	sudoku_rects.clear();
 	if (checkSudoku(contours, sudoku_rects))
 	{
-		/*
-		cout << "good" << endl;
-		for (int i = 0; i < digit_rects.size(); i++)
-		{
-			Point2f pts[4];
-			digit_rects[i].points(pts);
-			vector<Point2f> pts2;
-			for (int i = 0; i < 4; i++)
-			{
-				pts2.push_back(pts[i]);
-			}
-			Rect a = boundingRect(pts2);
-			imshow("hihi", image(a));
-			waitKey(0);
-		}
-		*/
 		if (rune_type == RUNE_B)
 		{
 			pair<int, int> idx = chooseMnistTarget(image, sudoku_rects);
+			return idx;
 		}
 		else
 		{
@@ -97,7 +81,7 @@ pair<int, int> RuneDetector::getTarget(const cv::Mat & image, RuneType rune_type
 			}
 		}
 	}
-	
+	cout << "Fail" << endl;
 	return make_pair(-1, -1);
 }
 
@@ -110,9 +94,8 @@ bool RuneDetector::checkSudoku(const vector<vector<Point2i>> & contours, vector<
 	float ratio = 28.0 / 16.0;
 	int sudoku = 0;
 
-	float digitRatio = 1.7;
-	float digitWidth = 27;
-	float digitHeight = 15;
+	float DigitHWRatio = runesetting.DigitWidth / runesetting.DigitHeight;
+	DigitHWRatio = 1.7;
 
 	float low_threshold = 0.6;
 	float high_threshold = 1.2;
@@ -124,50 +107,39 @@ bool RuneDetector::checkSudoku(const vector<vector<Point2i>> & contours, vector<
 		float ratio_cur = s.width / s.height;
 
 // warning: temporary disable
-#ifdef HARD_CODE
 		if (ratio_cur > 0.8 * ratio && ratio_cur < 1.2 * ratio &&
 		        s.width > low_threshold * width && s.width < high_threshold * width &&
 		        s.height > low_threshold * height && s.height < high_threshold * height &&
 		        ((rect.angle > -10 && rect.angle < 10) || rect.angle < -170 || rect.angle > 170)) {
-#else
-		if (ratio_cur > 0.8 * ratio && ratio_cur < 1.2 * ratio &&
-		        ((rect.angle > -10 && rect.angle < 10) || rect.angle < -170 || rect.angle > 170)) {
-#endif
+
 			sudoku_rects.push_back(rect);
 			centers.push_back(rect.center);
 			//vector<Point2i> poly;
 			//approxPolyDP(contours[i], poly, 20, true);
 			++sudoku;
 		} 
-
-		/*
-		else {
-			//the debugging code to quickly find suitable ratio and width which is prepared for possible debug
-			Mat show(Size(480, 640), CV_8UC3, Scalar(0,0,0));
-			drawContours(show, contours, i, CV_RGB(rand() % 255, rand() % 255, rand() % 255), 3, CV_FILLED);
-			imshow("hi", show);
-			cout << ratio_cur << endl;
-			waitKey(0);
-		}
-		*/
-		
-		
-		else if (ratio_cur > 0.8 * digitRatio && ratio_cur < 1.2 * digitRatio &&
-					 s.width > 0.8 * digitWidth && s.width < 1.2 * digitWidth &&
-					 s.height > 0.8 * digitHeight && s.height < 1.2 * digitHeight && 1)
+		else if (ratio_cur > 0.8 * DigitHWRatio && ratio_cur < 1.2 * DigitHWRatio &&
+					 s.width > 0.8  * runesetting.DigitWidth * runesetting.DigitRatio && s.width < 1.2 * runesetting.DigitWidth * runesetting.DigitRatio &&
+					 s.height > 0.8 * runesetting.DigitHeight * runesetting.DigitRatio && s.height < 1.2 * runesetting.DigitHeight * runesetting.DigitRatio)
 		        // ((rect.angle > -10 && rect.angle < 10) || rect.angle < -170 || rect.angle > 170))
 		{
 			digit_rects.push_back(rect);
 		}
 		
+		// else {
+		// 	//the debugging code to quickly find suitable ratio and width which is prepared for possible debug
+		// 	Mat show(Size(480, 640), CV_8UC3, Scalar(0,0,0));
+		// 	drawContours(show, contours, i, CV_RGB(rand() % 255, rand() % 255, rand() % 255), 3, CV_FILLED);
+		// 	imshow("hi", show);
+		// 	cout << ratio_cur << ' ' << s.width << ' ' << s.height << endl;
+		// 	waitKey(0);
+		// }
+		
 	}
 
-#ifdef HARD_CODE
-	if (sudoku > 15)
+	if (sudoku > 15 || sudoku < 9 || digit_rects.size() > 10 || digit_rects.size() < 4)
 		return false;
-	if (digit_rects.size() > 10)
-		return false;
-#endif
+
 	if (sudoku > 9) {
 		float** dist_map = new float*[sudoku];
 		for (int i = 0; i < sudoku; i++) {
@@ -199,7 +171,6 @@ bool RuneDetector::checkSudoku(const vector<vector<Point2i>> & contours, vector<
 			}
 		}
 
-
 		// sort distance between each cell and the center cell
 		vector<pair<float, int> > dist_center;
 		for (int i = 0; i < sudoku; ++i) {
@@ -218,11 +189,6 @@ bool RuneDetector::checkSudoku(const vector<vector<Point2i>> & contours, vector<
 			sudoku_rects_temp.push_back(sudoku_rects[dist_center[i].second]);
 		}
 		sudoku_rects_temp.swap(sudoku_rects);
-#ifndef HARD_CODE
-		float max_width = 0, max_height = 0;
-		std::for_each(sudoku_rects.begin(), sudoku_rects.end(), [&](const RotatedRect & a) { cout << a.size; if (max_width < a.size.width) max_width = a.size.width; if (max_height < a.size.height) max_height = a.size.height; });
-		cout << max_width << "" << max_height << endl;
-#endif
 		
     }
     cout << "sudoku n: " << sudoku_rects.size()  << endl;
@@ -273,14 +239,14 @@ bool RuneDetector::checkSudoku(const vector<vector<Point2i>> & contours, vector<
 		}
 		delete [] dist_map;
 
-		// choose the nearest 9 cell as suduku
 		vector<RotatedRect> digit_rects_temp;
 		for (int i = 0; i < 5; ++i) {
 			digit_rects_temp.push_back(digit_rects[dist_center[i].second]);
 		}
 		digit_rects_temp.swap(digit_rects);
 	}
-	return sudoku_rects.size() == 9 && digit_rects.size() == 5;
+	cout << "digit n : " << digit_rects.size() << ' ';
+	return sudoku_rects.size() == 9 && (digit_rects.size() == 5 || digit_rects.size() == 4);
 }
 /*
 int RuneDetector::findTargetORB(cv::Mat * cells) {

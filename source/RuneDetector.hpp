@@ -21,6 +21,7 @@ IN THE SOFTWARE.
 #include "opencv2/highgui/highgui.hpp"
 #include "MnistRecognizer.h"
 #include "DigitRecognizer.h"
+#include "Settings.hpp"
 
 #include <vector>
 #include <utility>
@@ -38,11 +39,21 @@ public:
 	typedef enum {RUNE_S, RUNE_B} RuneType;
 
 public:
+/*
     RuneDetector(int cell_width = 127, int cell_height = 71, bool perspective = false, Methed_Type m_type = RUNE_ORB) : mnistRecognizer("LeNet-model"){
 		sudoku_width = cell_width;
 		sudoku_height = cell_height;
         use_perspective = perspective;
         type = m_type;
+	}
+	*/
+	RuneDetector(const Settings::RuneSetting& rs)
+	{
+		runesetting = (Settings::RuneSetting)rs;
+		sudoku_width = rs.CellWidth * rs.CellRatio;
+		sudoku_height = rs.CellHeight * rs.CellRatio;
+        use_perspective = true;
+        type = (Methed_Type)rs.RuneSType;
 	}
 	cv::RotatedRect getRotateRect(int idx){ return sudoku_rects.at(idx); }
 	const cv::RotatedRect & getRotateRect(int idx) const { return sudoku_rects.at(idx); }
@@ -81,6 +92,7 @@ private:
 	cv::Mat src;
 	MnistRecognizer mnistRecognizer;
 	DigitRecognizer digitRecognizer;
+	Settings::RuneSetting runesetting;
 
 };
 
