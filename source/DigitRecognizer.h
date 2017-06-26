@@ -13,6 +13,7 @@ class DigitRecognizer
 public:
 	DigitRecognizer();
 	void predict(const Mat& original_img, const Rect2f & sudoku_panel);
+	int process(const Mat& img);
 	~DigitRecognizer();	
 	vector<Mat> digitImgs;
 	vector<int> digitLabels;

@@ -14,8 +14,7 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY
 CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 IN THE SOFTWARE.
 *******************************************************************************************************************/
-#define VIDEO_MODE
-#ifndef VIDEO_MODE
+#ifdef CAMERA_MODE
 #include "RMVideoCapture.hpp"
 #include "linux/videodev2.h"
 

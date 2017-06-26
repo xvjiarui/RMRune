@@ -10,7 +10,7 @@ DigitRecognizer::DigitRecognizer()
 
 	rng = RNG(12345);
 
-    lowerBound = Scalar(0, 0, 173);
+    lowerBound = Scalar(0, 0, 190);
     upperBound = Scalar(255, 255, 255);
 
     segmentTable = {
@@ -27,13 +27,13 @@ DigitRecognizer::DigitRecognizer()
     };
 
     segmentRects = {
-    	Rect(Point(5, 0), Point(35, 5)), // 0
-    	Rect(Point(5, 0), Point(10, 30)), // 1
-    	Rect(Point(32, 0), Point(37, 30)), //2
+    	Rect(Point(10, 6), Point(35, 11)), // 0
+    	Rect(Point(8, 5), Point(13, 27)), // 1
+    	Rect(Point(32, 5), Point(37, 27)), //2
 	    Rect(Point(5, 27), Point(35, 32)), // 3
-	    Rect(Point(2, 28), Point(7, 58)), // 4
-	    Rect(Point(27, 28), Point(32, 58)), //5
-	    Rect(Point(5, 53), Point(35, 58)) // 6
+	    Rect(Point(3, 32), Point(8, 58)), // 4
+	    Rect(Point(27, 32), Point(32, 58)), //5
+	    Rect(Point(5, 53), Point(30, 58)) // 6
     };
 
 }
@@ -137,6 +137,17 @@ void DigitRecognizer::predict(const Mat& inputImg, const Rect2f & sudokuPanel)
 	}
 	cout << endl;
 	
+}
+
+int DigitRecognizer::process(const Mat& img)
+{
+	Mat hsvImg;
+	GaussianBlur(img, hsvImg, Size(9, 9), 0);
+	cvtColor(hsvImg, hsvImg, CV_BGR2HSV);
+	inRange(hsvImg, lowerBound, upperBound, hsvImg);
+	resize(hsvImg, hsvImg, Size(40, 60));
+	imshow("hsvImg", hsvImg);
+	return recognize(hsvImg);
 }
 
 DigitRecognizer::~DigitRecognizer()
