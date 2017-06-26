@@ -100,6 +100,8 @@ bool RuneDetector::checkSudoku(const vector<vector<Point2i>> & contours, vector<
 	float low_threshold = 0.6;
 	float high_threshold = 1.2;
 	vector<Point2f> centers;
+	vector<RotatedRect> one_digit_rects;
+	float digit_avg_width = 0;
 	for (size_t i = 0; i < contours.size(); i++) {
 		RotatedRect rect = minAreaRect(contours[i]);
 		rect = adjustRotatedRect(rect);
@@ -124,6 +126,13 @@ bool RuneDetector::checkSudoku(const vector<vector<Point2i>> & contours, vector<
 		        // ((rect.angle > -10 && rect.angle < 10) || rect.angle < -170 || rect.angle > 170))
 		{
 			digit_rects.push_back(rect);
+			digit_avg_width += s.width;
+		}
+		else if (ratio_cur > 0.25 && ratio_cur < 0.32 && 
+					s.width > 0.2 * runesetting.DigitWidth * runesetting.DigitRatio && s.width < 0.4 * runesetting.DigitWidth * runesetting.DigitRatio &&
+					s.height > 0.8 * runesetting.DigitHeight * runesetting.DigitRatio && s.height < 1.2 * runesetting.DigitHeight * runesetting.DigitRatio)
+		{
+			one_digit_rects.push_back(rect);
 		}
 		
 		// else {
@@ -135,6 +144,18 @@ bool RuneDetector::checkSudoku(const vector<vector<Point2i>> & contours, vector<
 		// 	waitKey(0);
 		// }
 		
+	}
+	if (digit_rects.size() != 5)
+	{
+		if (digit_rects.size() == 4 && one_digit_rects.size() == 1)
+		{
+			digit_avg_width /= digit_rects.size();
+			RotatedRect curBoundingRect = one_digit_rects.at(0);
+			curBoundingRect.size.width = digit_avg_width;
+			curBoundingRect.center -= Point2f(0.6 * digit_avg_width, 0);
+			digit_rects.push_back(curBoundingRect);
+		}
+		else return false;
 	}
 
 	if (sudoku > 15 || sudoku < 9 || digit_rects.size() > 10 || digit_rects.size() < 4)
