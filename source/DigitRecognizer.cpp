@@ -4,6 +4,21 @@
 #include "DigitRecognizer.h"
 #include "RuneDetector.hpp"
 
+void binaryMat2points(const Mat & img, vector<Point> & pts)
+{
+	for(int x = 0; x < img.cols; x++)
+	{
+		for(int y = 0; y < img.rows; y++)
+		{
+			if(img.at<char>(x, y) >0)
+			{
+				pts.push_back(Point(x, y));
+			}
+		}
+	}
+
+}
+
 
 DigitRecognizer::DigitRecognizer()
 {
@@ -33,7 +48,7 @@ DigitRecognizer::DigitRecognizer()
 	    Rect(Point(5, 27), Point(35, 32)), // 3
 	    Rect(Point(3, 32), Point(8, 58)), // 4
 	    Rect(Point(27, 32), Point(32, 58)), //5
-	    Rect(Point(5, 53), Point(30, 58)) // 6
+	    Rect(Point(5, 51), Point(30, 56)) // 6
     };
 
 }
@@ -164,6 +179,7 @@ int DigitRecognizer::recognize(const Mat& img)
 	Mat temp;
 	img.copyTo(temp);
 
+
 	for (int i = 0; i < segmentRects.size(); ++i)
 	{
 		ret <<= 1;
@@ -177,11 +193,43 @@ int DigitRecognizer::recognize(const Mat& img)
 	}
 	try
 	{
+		cout << ret << endl;
 		ret = segmentTable.at(ret);
 	}
 	catch (out_of_range e)
 	{
-		return -1;
+		vector<Vec4i> lines;
+		Mat cannyImg;
+		Canny(img, cannyImg, 50, 200, 3);
+		HoughLines(cannyImg, lines, CV_PI/180, 50, 50, 10);
+		short vCount = 0, hCount = 0;
+		for (int i = 0; i < lines.size(); i++)
+		{
+			cout << "Vc............."<<vCount<<' '<<hCount<<endl;
+			Vec4i& l = lines[i];
+			int deltaX = l[0] - l[2];
+			if (!deltaX)
+			{
+				vCount++;
+				continue;
+			}
+			float k = (float)(l[1] - l[3])/(float)deltaX;
+			if (k > -1 && k < 1)
+			{
+				hCount++;
+				continue;
+			}
+			else
+			{
+				vCount++;
+			}
+		}
+		if (hCount == 1 && vCount == 1)
+		{
+			ret = 7;
+		}
+		else
+			return -1;
 	}
 	imshow("temp", temp);
 	return ret;
@@ -191,5 +239,4 @@ int DigitRecognizer::recognize(const Mat& img)
 void DigitRecognizer::clear()
 {
 	digitImgs.clear();
-	digitLabels.clear();
 }

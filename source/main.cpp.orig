@@ -30,8 +30,8 @@
 // }
 
 
-// #define CAMERA_MODE
- #define VIDEO_MODE
+#define CAMERA_MODE
+// #define VIDEO_MODE
 // #define IMAGE_MODE
 
 //#define RESET_SETTINGS
@@ -67,7 +67,7 @@ int main(int argc, char** argv )
         return -1;
     }
     original_img = imread(argv[1]);
-    //resize(original_img, original_img, Size(480, 640));
+    resize(original_img, original_img, Size(480, 640));
     namedWindow("Original Image", WINDOW_AUTOSIZE );
     imshow("Original Image", original_img);
     runeDetector.getTarget(original_img, RuneDetector::RUNE_B);

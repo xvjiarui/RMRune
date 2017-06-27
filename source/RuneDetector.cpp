@@ -25,8 +25,8 @@ IN THE SOFTWARE.
 #include <iostream>
 #include <string>
 
-//#define SHOW_IMAGE
-#define DEBUG
+#define SHOW_IMAGE
+//#define DEBUG
 
 using namespace cv;
 using namespace std;
@@ -46,7 +46,8 @@ cv::Point2f MatDotPoint(cv::Mat M, const cv::Point2f& p)
 pair<int, int> RuneDetector::getTarget(const cv::Mat & image, RuneType rune_type) {
 	cvtColor(image, src, CV_BGR2GRAY);
 	Mat binary;
-	threshold(src, binary, 150, 255, THRESH_BINARY);
+	threshold(src, binary, 133, 255, THRESH_BINARY);
+	//GaussianBlur(binary, binary, Size(9, 9), 0);
 	//threshold(src, binary, 200, 255, THRESH_BINARY);
 #ifdef SHOW_IMAGE
 	imshow("binary", binary);
@@ -59,6 +60,7 @@ pair<int, int> RuneDetector::getTarget(const cv::Mat & image, RuneType rune_type
 	for (int i = 0; i < contours.size(); ++i) {
 		drawContours(show, contours, i, CV_RGB(rand() % 255, rand() % 255, rand() % 255), 3, CV_FILLED);
 	}
+	imshow("Contours", show);
 #elif defined(DEBUG)
 	Mat show(image.size(), CV_8UC3, Scalar(0,0,0));
 	vector<RotatedRect> contourRects;
@@ -159,7 +161,7 @@ bool RuneDetector::checkSudoku(const vector<vector<Point2i>> & contours, vector<
 		else if (ratio_cur > 0.6 * DigitWHRatio && ratio_cur < 1.4 * DigitWHRatio &&
 					 s.width > 0.6  * runesetting.DigitWidth * runesetting.DigitRatio && s.width < 1.4 * runesetting.DigitWidth * runesetting.DigitRatio &&
 					 s.height > 0.6 * runesetting.DigitHeight * runesetting.DigitRatio && s.height < 1.4 * runesetting.DigitHeight * runesetting.DigitRatio &&
-					 ( (rect.angle < 100 && rect.angle > 80) || (rect.angle > -100 && rect.angle < -65) ))
+					 ( rect.angle > 65 || rect.angle < -65 ))
 		        // ((rect.angle > -10 && rect.angle < 10) || rect.angle < -170 || rect.angle > 170))
 		{
 			digit_rects.push_back(rect);
@@ -200,6 +202,7 @@ bool RuneDetector::checkSudoku(const vector<vector<Point2i>> & contours, vector<
 		}
 		else return false;
 	}
+	cout << sudoku << ' ' << digit_rects.size() << ' ' << one_digit_rects.size() << endl;
 
 	if (sudoku > 15 || sudoku < 9 || digit_rects.size() > 10 || digit_rects.size() < 4)
 		return false;
