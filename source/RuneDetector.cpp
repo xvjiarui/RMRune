@@ -96,6 +96,7 @@ pair<int, int> RuneDetector::getTarget(const cv::Mat & image, RuneType rune_type
 	return make_pair(-1, -1);
 #endif
 	sudoku_rects.clear();
+	digit_rects.clear();
 	if (checkSudoku(contours, sudoku_rects))
 	{
 		if (rune_type == RUNE_B)
@@ -158,25 +159,31 @@ bool RuneDetector::checkSudoku(const vector<vector<Point2i>> & contours, vector<
 		else if (ratio_cur > 0.6 * DigitWHRatio && ratio_cur < 1.4 * DigitWHRatio &&
 					 s.width > 0.6  * runesetting.DigitWidth * runesetting.DigitRatio && s.width < 1.4 * runesetting.DigitWidth * runesetting.DigitRatio &&
 					 s.height > 0.6 * runesetting.DigitHeight * runesetting.DigitRatio && s.height < 1.4 * runesetting.DigitHeight * runesetting.DigitRatio &&
-					 ( (rect.angle > 65) || (rect.angle < -65) ))
+					 ( (rect.angle < 100 && rect.angle > 80) || (rect.angle > -100 && rect.angle < -65) ))
 		        // ((rect.angle > -10 && rect.angle < 10) || rect.angle < -170 || rect.angle > 170))
 		{
 			digit_rects.push_back(rect);
-			digit_avg_width += s.width;
+			digit_avg_width += s.height;
 		}
-		else if (ratio_cur > 0.25 && ratio_cur < 0.32 && 
-					s.width > 0.2 * runesetting.DigitWidth * runesetting.DigitRatio && s.width < 0.4 * runesetting.DigitWidth * runesetting.DigitRatio &&
-					s.height > 0.8 * runesetting.DigitHeight * runesetting.DigitRatio && s.height < 1.2 * runesetting.DigitHeight * runesetting.DigitRatio)
+		else if (ratio_cur > 2.5 * DigitWHRatio && ratio_cur < 3.5 * DigitWHRatio &&
+					 s.width > 0.6  * runesetting.DigitWidth * runesetting.DigitRatio && s.width < 1.4 * runesetting.DigitWidth * runesetting.DigitRatio &&
+					 s.height > 0.2 * runesetting.DigitHeight * runesetting.DigitRatio && s.height < 0.3 * runesetting.DigitHeight * runesetting.DigitRatio &&
+					 ( (rect.angle < 100 && rect.angle > 80) || (rect.angle > -100 && rect.angle < -65) ))
 		{
 			one_digit_rects.push_back(rect);
 		}
+		// else
+		// {
+		// 	cout << ratio_cur << endl;
+		// 	cout << s.width << " " << s.height << endl;
+		// }
 		
 		// else {
 		// 	//the debugging code to quickly find suitable ratio and width which is prepared for possible debug
-		// 	Mat show(Size(480, 640), CV_8UC3, Scalar(0,0,0));
-		// 	drawContours(show, contours, i, CV_RGB(rand() % 255, rand() % 255, rand() % 255), 3, CV_FILLED);
+		// 	Mat show(Size(1280, 720), CV_8UC3, Scalar(0,0,0));
+		// 	rectangle(show, rect.boundingRect(), Scalar(255, 255, 255));
 		// 	imshow("hi", show);
-		// 	cout << ratio_cur << ' ' << s.width << ' ' << s.height << endl;
+		// 	cout << ratio_cur << ' ' << s.width << ' ' << s.height  << " " << rect.angle<< endl;
 		// 	waitKey(0);
 		// }
 		
@@ -186,10 +193,10 @@ bool RuneDetector::checkSudoku(const vector<vector<Point2i>> & contours, vector<
 		if (digit_rects.size() == 4 && one_digit_rects.size() == 1)
 		{
 			digit_avg_width /= digit_rects.size();
-			RotatedRect curBoundingRect = one_digit_rects.at(0);
-			curBoundingRect.size.width = digit_avg_width;
-			curBoundingRect.center -= Point2f(0.6 * digit_avg_width, 0);
-			digit_rects.push_back(curBoundingRect);
+			RotatedRect curRotatedRect = one_digit_rects.at(0);
+			curRotatedRect.size.height = digit_avg_width;
+			curRotatedRect.center -= Point2f(0.3 * digit_avg_width, 0);
+			digit_rects.push_back(curRotatedRect);
 		}
 		else return false;
 	}
@@ -302,7 +309,7 @@ bool RuneDetector::checkSudoku(const vector<vector<Point2i>> & contours, vector<
 		}
 		digit_rects_temp.swap(digit_rects);
 	}
-	cout << "digit n : " << digit_rects.size() << ' ';
+	cout << "digit n : " << digit_rects.size() << endl;
 	return sudoku_rects.size() == 9 && (digit_rects.size() == 5 || digit_rects.size() == 4);
 }
 /*
@@ -588,6 +595,7 @@ pair <int, int> RuneDetector::chooseMnistTarget(const Mat & inputImg, const vect
 	*/
 	sort(digit_rects.begin(), digit_rects.end(), [](const RotatedRect& a, const RotatedRect& b) { return a.center.x < b.center.x;});
 	vector<Mat> digit_images;
+	cout << "[";
 	for (int i = 0; i < digit_rects.size(); i++)
 	{
 		Point2f pts[4];
@@ -598,9 +606,11 @@ pair <int, int> RuneDetector::chooseMnistTarget(const Mat & inputImg, const vect
 		perspectiveTransform(vpts, t, perspective_mat);
 		digit_images.push_back(perspective_image(boundingRect(t)));
 		imshow("showtime", digit_images[i]);
-		cout << digitRecognizer.process(digit_images.at(i)) << endl;
+		cout << digitRecognizer.process(digit_images.at(i));
 		waitKey(0);
 	}
+	cout << "]";
+	cout << endl;
 
 
 	// calculate the average width and hieght of each cell
@@ -691,7 +701,7 @@ pair <int, int> RuneDetector::chooseMnistTarget(const Mat & inputImg, const vect
 
 	cout << "(";
 	for (int i = 0; i < FinalResults.size(); i++){
-		cout << (*(FinalResults.at(i))).second << ' ';
+		cout << (*(FinalResults.at(i))).second;
 	}
 	cout << ")" << endl;
 	

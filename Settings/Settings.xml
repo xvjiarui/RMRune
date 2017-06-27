@@ -1,11 +1,11 @@
 <?xml version="1.0"?>
 <opencv_storage>
-<CellRatio>0.7</CellRatio>
+<CellRatio>1</CellRatio>
 <CellWidth>127</CellWidth>
 <CellHeight>71</CellHeight>
 <DigitRatio>1</DigitRatio>
-<DigitWidth>27</DigitWidth>
-<DigitHeight>16</DigitHeight>
+<DigitWidth>42</DigitWidth>
+<DigitHeight>21</DigitHeight>
 <ExposureTime>64</ExposureTime>
 <CameraMatrix type_id="opencv-matrix">
   <rows>3</rows>
