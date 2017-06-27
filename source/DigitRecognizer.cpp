@@ -10,7 +10,7 @@ DigitRecognizer::DigitRecognizer()
 
 	rng = RNG(12345);
 
-    lowerBound = Scalar(0, 0, 190);
+    lowerBound = Scalar(0, 0, 170);
     upperBound = Scalar(255, 255, 255);
 
     segmentTable = {
@@ -143,7 +143,8 @@ int DigitRecognizer::process(const Mat& img)
 {
 	Mat hsvImg;
 	GaussianBlur(img, hsvImg, Size(9, 9), 0);
-	cvtColor(hsvImg, hsvImg, CV_BGR2HSV);
+	dilate(hsvImg, hsvImg, getStructuringElement(0, Size(9, 9)));
+	cvtColor(img, hsvImg, CV_BGR2HSV);
 	inRange(hsvImg, lowerBound, upperBound, hsvImg);
 	resize(hsvImg, hsvImg, Size(40, 60));
 	imshow("hsvImg", hsvImg);

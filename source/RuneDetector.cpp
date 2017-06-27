@@ -60,6 +60,7 @@ pair<int, int> RuneDetector::getTarget(const cv::Mat & image, RuneType rune_type
 	imshow("contours", show);
 #endif
 	sudoku_rects.clear();
+	digit_rects.clear();
 	if (checkSudoku(contours, sudoku_rects))
 	{
 		if (rune_type == RUNE_B)
@@ -94,8 +95,8 @@ bool RuneDetector::checkSudoku(const vector<vector<Point2i>> & contours, vector<
 	float ratio = 28.0 / 16.0;
 	int sudoku = 0;
 
-	float DigitHWRatio = runesetting.DigitWidth / runesetting.DigitHeight;
-	DigitHWRatio = 1.7;
+	float DigitWHRatio = runesetting.DigitWidth / runesetting.DigitHeight;
+	DigitWHRatio = 2.0;
 
 	float low_threshold = 0.6;
 	float high_threshold = 1.2;
@@ -120,40 +121,48 @@ bool RuneDetector::checkSudoku(const vector<vector<Point2i>> & contours, vector<
 			//approxPolyDP(contours[i], poly, 20, true);
 			++sudoku;
 		} 
-		else if (ratio_cur > 0.8 * DigitHWRatio && ratio_cur < 1.2 * DigitHWRatio &&
-					 s.width > 0.8  * runesetting.DigitWidth * runesetting.DigitRatio && s.width < 1.2 * runesetting.DigitWidth * runesetting.DigitRatio &&
-					 s.height > 0.8 * runesetting.DigitHeight * runesetting.DigitRatio && s.height < 1.2 * runesetting.DigitHeight * runesetting.DigitRatio)
+		else if (ratio_cur > 0.6 * DigitWHRatio && ratio_cur < 1.4 * DigitWHRatio &&
+					 s.width > 0.6  * runesetting.DigitWidth * runesetting.DigitRatio && s.width < 1.4 * runesetting.DigitWidth * runesetting.DigitRatio &&
+					 s.height > 0.6 * runesetting.DigitHeight * runesetting.DigitRatio && s.height < 1.4 * runesetting.DigitHeight * runesetting.DigitRatio &&
+					 ( (rect.angle < 100 && rect.angle > 80) || (rect.angle > -100 && rect.angle < -65) ))
 		        // ((rect.angle > -10 && rect.angle < 10) || rect.angle < -170 || rect.angle > 170))
 		{
 			digit_rects.push_back(rect);
-			digit_avg_width += s.width;
+			digit_avg_width += s.height;
 		}
-		else if (ratio_cur > 0.25 && ratio_cur < 0.32 && 
-					s.width > 0.2 * runesetting.DigitWidth * runesetting.DigitRatio && s.width < 0.4 * runesetting.DigitWidth * runesetting.DigitRatio &&
-					s.height > 0.8 * runesetting.DigitHeight * runesetting.DigitRatio && s.height < 1.2 * runesetting.DigitHeight * runesetting.DigitRatio)
+		else if (ratio_cur > 2.5 * DigitWHRatio && ratio_cur < 3.5 * DigitWHRatio &&
+					 s.width > 0.6  * runesetting.DigitWidth * runesetting.DigitRatio && s.width < 1.4 * runesetting.DigitWidth * runesetting.DigitRatio &&
+					 s.height > 0.2 * runesetting.DigitHeight * runesetting.DigitRatio && s.height < 0.3 * runesetting.DigitHeight * runesetting.DigitRatio &&
+					 ( (rect.angle < 100 && rect.angle > 80) || (rect.angle > -100 && rect.angle < -65) ))
 		{
 			one_digit_rects.push_back(rect);
 		}
+		// else
+		// {
+		// 	cout << ratio_cur << endl;
+		// 	cout << s.width << " " << s.height << endl;
+		// }
 		
 		// else {
 		// 	//the debugging code to quickly find suitable ratio and width which is prepared for possible debug
-		// 	Mat show(Size(480, 640), CV_8UC3, Scalar(0,0,0));
-		// 	drawContours(show, contours, i, CV_RGB(rand() % 255, rand() % 255, rand() % 255), 3, CV_FILLED);
+		// 	Mat show(Size(1280, 720), CV_8UC3, Scalar(0,0,0));
+		// 	rectangle(show, rect.boundingRect(), Scalar(255, 255, 255));
 		// 	imshow("hi", show);
-		// 	cout << ratio_cur << ' ' << s.width << ' ' << s.height << endl;
+		// 	cout << ratio_cur << ' ' << s.width << ' ' << s.height  << " " << rect.angle<< endl;
 		// 	waitKey(0);
 		// }
 		
 	}
+	cout <<one_digit_rects.size() << " " << digit_rects.size() << " " << sudoku_rects.size() << endl;
 	if (digit_rects.size() != 5)
 	{
 		if (digit_rects.size() == 4 && one_digit_rects.size() == 1)
 		{
 			digit_avg_width /= digit_rects.size();
-			RotatedRect curBoundingRect = one_digit_rects.at(0);
-			curBoundingRect.size.width = digit_avg_width;
-			curBoundingRect.center -= Point2f(0.6 * digit_avg_width, 0);
-			digit_rects.push_back(curBoundingRect);
+			RotatedRect curRotatedRect = one_digit_rects.at(0);
+			curRotatedRect.size.height = digit_avg_width;
+			curRotatedRect.center -= Point2f(0.3 * digit_avg_width, 0);
+			digit_rects.push_back(curRotatedRect);
 		}
 		else return false;
 	}
