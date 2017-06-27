@@ -161,9 +161,29 @@ int DigitRecognizer::process(const Mat& img)
 	dilate(hsvImg, hsvImg, getStructuringElement(0, Size(9, 9)));
 	cvtColor(img, hsvImg, CV_BGR2HSV);
 	inRange(hsvImg, lowerBound, upperBound, hsvImg);
-	resize(hsvImg, hsvImg, Size(40, 60));
+	Mat hsvCopy;
+	hsvImg.copyTo(hsvCopy);
+	vector<vector<Point> > contours;
+	vector<Vec4i> hierarchy;
+	findContours( hsvCopy, contours, hierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE, Point(0, 0) );			
+	sort(contours.begin(), contours.end(), [](const vector<Point> & a, const vector<Point> & b) {return a.size()>b.size();});
+	vector<Point> curContoursPoly;
+	approxPolyDP(contours.at(0), curContoursPoly, 3, true);
+	Rect curBoundingRect = boundingRect(curContoursPoly);
+	float ratio = (float)curBoundingRect.width / (float)curBoundingRect.height;
+	int ret = 0;
+	if (ratio < 0.5)
+	{
+		resize(hsvImg, hsvImg, Size(40, 60));
+		ret = recognize(hsvImg);
+	}
+	else{
+		hsvImg = hsvImg(boundingRect(curContoursPoly));
+		resize(hsvImg, hsvImg, Size(40, 60));
+		ret = recognize(hsvImg);
+	} 
 	imshow("hsvImg", hsvImg);
-	return recognize(hsvImg);
+	return ret;
 }
 
 DigitRecognizer::~DigitRecognizer()
@@ -193,43 +213,12 @@ int DigitRecognizer::recognize(const Mat& img)
 	}
 	try
 	{
-		cout << ret << endl;
 		ret = segmentTable.at(ret);
 	}
 	catch (out_of_range e)
 	{
-		vector<Vec4i> lines;
-		Mat cannyImg;
-		Canny(img, cannyImg, 50, 200, 3);
-		HoughLines(cannyImg, lines, CV_PI/180, 50, 50, 10);
-		short vCount = 0, hCount = 0;
-		for (int i = 0; i < lines.size(); i++)
-		{
-			cout << "Vc............."<<vCount<<' '<<hCount<<endl;
-			Vec4i& l = lines[i];
-			int deltaX = l[0] - l[2];
-			if (!deltaX)
-			{
-				vCount++;
-				continue;
-			}
-			float k = (float)(l[1] - l[3])/(float)deltaX;
-			if (k > -1 && k < 1)
-			{
-				hCount++;
-				continue;
-			}
-			else
-			{
-				vCount++;
-			}
-		}
-		if (hCount == 1 && vCount == 1)
-		{
-			ret = 7;
-		}
-		else
-			return -1;
+
+		return -1;
 	}
 	imshow("temp", temp);
 	return ret;

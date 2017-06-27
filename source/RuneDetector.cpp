@@ -99,6 +99,7 @@ pair<int, int> RuneDetector::getTarget(const cv::Mat & image, RuneType rune_type
 #endif
 	sudoku_rects.clear();
 	digit_rects.clear();
+	one_digit_rects.clear();
 	if (checkSudoku(contours, sudoku_rects))
 	{
 		if (rune_type == RUNE_B)
@@ -138,7 +139,6 @@ bool RuneDetector::checkSudoku(const vector<vector<Point2i>> & contours, vector<
 	float low_threshold = 0.6;
 	float high_threshold = 1.2;
 	vector<Point2f> centers;
-	vector<RotatedRect> one_digit_rects;
 	float digit_avg_width = 0;
 	for (size_t i = 0; i < contours.size(); i++) {
 		RotatedRect rect = minAreaRect(contours[i]);
@@ -596,6 +596,7 @@ pair <int, int> RuneDetector::chooseMnistTarget(const Mat & inputImg, const vect
 	Rect2f boardRect = Rect2f(perspective_center, Size2f(_width, _height));
 	digitRecognizer.predict(perspective_image, boardRect);
 	*/
+	vector<Rect> digitBoundingRect;
 	sort(digit_rects.begin(), digit_rects.end(), [](const RotatedRect& a, const RotatedRect& b) { return a.center.x < b.center.x;});
 	vector<Mat> digit_images;
 	cout << "[";
@@ -604,13 +605,12 @@ pair <int, int> RuneDetector::chooseMnistTarget(const Mat & inputImg, const vect
 		Point2f pts[4];
 		vector<Point2f> vpts, t;
 		digit_rects[i].points(pts);
-		// for_each(pts, (pts + 4), [&](const Point2f& a){vpts.push_back(MatDotPoint(perspective_image, a));});
-		 for_each(pts, (pts + 4), [&](const Point2f& a){vpts.push_back(a);});
+		for_each(pts, (pts + 4), [&](const Point2f& a){vpts.push_back(a);});
 		perspectiveTransform(vpts, t, perspective_mat);
 		digit_images.push_back(perspective_image(boundingRect(t)));
 		imshow("showtime", digit_images[i]);
 		cout << digitRecognizer.process(digit_images.at(i));
-		waitKey(0);
+		// waitKey(0);
 	}
 	cout << "]";
 	cout << endl;
