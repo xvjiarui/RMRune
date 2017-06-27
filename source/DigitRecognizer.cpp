@@ -10,7 +10,7 @@ DigitRecognizer::DigitRecognizer()
 
 	rng = RNG(12345);
 
-    lowerBound = Scalar(0, 0, 170);
+    lowerBound = Scalar(0, 0, 120);
     upperBound = Scalar(255, 255, 255);
 
     segmentTable = {
