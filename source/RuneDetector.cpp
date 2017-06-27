@@ -23,8 +23,10 @@ IN THE SOFTWARE.
 #include <opencv2/features2d/features2d.hpp>
 
 #include <iostream>
+#include <string>
 
-#define SHOW_IMAGE
+//#define SHOW_IMAGE
+#define DEBUG
 
 using namespace cv;
 using namespace std;
@@ -57,7 +59,41 @@ pair<int, int> RuneDetector::getTarget(const cv::Mat & image, RuneType rune_type
 	for (int i = 0; i < contours.size(); ++i) {
 		drawContours(show, contours, i, CV_RGB(rand() % 255, rand() % 255, rand() % 255), 3, CV_FILLED);
 	}
-	imshow("contours", show);
+#elif defined(DEBUG)
+	Mat show(image.size(), CV_8UC3, Scalar(0,0,0));
+	vector<RotatedRect> contourRects;
+	vector<pair<int, float> > contourRatios;
+	RotatedRect rect;
+	for (int i = 0, RectCount = 0; i < contours.size(); ++i) {
+		rect = minAreaRect(contours[i]);
+		if (rect.size.width == 0 || rect.size.height == 0) continue;
+		rect = adjustRotatedRect(rect);
+		contourRects.push_back(rect);
+		contourRatios.push_back(make_pair(RectCount++, (float)rect.size.width / (float)rect.size.height));
+	}
+	sort(contourRatios.begin(), contourRatios.end(), [](const pair<int, float>& a, const pair<int, float>& b){return a.second < b.second;});
+	for (int i = 0, c1, c2, c3; i < contourRatios.size(); i++)
+	{
+		RotatedRect& rect = contourRects.at(contourRatios.at(i).first);
+		// drawContours(show, contours, contourRatios.at(i).first, CV_RGB(rand() % 255, rand() % 255, rand() % 255), 3, CV_FILLED);
+		c1 = rand() % 255;
+		c2 = rand() % 255;
+		c3 = rand() % 255;
+		rectangle(show, contourRects.at(contourRatios.at(i).first).boundingRect(), Scalar(c1, c2, c3));
+		putText(show, to_string(i), rect.center, FONT_HERSHEY_SIMPLEX, 0.5, Scalar(c1, c2, c3), 2);
+		cout << i << ": " << contourRatios.at(i).second << ' ' << rect.size.width << ' ' << rect.size.height << endl;
+		if ((i && i % 10 == 0) || (i == contourRatios.size() - 1))
+		{
+			imshow("contours", show);
+			if (waitKey(0) == 'n')
+			{
+				break;
+			}
+			show = Mat(image.size(), CV_8UC3, Scalar(0, 0, 0));
+		}
+	}
+	cout << "Next Frame" << endl;
+	return make_pair(-1, -1);
 #endif
 	sudoku_rects.clear();
 	if (checkSudoku(contours, sudoku_rects))
@@ -94,8 +130,7 @@ bool RuneDetector::checkSudoku(const vector<vector<Point2i>> & contours, vector<
 	float ratio = 28.0 / 16.0;
 	int sudoku = 0;
 
-	float DigitHWRatio = runesetting.DigitWidth / runesetting.DigitHeight;
-	DigitHWRatio = 1.7;
+	float DigitWHRatio = runesetting.DigitWidth / runesetting.DigitHeight;
 
 	float low_threshold = 0.6;
 	float high_threshold = 1.2;
@@ -120,9 +155,10 @@ bool RuneDetector::checkSudoku(const vector<vector<Point2i>> & contours, vector<
 			//approxPolyDP(contours[i], poly, 20, true);
 			++sudoku;
 		} 
-		else if (ratio_cur > 0.8 * DigitHWRatio && ratio_cur < 1.2 * DigitHWRatio &&
-					 s.width > 0.8  * runesetting.DigitWidth * runesetting.DigitRatio && s.width < 1.2 * runesetting.DigitWidth * runesetting.DigitRatio &&
-					 s.height > 0.8 * runesetting.DigitHeight * runesetting.DigitRatio && s.height < 1.2 * runesetting.DigitHeight * runesetting.DigitRatio)
+		else if (ratio_cur > 0.6 * DigitWHRatio && ratio_cur < 1.4 * DigitWHRatio &&
+					 s.width > 0.6  * runesetting.DigitWidth * runesetting.DigitRatio && s.width < 1.4 * runesetting.DigitWidth * runesetting.DigitRatio &&
+					 s.height > 0.6 * runesetting.DigitHeight * runesetting.DigitRatio && s.height < 1.4 * runesetting.DigitHeight * runesetting.DigitRatio &&
+					 ( (rect.angle > 65) || (rect.angle < -65) ))
 		        // ((rect.angle > -10 && rect.angle < 10) || rect.angle < -170 || rect.angle > 170))
 		{
 			digit_rects.push_back(rect);
