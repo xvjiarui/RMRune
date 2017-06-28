@@ -25,8 +25,8 @@ IN THE SOFTWARE.
 #include <iostream>
 #include <string>
 
-#define SHOW_IMAGE
-//#define DEBUG
+//#define SHOW_IMAGE
+// #define DEBUG
 
 using namespace cv;
 using namespace std;
@@ -167,10 +167,10 @@ bool RuneDetector::checkSudoku(const vector<vector<Point2i>> & contours, vector<
 			digit_rects.push_back(rect);
 			digit_avg_width += s.height;
 		}
-		else if (ratio_cur > 2.5 * DigitWHRatio && ratio_cur < 3.5 * DigitWHRatio &&
+		else if (ratio_cur > 0.6 * 3 * DigitWHRatio && ratio_cur < 1.4 * 3 * DigitWHRatio &&
 					 s.width > 0.6  * runeSetting.DigitWidth * runeSetting.DigitRatio && s.width < 1.4 * runeSetting.DigitWidth * runeSetting.DigitRatio &&
-					 s.height > 0.2 * runeSetting.DigitHeight * runeSetting.DigitRatio && s.height < 0.3 * runeSetting.DigitHeight * runeSetting.DigitRatio &&
-					 ( (rect.angle < 100 && rect.angle > 80) || (rect.angle > -100 && rect.angle < -65) ))
+					 s.height > 0.6 * runeSetting.OneHeight * runeSetting.DigitRatio && s.height < 1.4 * runeSetting.OneHeight * runeSetting.DigitRatio &&
+					 ( rect.angle > 65 || rect.angle < -65) )
 		{
 			one_digit_rects.push_back(rect);
 		}
@@ -190,22 +190,33 @@ bool RuneDetector::checkSudoku(const vector<vector<Point2i>> & contours, vector<
 		// }
 		
 	}
-	if (digit_rects.size() != 5)
+	if (one_digit_rects.size() == 1)
 	{
-		if (digit_rects.size() == 4 && one_digit_rects.size() == 1)
-		{
-			digit_avg_width /= digit_rects.size();
-			RotatedRect curRotatedRect = one_digit_rects.at(0);
-			curRotatedRect.size.height = digit_avg_width;
-			curRotatedRect.center -= Point2f(0.3 * digit_avg_width, 0);
-			digit_rects.push_back(curRotatedRect);
-		}
-		else return false;
+		digit_avg_width /= digit_rects.size();
+		RotatedRect curRotatedRect = one_digit_rects.at(0);
+		curRotatedRect.size.height = digit_avg_width;
+		curRotatedRect.center -= Point2f(0.3 * digit_avg_width, 0);
+		digit_rects.push_back(curRotatedRect);
 	}
+	/*
+	else
+	{
+		cout << "No 1." << endl;
+		return false;
+	}
+	*/
 	cout << sudoku << ' ' << digit_rects.size() << ' ' << one_digit_rects.size() << endl;
 
-	if (sudoku > 15 || sudoku < 9 || digit_rects.size() > 10 || digit_rects.size() < 4)
+	if (sudoku > 15 || sudoku < 9)
+	{
+		cout << "Sudoku gg." << endl;
 		return false;
+	}
+	if(digit_rects.size() > 10 || digit_rects.size() < 4)
+	{
+		cout << "digits gg." << endl;
+		return false;
+	}
 
 	if (sudoku > 9) {
 		float** dist_map = new float*[sudoku];
@@ -258,7 +269,11 @@ bool RuneDetector::checkSudoku(const vector<vector<Point2i>> & contours, vector<
 		sudoku_rects_temp.swap(sudoku_rects);
 		
     }
-    cout << "sudoku n: " << sudoku_rects.size()  << endl;
+	if (sudoku_rects.size() != 9)
+	{
+		cout << "Sudoku gg." << endl;
+		return false;
+	}
 
 	if (digit_rects.size() > 5)
 	{
@@ -312,8 +327,12 @@ bool RuneDetector::checkSudoku(const vector<vector<Point2i>> & contours, vector<
 		}
 		digit_rects_temp.swap(digit_rects);
 	}
-	cout << "digit n : " << digit_rects.size() << endl;
-	return sudoku_rects.size() == 9 && (digit_rects.size() == 5 || digit_rects.size() == 4);
+	if (digit_rects.size() != 5)
+	{
+		cout << "Digit gg." << endl;
+		return false;
+	}
+	return true;
 }
 /*
 int RuneDetector::findTargetORB(cv::Mat * cells) {
@@ -580,8 +599,9 @@ pair <int, int> RuneDetector::chooseMnistTarget(const Mat & inputImg, const vect
 	Mat perspective_mat = getPerspectiveTransform(src_p, dst_p);
 	Mat image_persp;
 	warpPerspective(image, image_persp, perspective_mat, Size(_width, _height));
+#ifdef SHOW_IMAGE
 	imshow("image_persp", image_persp);
-
+#endif
 	
 	dst_p.clear();
 	dst_p.push_back(_lu + Point2f(0.0, 0.0));
@@ -608,7 +628,9 @@ pair <int, int> RuneDetector::chooseMnistTarget(const Mat & inputImg, const vect
 		for_each(pts, (pts + 4), [&](const Point2f& a){vpts.push_back(a);});
 		perspectiveTransform(vpts, t, perspective_mat);
 		digit_images.push_back(perspective_image(boundingRect(t)));
+#ifdef SHOW_IMAGE
 		imshow("showtime", digit_images[i]);
+#endif
 		cout << digitRecognizer.process(digit_images.at(i));
 		// waitKey(0);
 	}

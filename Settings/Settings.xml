@@ -6,6 +6,7 @@
 <DigitRatio>1</DigitRatio>
 <DigitWidth>42</DigitWidth>
 <DigitHeight>21</DigitHeight>
+<OneHeight> 7 </OneHeight>
 <ExposureTime>64</ExposureTime>
 <HsvLowerBound>0 0 120 0</HsvLowerBound>
 <HsvUpperBound>255 255 255 0</HsvUpperBound>

@@ -16,8 +16,8 @@ IN THE SOFTWARE.
 *******************************************************************************************************************/
 
 #pragma once
+#define CAMERA_MODE
 #include "opencv2/core/core.hpp"
-#define VIDEO_MODE
 
 class RMVideoCapture {
 public:

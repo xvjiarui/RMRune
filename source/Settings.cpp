@@ -24,6 +24,7 @@ void Settings::load() {
     fin["DigitRatio"] >> Settings::runeSetting.DigitRatio;
     fin["DigitWidth"] >> Settings::runeSetting.DigitWidth;
     fin["DigitHeight"] >>  Settings::runeSetting.DigitHeight;
+	fin["OneHeight"] >> Settings::runeSetting.OneHeight;
     fin["ExposureTime"] >> Settings::cameraSetting.ExposureTime;
 	fin["CameraMatrix"] >> Settings::cameraSetting.CameraMatrix;
 	fin["DistortionMatrix"] >> Settings::cameraSetting.DistortionMatrix;
@@ -41,6 +42,7 @@ void Settings::save() {
     fout << "DigitRatio" << Settings::runeSetting.DigitRatio;
     fout << "DigitWidth" << Settings::runeSetting.DigitWidth;
     fout << "DigitHeight" << Settings::runeSetting.DigitHeight;
+	fout << "OneHeight" << Settings::runeSetting.OneHeight;
     // fout.writeComment(string("Camera-related settings\n"));
     fout << "ExposureTime" << Settings::cameraSetting.ExposureTime;
 	fout << "CameraMatrix" << Settings::cameraSetting.CameraMatrix;

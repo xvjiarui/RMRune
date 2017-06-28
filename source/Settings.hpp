@@ -16,6 +16,7 @@ class Settings {
             int CellHeight;
             int DigitWidth;
             int DigitHeight;
+			int OneHeight;
             float DigitRatio;
             short RuneSType; //0 1 2
         } runeSetting;

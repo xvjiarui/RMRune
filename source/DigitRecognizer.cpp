@@ -67,7 +67,9 @@ void DigitRecognizer::predict(const Mat& inputImg, const Rect2f & sudokuPanel)
 	cvtColor(img, grayImg, CV_BGR2GRAY);
 	GaussianBlur(grayImg, grayImg, Size(9, 9), 0);
 	Canny(grayImg, grayImg, 120, 120*2, 3);
+#ifdef SHOW_IMAGE
 	imshow("Canny", grayImg);
+#endif
 
 
 	vector<vector<Point> > digitContours;
@@ -136,7 +138,9 @@ void DigitRecognizer::predict(const Mat& inputImg, const Rect2f & sudokuPanel)
     cvtColor(digitBoardImg, hsvFrame, CV_BGR2HSV);
     inRange(hsvFrame, lowerBound, upperBound, hsvFrame);
     hsvFrame.copyTo(digitBoardImg);
+#ifdef SHOW_IMAGE
     imshow("hsvFrame", hsvFrame);
+#endif
 
 	for (int i = 0; i < digitBoundRects.size(); ++i)
 	{
@@ -182,7 +186,9 @@ int DigitRecognizer::process(const Mat& img)
 		resize(hsvImg, hsvImg, Size(40, 60));
 		ret = recognize(hsvImg);
 	} 
+#ifdef SHOW_IMAGE
 	imshow("hsvImg", hsvImg);
+#endif
 	return ret;
 }
 
@@ -220,7 +226,9 @@ int DigitRecognizer::recognize(const Mat& img)
 
 		return -1;
 	}
+#ifdef SHOW_IMAGE
 	imshow("temp", temp);
+#endif
 	return ret;
 }
 
