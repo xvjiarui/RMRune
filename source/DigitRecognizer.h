@@ -2,6 +2,7 @@
 
 #include <opencv2/opencv.hpp>
 #include <unordered_map>
+#include "Settings.hpp"
 
 using namespace std;
 using namespace cv;
@@ -11,7 +12,7 @@ typedef cv::Rect_<float> Rect2f;
 class DigitRecognizer
 {
 public:
-	DigitRecognizer();
+	DigitRecognizer(Settings::LightSetting);
 	void predict(const Mat& original_img, const Rect2f & sudoku_panel);
 	int process(const Mat& img);
 	~DigitRecognizer();	

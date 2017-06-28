@@ -20,13 +20,13 @@ void binaryMat2points(const Mat & img, vector<Point> & pts)
 }
 
 
-DigitRecognizer::DigitRecognizer()
+DigitRecognizer::DigitRecognizer(Settings::LightSetting lightSetting)
 {
 
 	rng = RNG(12345);
 
-    lowerBound = Scalar(0, 0, 120);
-    upperBound = Scalar(255, 255, 255);
+    lowerBound = lightSetting.hsvLowerBound;
+    upperBound = lightSetting.hsvUpperBound;
 
     segmentTable = {
     	{119, 0},
@@ -42,13 +42,13 @@ DigitRecognizer::DigitRecognizer()
     };
 
     segmentRects = {
-    	Rect(Point(10, 6), Point(35, 11)), // 0
-    	Rect(Point(8, 5), Point(13, 27)), // 1
+    	Rect(Point(10, 0), Point(35, 5)), // 0
+    	Rect(Point(6, 5), Point(11, 27)), // 1
     	Rect(Point(32, 5), Point(37, 27)), //2
 	    Rect(Point(5, 27), Point(35, 32)), // 3
 	    Rect(Point(3, 32), Point(8, 58)), // 4
 	    Rect(Point(27, 32), Point(32, 58)), //5
-	    Rect(Point(5, 51), Point(30, 56)) // 6
+	    Rect(Point(5, 53), Point(30, 58)) // 6
     };
 
 }

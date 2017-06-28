@@ -134,7 +134,7 @@ bool RuneDetector::checkSudoku(const vector<vector<Point2i>> & contours, vector<
 	float ratio = 28.0 / 16.0;
 	int sudoku = 0;
 
-	float DigitWHRatio = runesetting.DigitWidth / runesetting.DigitHeight;
+	float DigitWHRatio = runeSetting.DigitWidth / runeSetting.DigitHeight;
 
 	float low_threshold = 0.6;
 	float high_threshold = 1.2;
@@ -159,8 +159,8 @@ bool RuneDetector::checkSudoku(const vector<vector<Point2i>> & contours, vector<
 			++sudoku;
 		} 
 		else if (ratio_cur > 0.6 * DigitWHRatio && ratio_cur < 1.4 * DigitWHRatio &&
-					 s.width > 0.6  * runesetting.DigitWidth * runesetting.DigitRatio && s.width < 1.4 * runesetting.DigitWidth * runesetting.DigitRatio &&
-					 s.height > 0.6 * runesetting.DigitHeight * runesetting.DigitRatio && s.height < 1.4 * runesetting.DigitHeight * runesetting.DigitRatio &&
+					 s.width > 0.6  * runeSetting.DigitWidth * runeSetting.DigitRatio && s.width < 1.4 * runeSetting.DigitWidth * runeSetting.DigitRatio &&
+					 s.height > 0.6 * runeSetting.DigitHeight * runeSetting.DigitRatio && s.height < 1.4 * runeSetting.DigitHeight * runeSetting.DigitRatio &&
 					 ( rect.angle > 65 || rect.angle < -65 ))
 		        // ((rect.angle > -10 && rect.angle < 10) || rect.angle < -170 || rect.angle > 170))
 		{
@@ -168,8 +168,8 @@ bool RuneDetector::checkSudoku(const vector<vector<Point2i>> & contours, vector<
 			digit_avg_width += s.height;
 		}
 		else if (ratio_cur > 2.5 * DigitWHRatio && ratio_cur < 3.5 * DigitWHRatio &&
-					 s.width > 0.6  * runesetting.DigitWidth * runesetting.DigitRatio && s.width < 1.4 * runesetting.DigitWidth * runesetting.DigitRatio &&
-					 s.height > 0.2 * runesetting.DigitHeight * runesetting.DigitRatio && s.height < 0.3 * runesetting.DigitHeight * runesetting.DigitRatio &&
+					 s.width > 0.6  * runeSetting.DigitWidth * runeSetting.DigitRatio && s.width < 1.4 * runeSetting.DigitWidth * runeSetting.DigitRatio &&
+					 s.height > 0.2 * runeSetting.DigitHeight * runeSetting.DigitRatio && s.height < 0.3 * runeSetting.DigitHeight * runeSetting.DigitRatio &&
 					 ( (rect.angle < 100 && rect.angle > 80) || (rect.angle > -100 && rect.angle < -65) ))
 		{
 			one_digit_rects.push_back(rect);

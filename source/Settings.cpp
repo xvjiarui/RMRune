@@ -18,29 +18,33 @@ void Settings::SetFileName(const string& fn) {
 
 void Settings::load() {
     cv::FileStorage fin(Settings::filename, cv::FileStorage::READ);
-    fin["CellRatio"] >> Settings::runesetting.CellRatio;
-    fin["CellWidth"] >> Settings::runesetting.CellWidth;
-    fin["CellHeight"] >> Settings::runesetting.CellHeight;
-    fin["DigitRatio"] >> Settings::runesetting.DigitRatio;
-    fin["DigitWidth"] >> Settings::runesetting.DigitWidth;
-    fin["DigitHeight"] >>  Settings::runesetting.DigitHeight;
-    fin["ExposureTime"] >> Settings::camerasetting.ExposureTime;
-	fin["CameraMatrix"] >> Settings::camerasetting.CameraMatrix;
-	fin["DistortionMatrix"] >> Settings::camerasetting.DistortionMatrix;
+    fin["CellRatio"] >> Settings::runeSetting.CellRatio;
+    fin["CellWidth"] >> Settings::runeSetting.CellWidth;
+    fin["CellHeight"] >> Settings::runeSetting.CellHeight;
+    fin["DigitRatio"] >> Settings::runeSetting.DigitRatio;
+    fin["DigitWidth"] >> Settings::runeSetting.DigitWidth;
+    fin["DigitHeight"] >>  Settings::runeSetting.DigitHeight;
+    fin["ExposureTime"] >> Settings::cameraSetting.ExposureTime;
+	fin["CameraMatrix"] >> Settings::cameraSetting.CameraMatrix;
+	fin["DistortionMatrix"] >> Settings::cameraSetting.DistortionMatrix;
+    fin["HsvLowerBound"] >> Settings::lightSetting.hsvLowerBound;
+    fin["HsvUpperBound"] >> Settings::lightSetting.hsvUpperBound;
     fin.release();
 }
 
 void Settings::save() {
     cv::FileStorage fout(Settings::filename, cv::FileStorage::WRITE);
     // fout.writeComment(string("Rune-related settings\n"));
-    fout << "CellRatio" << Settings::runesetting.CellRatio;
-    fout << "CellWidth" << Settings::runesetting.CellWidth;
-    fout << "CellHeight" << Settings::runesetting.CellHeight;
-    fout << "DigitRatio" << Settings::runesetting.DigitRatio;
-    fout << "DigitWidth" << Settings::runesetting.DigitWidth;
-    fout << "DigitHeight" << Settings::runesetting.DigitHeight;
+    fout << "CellRatio" << Settings::runeSetting.CellRatio;
+    fout << "CellWidth" << Settings::runeSetting.CellWidth;
+    fout << "CellHeight" << Settings::runeSetting.CellHeight;
+    fout << "DigitRatio" << Settings::runeSetting.DigitRatio;
+    fout << "DigitWidth" << Settings::runeSetting.DigitWidth;
+    fout << "DigitHeight" << Settings::runeSetting.DigitHeight;
     // fout.writeComment(string("Camera-related settings\n"));
-    fout << "ExposureTime" << Settings::camerasetting.ExposureTime;
-	fout << "CameraMatrix" << Settings::camerasetting.CameraMatrix;
-	fout << "DistortionMatrix" << Settings::camerasetting.DistortionMatrix;
+    fout << "ExposureTime" << Settings::cameraSetting.ExposureTime;
+	fout << "CameraMatrix" << Settings::cameraSetting.CameraMatrix;
+	fout << "DistortionMatrix" << Settings::cameraSetting.DistortionMatrix;
+    fout << "HsvLowerBound" << Settings::lightSetting.hsvLowerBound;
+    fout << "HsvUpperBound" << Settings::lightSetting.hsvUpperBound;
 }

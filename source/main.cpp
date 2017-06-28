@@ -45,19 +45,17 @@ int main(int argc, char** argv )
 
     #ifdef RESET_SETTINGS
     settings.load();
-    settings.runesetting.DigitHeight = 15;
-    settings.runesetting.DigitWidth = 27;
-    settings.runesetting.DigitRatio = 1;
-    settings.runesetting.RuneSType = 0;
+    settings.runeSetting.DigitHeight = 15;
+    settings.runeSetting.DigitWidth = 27;
+    settings.runeSetting.DigitRatio = 1;
+    settings.runeSetting.RuneSType = 0;
     settings.save();
     return 0;
     #endif
 
     settings.load();
-    MnistRecognizer mnistRecognizer("LeNet-model");
-	DigitRecognizer digitRecognizer;
     Mat original_img;
-    RuneDetector runeDetector(settings.runesetting);
+    RuneDetector runeDetector(settings);
 
     #ifdef IMAGE_MODE
 

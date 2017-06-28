@@ -47,13 +47,12 @@ public:
         type = m_type;
 	}
 	*/
-	RuneDetector(const Settings::RuneSetting& rs)
+	RuneDetector(const Settings& settings):runeSetting(settings.runeSetting),lightSetting(settings.lightSetting),digitRecognizer(settings.lightSetting)
 	{
-		runesetting = (Settings::RuneSetting)rs;
-		sudoku_width = rs.CellWidth * rs.CellRatio;
-		sudoku_height = rs.CellHeight * rs.CellRatio;
+		sudoku_width = runeSetting.CellWidth * runeSetting.CellRatio;
+		sudoku_height = runeSetting.CellHeight * runeSetting.CellRatio;
         use_perspective = true;
-        type = (Methed_Type)rs.RuneSType;
+        type = (Methed_Type)runeSetting.RuneSType;
 	}
 	cv::RotatedRect getRotateRect(int idx){ return sudoku_rects.at(idx); }
 	const cv::RotatedRect & getRotateRect(int idx) const { return sudoku_rects.at(idx); }
@@ -93,7 +92,8 @@ private:
 	cv::Mat src;
 	MnistRecognizer mnistRecognizer;
 	DigitRecognizer digitRecognizer;
-	Settings::RuneSetting runesetting;
+	Settings::RuneSetting runeSetting;
+	Settings::LightSetting lightSetting;
 
 };
 
