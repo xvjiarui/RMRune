@@ -1,4 +1,3 @@
-#pragma once
 #include "ImgCP.hpp"
 #include "RuneDetector.hpp"
 #include "RMVideoCapture.hpp"

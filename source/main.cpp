@@ -73,22 +73,7 @@ int main(int argc, char** argv )
     runeDetector.getTarget(original_img, RuneDetector::RUNE_B);
     waitKey(0);
 
-    #elif defined(VIDEO_MODE)
-
-    if (argc != 2)
-    {
-        cout << "Please specify the video path!" << endl;
-        return -1;
-    }
-    VideoCapture cap(argv[1]);
-    
     #else
-    
-    RMVideoCapture cap("/dev/video0", 3);
-    cap.setVideoFormat(1280, 720, 1);
-    cap.setExposureTime(0, settings.cameraSetting.ExposureTime);//settings->exposure_time);
-    cap.startStream();
-    cap.info();
 
     #endif
 
@@ -99,9 +84,6 @@ int main(int argc, char** argv )
 		struct timeval tv;
 		gettimeofday(&tv, NULL);
 		suseconds_t startTime = tv.tv_usec;
-        cap >> original_img;
-		namedWindow("Original Image", WINDOW_AUTOSIZE );
-		imshow("Original Image", original_img);
 		gettimeofday(&tv, NULL);
 		suseconds_t endTime = tv.tv_usec;
 		cout << "Frame time: " << (endTime - startTime) / 1000 << endl;
@@ -112,33 +94,4 @@ int main(int argc, char** argv )
     return 0;
 }
 
-void ImgConsumer()
-{
-	try {
-		int targetIdx = runeDetector.getTarget(original_img, RuneDetector::RUNE_B).second;
-		if (targetIdx == -1)
-			continue;
-		targetIdx = 4;
-		cout << "targetIdx:" << targetIdx << endl;
-		RotatedRect targetRect = runeDetector.getRotateRect(targetIdx);
-		float CellActualWidth, CellActualHeight;
-		CellActualWidth = settings.runeSetting.CellWidth * settings.runeSetting.CellRatio;
-		CellActualHeight = settings.runeSetting.CellHeight * settings.runeSetting.CellRatio;
-		AngleSolverFactory angleSolverFactory;
-		angleSolverFactory.setSolver(new AngleSolver(settings.cameraSetting.CameraMatrix, settings.cameraSetting.DistortionMatrix,
-									CellActualWidth, CellActualHeight, 0.4));
-		angleSolverFactory.setTargetSize(CellActualWidth, CellActualHeight, AngleSolverFactory::TARGET_RUNE);
-		double angle_x, angle_y;
-		angleSolverFactory.getAngle(targetRect, AngleSolverFactory::TARGET_RUNE, angle_x, angle_y, 20, 0);
-		cout << "test angle:" << angle_x << ' ' << angle_y << endl;
-	}
-	catch (cv::Exception)
-	{
-		continue;
-	}
-	catch (exception)
-	{
-		continue;
-	}
-	cout << endl;
-}
+
