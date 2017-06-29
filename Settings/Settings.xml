@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <opencv_storage>
-<CellRatio>1</CellRatio>
+<CellRatio>1.1</CellRatio>
 <CellWidth>127</CellWidth>
 <CellHeight>71</CellHeight>
-<DigitRatio>1</DigitRatio>
+<DigitRatio>1.2</DigitRatio>
 <DigitWidth>42</DigitWidth>
 <DigitHeight>21</DigitHeight>
 <OneHeight> 7 </OneHeight>
