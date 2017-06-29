@@ -10,6 +10,7 @@
 #include "MnistRecognizer.h"
 #include "DigitRecognizer.h"
 #include "RuneDetector.hpp"
+#include "AngleSolver.hpp"
 
 // // For Debug and Test 
 // int H_L = 0;
@@ -114,7 +115,20 @@ int main(int argc, char** argv )
 		namedWindow("Original Image", WINDOW_AUTOSIZE );
 		imshow("Original Image", original_img);
         try {
-            runeDetector.getTarget(original_img, RuneDetector::RUNE_B);
+            int targetIdx = runeDetector.getTarget(original_img, RuneDetector::RUNE_B).second;
+            if (targetIdx == -1)
+                continue;
+            RotatedRect targetRect = runeDetector.getRotatedRect(targetIdx);
+            float CellActualWidth, CellActualHeight;
+            CellActualWidth = settings.runeSetting.CellWidth * settings.runeSetting.CellRatio;
+            CellActualHeight = settings.runeSetting.CellHeight * settings.runeSetting.CellRatio;
+            AngleSolverFactory* angleSolverFactory;
+            angleSolverFactory.setSolver(new AngleSolver(settings.cameraSetting.CameraMatrix, settings.cameraSetting.DistortionMatrix,
+                                        CellActualWidth, CellActualHeight));
+            angleSolverFactory.setTargetSize(CellActualWidth, CellActualHeight, TARGET_RUNE);
+            double angle_x, angle_y;
+            angleSolverFactory.getAngle(targetRect, angle_x, angle_y, 1);
+            cout << 'test angle:' << angle_x << ' ' << angle_y << endl;
         }
         catch (cv::Exception)
         {
@@ -127,7 +141,7 @@ int main(int argc, char** argv )
         cout << endl;
 		gettimeofday(&tv, NULL);
 		suseconds_t endTime = tv.tv_usec;
-		cout << "Frame time: " << (endTime - startTime) / 1000<< endl;
+		cout << "Frame time: " << (endTime - startTime) / 1000 << endl;
     }
 
     #endif
