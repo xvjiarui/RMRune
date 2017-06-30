@@ -686,6 +686,31 @@ pair <int, int> RuneDetector::chooseMnistTarget(const Mat & inputImg, const vect
 		}
 	}
 
+	// vector<vector<pair<double, int> > > orderedResults(10); // num vector<score, index>
+	// for (int i = 0; i < results.size(); ++i)
+	// {
+	// 	vector<pair<double, int> >& curScores = results.at(i);
+	// 	for (int j = 0; j < curScores.size(); ++j)
+	// 	{
+	// 		pair<double, int>& curScore = curScores.at(j);
+	// 		orderedResults.at(curScore.second).push_back(make_pair(curScore.first, i));
+	// 	}
+	// }
+
+	// for (int i = 0; i < orderedResults.size(); ++i)
+	// {
+	// 	sort(orderedResults.at(i).begin(), orderedResults.at(i).end(), [](pair<double, int> a, pair<double, int> b ){return a.first > b.first;});
+	// 	// sort(orderedResults.at(i).begin(), orderedResults.at(i).end(), greater<pair<double, int>>());
+	// }
+	// vector<int> finalResults(9);
+	// cout << "(";
+	// for (int i = 0; i < 9; ++i)
+	// {
+	// 	finalResults.at(orderedResults.at(i).at(0).second) = i;
+	// 	cout << finalResults.at(i);
+	// }
+	// cout << ")" << endl;
+
 	vector<vector<pair<double, int> >::iterator> FinalResults;
 	deque<int> check_index;
 
@@ -694,12 +719,13 @@ pair <int, int> RuneDetector::chooseMnistTarget(const Mat & inputImg, const vect
 		check_index.push_back(i);
 	}
 
+	cout << "bug head" << endl;
 	for (deque<int>::iterator idxitr1 = check_index.begin(); idxitr1 != check_index.end(); idxitr1++) {
 		for (int j = 0; j < results.size(); j++) {
 			if (*idxitr1 == j) continue;
 			int i = *idxitr1;
-			if ((*(FinalResults.at(i))).second == (*(FinalResults.at(j))).second) {
-				if ((*(FinalResults.at(i))).first < (*(FinalResults.at(j))).first && (FinalResults.at(i)) + 1 != results.at(i).end()) {
+			if (FinalResults.at(i)->second == FinalResults.at(j)->second) {
+				if ( (FinalResults.at(i)) + 1 != results.at(i).end() && (*(FinalResults.at(i))).first < (*(FinalResults.at(j))).first ) {
 					(FinalResults.at(i))++;
 					check_index.insert(idxitr1 + 1, *idxitr1);
 					break; //recompare from beginning
@@ -724,9 +750,10 @@ pair <int, int> RuneDetector::chooseMnistTarget(const Mat & inputImg, const vect
 		}
 	}
 
+	cout << "bug tail" << endl;
 	cout << "(";
 	for (int i = 0; i < FinalResults.size(); i++){
-		cout << (*(FinalResults.at(i))).second;
+		cout << FinalResults.at(i)->second;
 	}
 	cout << ")" << endl;
 	
