@@ -25,7 +25,7 @@ IN THE SOFTWARE.
 #include <iostream>
 #include <string>
 
-//#define SHOW_IMAGE
+// #define SHOW_IMAGE
 // #define DEBUG
 
 using namespace cv;

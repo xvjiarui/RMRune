@@ -1,20 +1,23 @@
 #pragma once
 #include "opencv2/opencv.hpp"
 #include "Settings.hpp"
+#include "RuneDetector.hpp"
 #include "AngleSolver.hpp"
-
-#define BUFFER_SIZE 1
 
 class ImgCP {
 	public:
-		ImgCP(Settings* _settings, const char* _videopath, int fd_car, RuneDetector* _runeDetector)
+		ImgCP(Settings* _settings, const char* _videoPath, int fd_car, RuneDetector* _runeDetector)
 		{
 			settings = _settings;
 			videoPath = _videoPath;
 			fd2car = fd_car;
 			runeDetector = _runeDetector;
-			angleSolver = NULL:
-			pIdx = cIdx = 0;
+			CellActualWidth = settings->runeSetting.CellWidth * settings->runeSetting.CellRatio;
+			CellActualHeight = settings->runeSetting.CellHeight * settings->runeSetting.CellRatio;
+			angleSolver = new AngleSolver(settings->cameraSetting.CameraMatrix, settings->cameraSetting.DistortionMatrix,
+						CellActualWidth, CellActualHeight, 0.4);
+			angleSolverFactory.setSolver(angleSolver);
+			angleSolverFactory.setTargetSize(CellActualWidth, CellActualHeight, AngleSolverFactory::TARGET_RUNE);
 		}
 		void ImageProducer();
 		void ImageConsumer();
@@ -25,7 +28,5 @@ class ImgCP {
 		RuneDetector* runeDetector;
 		AngleSolverFactory angleSolverFactory;
 		AngleSolver* angleSolver;
-		cv::Mat data[BUFFER_SIZE];
-		unsigned int pIdx;
-		unsigned int cIdx;
+		float CellActualWidth, CellActualHeight;
 };
