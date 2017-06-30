@@ -59,7 +59,6 @@ int main(int argc, char** argv )
 
     settings.load();
     Mat original_img;
-    RuneDetector runeDetector(settings);
 
     #ifdef IMAGE_MODE
 
@@ -71,12 +70,13 @@ int main(int argc, char** argv )
     original_img = imread(argv[1]);
     namedWindow("Original Image", WINDOW_AUTOSIZE );
     imshow("Original Image", original_img);
+    RuneDetector runeDetector(settings);
     runeDetector.getTarget(original_img, RuneDetector::RUNE_B);
     waitKey(0);
 
     #else
 
-    ImgCP imgCP(&settings, argv[1], 0, &runeDetector);
+    ImgCP imgCP(&settings, argv[1], 0);
     cout << "imgCP" << endl;
     std::thread t1(&ImgCP::ImageProducer, imgCP); // pass by reference
     std::thread t2(&ImgCP::ImageConsumer, imgCP);
@@ -86,15 +86,6 @@ int main(int argc, char** argv )
 
     #endif
 
-    // struct timeval tv;
-    // gettimeofday(&tv, NULL);
-    // suseconds_t startTime = tv.tv_usec;
-    // cap >> original_img;
-    // namedWindow("Original Image", WINDOW_AUTOSIZE );
-    // imshow("Original Image", original_img);
-    // gettimeofday(&tv, NULL);
-    // suseconds_t endTime = tv.tv_usec;
-    // cout << "Frame time: " << (endTime - startTime) / 1000 << endl;
 
     return 0;
 }
