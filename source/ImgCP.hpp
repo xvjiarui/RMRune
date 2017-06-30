@@ -3,15 +3,16 @@
 #include "Settings.hpp"
 #include "RuneDetector.hpp"
 #include "AngleSolver.hpp"
+#include "RuneDetector.hpp"
 
 class ImgCP {
 	public:
 		ImgCP(Settings* _settings, const char* _videoPath, int fd_car, RuneDetector* _runeDetector)
 		{
 			settings = _settings;
-			videoPath = _videoPath;
 			fd2car = fd_car;
 			runeDetector = _runeDetector;
+			videoPath =_videoPath;
 			CellActualWidth = settings->runeSetting.CellWidth * settings->runeSetting.CellRatio;
 			CellActualHeight = settings->runeSetting.CellHeight * settings->runeSetting.CellRatio;
 			angleSolver = new AngleSolver(settings->cameraSetting.CameraMatrix, settings->cameraSetting.DistortionMatrix,
