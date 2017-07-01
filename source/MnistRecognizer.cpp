@@ -82,7 +82,8 @@ vector<pair<double, int> > MnistRecognizer::recognize_primary(const Mat& img)
 		scores.emplace_back(rescale<tanh_layer>(res[i]), i);
 	}
 
-	sort(scores.begin(), scores.end(), greater<pair<double, int>>());
+	// sort(scores.begin(), scores.end(), [](const pair<double, int>& a,const pair<double, int>& b){return a.first > b.first;});
+	sort(scores.begin(), scores.end(), greater<pair<double, int> >());
 	return scores;
 }
 

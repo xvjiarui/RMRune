@@ -90,7 +90,7 @@ private:
     bool use_perspective;
     Methed_Type type;
 	cv::Mat src;
-	MnistRecognizer mnistRecognizer;
+	MnistRecognizer mnistRecognizer[9]; // 9 for 9 sudoku_img, cannot share due to multi thread
 	DigitRecognizer digitRecognizer;
 	Settings::RuneSetting runeSetting;
 	Settings::LightSetting lightSetting;
