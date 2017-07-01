@@ -732,12 +732,6 @@ pair <int, int> RuneDetector::chooseMnistTarget(const Mat & inputImg, const vect
 	{
 		t.join();
 	}
-	/*
-	for(size_t i = 0; i<sudoku_imgs.size(); i++)
-	{
-		results[i] = mnistRecognizer.recognize_primary(sudoku_imgs.at(i));
-	}
-	*/
 
 	 vector<vector<pair<double, int> >::iterator> FinalResults;
 	 deque<int> check_index;
