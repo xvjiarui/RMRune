@@ -24,6 +24,8 @@ IN THE SOFTWARE.
 
 #include <iostream>
 #include <string>
+#include <thread>
+#include <cstdio>
 
 // #define SHOW_IMAGE
 // #define DEBUG
@@ -612,10 +614,6 @@ pair <int, int> RuneDetector::chooseMnistTarget(const Mat & inputImg, const vect
 	Point2f perspective_center = MatDotPoint(perspective_mat, center_avg);
 	Mat perspective_image;
 	warpPerspective(inputImg, perspective_image, perspective_mat, inputImg.size());
-	/*
-	Rect2f boardRect = Rect2f(perspective_center, Size2f(_width, _height));
-	digitRecognizer.predict(perspective_image, boardRect);
-	*/
 	vector<Rect> digitBoundingRect;
 	sort(digit_rects.begin(), digit_rects.end(), [](const RotatedRect& a, const RotatedRect& b) { return a.center.x < b.center.x;});
 	vector<Mat> digit_images;
@@ -673,19 +671,53 @@ pair <int, int> RuneDetector::chooseMnistTarget(const Mat & inputImg, const vect
     int height_start[] = { half_h_gap, int((_height - cell_height) / 2), int(_height - cell_height - half_h_gap) };
 
 	vector<vector<pair<double, int> > > results;
-	Mat temp;
+	results.reserve(100);
+	vector<thread> mnistThreads;
+	mnistThreads.reserve(100);
 
 	for (size_t i = 0; i < 3; i++){
 		for (size_t j = 0; j < 3; j++){
 			size_t idx = i * 3 + j;
             Rect cell_roi(width_start[j]+offset_x, height_start[i]+offset_y, cell_width, cell_height);
+            Mat temp;
 			image_persp(cell_roi).copyTo(temp);
 			threshold(temp, temp, 120, 255, THRESH_BINARY);
 			resize(temp, temp, Size(28, 28));
-			results.push_back(mnistRecognizer.recognize_primary(temp));
+			sudoku_imgs.push_back(temp);
+		}
+	}
+	volatile int curIdx = 0;
+	for (size_t i = 0; i < 3; i++){
+		for (size_t j = 0; j < 3; j++){
+			size_t idx = i * 3 + j;
+			fprintf(stderr, "%d\n", idx);
+			mnistThreads.push_back(thread([&, idx](){
+				fprintf(stderr, "\t%d\n", idx);
+				//vector<pair<double, int> > result = mnistRecognizer.recognize_primary(sudoku_imgs.at(idx));
+				results.push_back(mnistRecognizer.recognize_primary(sudoku_imgs.at(idx)));
+				//while(curIdx != idx);
+				//results[idx] = result;
+				fprintf(stderr, "0x%X 0x%X\n", &results[0], &mnistThreads[0]);
+				// curIdx++;
+				cout << "Next" << endl;
+			}));
 		}
 	}
 
+
+
+	cout << "join" << endl;
+	for(auto& t:mnistThreads)
+	{
+		t.join();
+	}
+	cout <<"233" << endl;
+	cout << "results:" << results.size() << endl;
+	for (int i = 0; i < 9; ++i)
+	{
+		cout << results.at(i).at(0).second;
+	}
+	cout << "Finish" <<endl;
 	// vector<vector<pair<double, int> > > orderedResults(10); // num vector<score, index>
 	// for (int i = 0; i < results.size(); ++i)
 	// {
@@ -711,51 +743,51 @@ pair <int, int> RuneDetector::chooseMnistTarget(const Mat & inputImg, const vect
 	// }
 	// cout << ")" << endl;
 
-	vector<vector<pair<double, int> >::iterator> FinalResults;
-	deque<int> check_index;
+	// vector<vector<pair<double, int> >::iterator> FinalResults;
+	// deque<int> check_index;
 
-	for (int i = 0; i < results.size(); i++) {
-		FinalResults.push_back(results.at(i).begin());
-		check_index.push_back(i);
-	}
+	// for (int i = 0; i < results.size(); i++) {
+	// 	FinalResults.push_back(results.at(i).begin());
+	// 	check_index.push_back(i);
+	// }
 
-	cout << "bug head" << endl;
-	for (deque<int>::iterator idxitr1 = check_index.begin(); idxitr1 != check_index.end(); idxitr1++) {
-		for (int j = 0; j < results.size(); j++) {
-			if (*idxitr1 == j) continue;
-			int i = *idxitr1;
-			if (FinalResults.at(i)->second == FinalResults.at(j)->second) {
-				if ( (FinalResults.at(i)) + 1 != results.at(i).end() && (*(FinalResults.at(i))).first < (*(FinalResults.at(j))).first ) {
-					(FinalResults.at(i))++;
-					check_index.insert(idxitr1 + 1, *idxitr1);
-					break; //recompare from beginning
-				}
-				else {
-					if (FinalResults.at(j) + 1 == results.at(j).end())
-					{
-						if ((FinalResults.at(i)) + 1 != results.at(i).end()) {
-							(FinalResults.at(i))++;
-							check_index.insert(idxitr1 + 1, *idxitr1);
-							break; //recompare from beginning
-						}
-						else {
-							//both conflict > 10 times -> should be impossible to solve
-							return make_pair(-1, -1);
-						}
-					}
-					(FinalResults.at(j))++;
-					check_index.insert(idxitr1 + 1, j);
-				}
-			}
-		}
-	}
+	// cout << "bug head" << endl;
+	// for (deque<int>::iterator idxitr1 = check_index.begin(); idxitr1 != check_index.end(); idxitr1++) {
+	// 	for (int j = 0; j < results.size(); j++) {
+	// 		if (*idxitr1 == j) continue;
+	// 		int i = *idxitr1;
+	// 		if (FinalResults.at(i)->second == FinalResults.at(j)->second) {
+	// 			if ( (FinalResults.at(i)) + 1 != results.at(i).end() && (*(FinalResults.at(i))).first < (*(FinalResults.at(j))).first ) {
+	// 				(FinalResults.at(i))++;
+	// 				check_index.insert(idxitr1 + 1, *idxitr1);
+	// 				break; //recompare from beginning
+	// 			}
+	// 			else {
+	// 				if (FinalResults.at(j) + 1 == results.at(j).end())
+	// 				{
+	// 					if ((FinalResults.at(i)) + 1 != results.at(i).end()) {
+	// 						(FinalResults.at(i))++;
+	// 						check_index.insert(idxitr1 + 1, *idxitr1);
+	// 						break; //recompare from beginning
+	// 					}
+	// 					else {
+	// 						//both conflict > 10 times -> should be impossible to solve
+	// 						return make_pair(-1, -1);
+	// 					}
+	// 				}
+	// 				(FinalResults.at(j))++;
+	// 				check_index.insert(idxitr1 + 1, j);
+	// 			}
+	// 		}
+	// 	}
+	// }
 
-	cout << "bug tail" << endl;
-	cout << "(";
-	for (int i = 0; i < FinalResults.size(); i++){
-		cout << FinalResults.at(i)->second;
-	}
-	cout << ")" << endl;
+	// cout << "bug tail" << endl;
+	// cout << "(";
+	// for (int i = 0; i < FinalResults.size(); i++){
+	// 	cout << FinalResults.at(i)->second;
+	// }
+	// cout << ")" << endl;
 	
 	return make_pair(0,0);
 }
