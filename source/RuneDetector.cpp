@@ -103,11 +103,11 @@ pair<int, int> RuneDetector::getTarget(const cv::Mat & image, RuneType rune_type
 	sudoku_rects.clear();
 	digit_rects.clear();
 	one_digit_rects.clear();
-	sudoku_imgs.clear();
 	if (checkSudoku(contours, sudoku_rects))
 	{
 		if (rune_type == RUNE_B)
 		{
+			sudoku_imgs.clear();
 			pair<int, int> idx = chooseMnistTarget(image, sudoku_rects);
 			return idx;
 		}
@@ -631,7 +631,12 @@ pair <int, int> RuneDetector::chooseMnistTarget(const Mat & inputImg, const vect
 #ifdef SHOW_IMAGE
 		imshow("showtime", digit_images[i]);
 #endif
-		cout << digitRecognizer.process(digit_images.at(i));
+		int curDigit = digitRecognizer.process(digit_images.at(i));
+		if (curDigit != -1)
+		{
+			digit_results.at(i) = curDigit;
+		}
+		cout << digit_results.at(i);
 		// waitKey(0);
 	}
 	cout << "]";
@@ -774,16 +779,14 @@ pair <int, int> RuneDetector::chooseMnistTarget(const Mat & inputImg, const vect
 
 	 cout << "(";
 	 for (int i = 0; i < FinalResults.size(); i++){
-	 	cout << FinalResults.at(i)->second;
-		//sort(results[i].begin(), results[i].end());
-	 	//cout << results[i][9].second;
+	 	sudoku_indexs.at(FinalResults.at(i)->second) = i;
+		cout << FinalResults.at(i)->second;
 	 }
 	 cout << ")" << endl;
 	 cout << "{";
-	 for (int i = 0; i < FinalResults.size(); i++){
-	 	//cout << FinalResults.at(i)->second;
-		sort(results[i].begin(), results[i].end());
-	 	cout << results[i][9].second;
+	 for (int i = 0; i < digit_results.size(); i++)
+	 {
+		 cout << getSudokuIndex(digit_results.at(i));
 	 }
 	 cout << "}" << endl;
 	

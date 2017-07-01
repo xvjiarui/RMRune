@@ -53,12 +53,15 @@ public:
 		sudoku_height = runeSetting.CellHeight * runeSetting.CellRatio;
         use_perspective = true;
         type = (Methed_Type)runeSetting.RuneSType;
+		sudoku_indexs.resize(10);
+		digit_results.resize(5);
 	}
 	cv::RotatedRect getRotateRect(int idx){ return sudoku_rects.at(idx); }
 	const cv::RotatedRect & getRotateRect(int idx) const { return sudoku_rects.at(idx); }
 
 	cv::Mat getSudokuImgs(int idx){ return sudoku_imgs.at(idx); }
 	const cv::Mat & getSudokuImgs(int idx) const { return sudoku_imgs.at(idx); }
+	int getSudokuIndex(int num) {return sudoku_indexs.at(num);}
     /**
      * @brief getTarget
      * @param image
@@ -85,6 +88,8 @@ private:
 	std::vector<cv::RotatedRect> digit_rects; // before perspective transform
 	std::vector<cv::RotatedRect> one_digit_rects; // before perspective transform
 	std::vector<cv::Mat> sudoku_imgs;
+	std::vector<int> sudoku_indexs; // use to find the index of img of num
+	std::vector<int> digit_results;
 	int sudoku_width;	 // pixel
 	int sudoku_height;   // pixel
     bool use_perspective;
