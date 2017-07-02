@@ -27,6 +27,7 @@ IN THE SOFTWARE.
 #include <thread>
 #include <cstdio>
 #include <unordered_map>
+#include "Voter.hpp"
 
 // #define SHOW_IMAGE
 // #define DEBUG
@@ -178,20 +179,6 @@ bool RuneDetector::checkSudoku(const vector<vector<Point2i>> & contours, vector<
 		{
 			one_digit_rects.push_back(rect);
 		}
-		// else
-		// {
-		// 	cout << ratio_cur << endl;
-		// 	cout << s.width << " " << s.height << endl;
-		// }
-		
-		// else {
-		// 	//the debugging code to quickly find suitable ratio and width which is prepared for possible debug
-		// 	Mat show(Size(1280, 720), CV_8UC3, Scalar(0,0,0));
-		// 	rectangle(show, rect.boundingRect(), Scalar(255, 255, 255));
-		// 	imshow("hi", show);
-		// 	cout << ratio_cur << ' ' << s.width << ' ' << s.height  << " " << rect.angle<< endl;
-		// 	waitKey(0);
-		// }
 		
 	}
 	if (one_digit_rects.size() == 1)
@@ -202,13 +189,6 @@ bool RuneDetector::checkSudoku(const vector<vector<Point2i>> & contours, vector<
 		curRotatedRect.center -= Point2f(0.3 * digit_avg_width, 0);
 		digit_rects.push_back(curRotatedRect);
 	}
-	/*
-	else
-	{
-		cout << "No 1." << endl;
-		return false;
-	}
-	*/
 	cout << sudoku << ' ' << digit_rects.size() << ' ' << one_digit_rects.size() << endl;
 
 	if (sudoku > 15 || sudoku < 9)
@@ -338,7 +318,6 @@ bool RuneDetector::checkSudoku(const vector<vector<Point2i>> & contours, vector<
 	}
 	return true;
 }
-/*
 int RuneDetector::findTargetORB(cv::Mat * cells) {
 	Mat descriptor[9];
 	vector<vector<KeyPoint> > keypoints;
@@ -391,7 +370,6 @@ int RuneDetector::findTargetORB(cv::Mat * cells) {
 	}
 	return min_idx;
 }
-*/
 
 // int RuneDetector::findTargetCanny(cv::Mat * cells){
 //    int min_count = 65535;
@@ -642,6 +620,29 @@ pair <int, int> RuneDetector::chooseMnistTarget(const Mat & inputImg, const vect
 	cout << "]";
 	cout << endl;
 
+	static Voter<vector<int> > digitVoter(voteSetting);
+	static vector<int> lastDigitResult;
+	vector<int> tempDigitResults;
+	static int curShootIdx = 0;
+	static bool isNewDigit = false;
+	
+	digitVoter.PushElement(digit_results);
+	if (digitVoter.GetBestElement(tempDigitResults))
+	{
+		if (lastDigitResult != tempDigitResults)
+		{
+			curShootIdx = 0;
+		}
+		else
+		{
+			if (++curShootIdx >= 5)
+				curShootIdx = 0;
+		}
+		lastDigitResult = tempDigitResults;
+		digitVoter.RemoveOldElements(voteSetting.saveTime);
+		isNewDigit = true;
+	}
+
 
 	// calculate the average width and hieght of each cell
 	const double * pdata = (double *)perspective_mat.data;
@@ -691,44 +692,12 @@ pair <int, int> RuneDetector::chooseMnistTarget(const Mat & inputImg, const vect
 			sudoku_imgs.push_back(temp);
 		}
 	}
-	/*
-
-	volatile bool locked = false;
-	for(size_t i = 0; i < sudoku_imgs.size(); i++)
-	{
-		mnistThreads.push_back(thread([&, i](){
-			int ii = i;
-			fprintf(stderr, "foo%d\n", ii);
-			while (locked);
-			locked = true;
-			//results.insert(foo);
-			//results[ii] = mnistRecognizer.recognize_primary(sudoku_imgs.at(ii));
-			for (int j = 0; j < 10; ++j)
-				results[ii].push_back(make_pair(j==ii?1.0:0.0, j));
-			locked = false;
-			//results.insert(make_pair(ii,mnistRecognizer.recognize_primary(sudoku_imgs.at(ii))));
-		}));
-	}
-
-	*/
 	for(size_t i = 0; i < sudoku_imgs.size(); i++)
 	{
 		
 		mnistThreads.push_back(thread([&, i](){
 			results.at(i) = mnistRecognizer[i].recognize_primary(sudoku_imgs.at(i));
 		}));
-		
-
-		/*
-		mnistThreads.push_back(thread([&, i](){
-					vector<pair<double, int> > temp;
-			for (int j = 0; j < 10; ++j)
-			{
-				temp.push_back(make_pair(j==i?1.0:0.0, j));
-			}
-			results.at(i) = temp;
-		}));
-		*/
 
 	}
 
@@ -747,50 +716,80 @@ pair <int, int> RuneDetector::chooseMnistTarget(const Mat & inputImg, const vect
 	 }
 
 	 for (deque<int>::iterator idxitr1 = check_index.begin(); idxitr1 != check_index.end(); idxitr1++) {
-	 	for (int j = 0; j < results.size(); j++) {
-	 		if (*idxitr1 == j) continue;
-	 		int i = *idxitr1;
-	 		if (FinalResults.at(i)->second == FinalResults.at(j)->second) {
-	 			if ( (FinalResults.at(i)) + 1 != results.at(i).end() && (*(FinalResults.at(i))).first < (*(FinalResults.at(j))).first ) {
-	 				(FinalResults.at(i))++;
-	 				check_index.insert(idxitr1 + 1, *idxitr1);
-	 				break; //recompare from beginning
-	 			}
-	 			else {
-	 				if (FinalResults.at(j) + 1 == results.at(j).end())
-	 				{
-	 					if ((FinalResults.at(i)) + 1 != results.at(i).end()) {
-	 						(FinalResults.at(i))++;
-	 						check_index.insert(idxitr1 + 1, *idxitr1);
-	 						break; //recompare from beginning
-	 					}
-	 					else {
-	 						//both conflict > 10 times -> should be impossible to solve
-							cout << "wtf" << endl;
-	 						return make_pair(-1, -1);
-	 					}
-	 				}
-	 				(FinalResults.at(j))++;
-	 				check_index.insert(idxitr1 + 1, j);
-	 			}
-	 		}
-	 	}
+		 for (int j = 0; j < results.size(); j++) {
+			 if (*idxitr1 == j) continue;
+			 int i = *idxitr1;
+			 if (FinalResults.at(i)->second == FinalResults.at(j)->second) {
+				 if ( (FinalResults.at(i)) + 1 != results.at(i).end() && (*(FinalResults.at(i))).first < (*(FinalResults.at(j))).first ) {
+					 (FinalResults.at(i))++;
+					 check_index.insert(idxitr1 + 1, *idxitr1);
+					 break; //recompare from beginning
+				 }
+				 else {
+					 if (FinalResults.at(j) + 1 == results.at(j).end())
+					 {
+						 if ((FinalResults.at(i)) + 1 != results.at(i).end()) {
+							 (FinalResults.at(i))++;
+							 check_index.insert(idxitr1 + 1, *idxitr1);
+							 break; //recompare from beginning
+						 }
+						 else {
+							 //both conflict > 10 times -> should be impossible to solve
+							 return make_pair(-1, -1);
+						 }
+					 }
+					 (FinalResults.at(j))++;
+					 check_index.insert(idxitr1 + 1, j);
+				 }
+			 }
+		 }
 	 }
+
+	 vector<int> mnistResult;
 
 	 cout << "(";
 	 for (int i = 0; i < FinalResults.size(); i++){
-	 	sudoku_indexs.at(FinalResults.at(i)->second) = i;
+	 	//sudoku_indexs.at(FinalResults.at(i)->second) = i;
 		cout << FinalResults.at(i)->second;
+		mnistResult.push_back(FinalResults.at(i)->second);
 	 }
 	 cout << ")" << endl;
-	 cout << "{";
-	 for (int i = 0; i < digit_results.size(); i++)
+
+	 static Voter<vector<int> > mnistVoter(voteSetting);
+	 static vector<int>  lastMnistResult;
+	 vector<int> tempMnistResult;
+	 static bool isNewMnist = false;
+
+	 mnistVoter.PushElement(mnistResult);
+	 if(mnistVoter.GetBestElement(tempMnistResult))
 	 {
-		 cout << getSudokuIndex(digit_results.at(i));
+		 mnistResult = tempMnistResult;
+		 lastMnistResult = mnistResult;
+		 mnistVoter.RemoveOldElements(voteSetting.saveTime);
+		 isNewMnist = true;
+	 }
+
+	 if (!isNewMnist || !isNewDigit) return make_pair(-1, -1);
+	 isNewMnist = isNewDigit = false;
+
+	 cout << "\"";
+	 for (int i = 0; i < lastMnistResult.size(); i++){
+	 	sudoku_indexs.at(lastMnistResult.at(i)) = i;
+		cout << lastMnistResult.at(i);
+	 }
+	 cout << "\"" << endl;
+	 
+	 cout << "{";
+	 for (int i = 0; i < lastDigitResult.size(); i++)
+	 {
+		 cout << getSudokuIndex(lastDigitResult.at(i));
 	 }
 	 cout << "}" << endl;
-	
-	return make_pair(0,0);
+	 cout << "----------------------------" << endl;
+	 cout << curShootIdx << ' ' << lastDigitResult.at(curShootIdx) << ' ' << getSudokuIndex(lastDigitResult.at(curShootIdx)) << endl;
+	 cout << "----------------------------" << endl;
+
+	 return make_pair(1, getSudokuIndex(lastDigitResult.at(curShootIdx)));
 }
 
 pair<int, int> RuneDetector::chooseTargetPerspective(const Mat & image, const vector<RotatedRect> & sudoku_rects) {

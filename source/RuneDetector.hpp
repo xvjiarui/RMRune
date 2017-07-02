@@ -22,6 +22,7 @@ IN THE SOFTWARE.
 #include "MnistRecognizer.h"
 #include "DigitRecognizer.h"
 #include "Settings.hpp"
+#include "Voter.hpp"
 
 #include <vector>
 #include <utility>
@@ -47,7 +48,7 @@ public:
         type = m_type;
 	}
 	*/
-	RuneDetector(const Settings& settings):runeSetting(settings.runeSetting),lightSetting(settings.lightSetting),digitRecognizer(settings.lightSetting)
+	RuneDetector(const Settings& settings):runeSetting(settings.runeSetting),lightSetting(settings.lightSetting),digitRecognizer(settings.lightSetting),voteSetting(settings.voteSetting)
 	{
 		sudoku_width = runeSetting.CellWidth * runeSetting.CellRatio;
 		sudoku_height = runeSetting.CellHeight * runeSetting.CellRatio;
@@ -99,6 +100,6 @@ private:
 	DigitRecognizer digitRecognizer;
 	Settings::RuneSetting runeSetting;
 	Settings::LightSetting lightSetting;
-
+	Settings::VoteSetting voteSetting;
 };
 

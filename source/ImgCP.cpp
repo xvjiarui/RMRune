@@ -7,7 +7,6 @@
 
 using namespace std;
 using namespace cv;
-#define VIDEO_MODE
 
 #define BUFFER_SIZE 1
 volatile unsigned int pIdx = 0;
@@ -55,7 +54,6 @@ void ImgCP::ImageConsumer()
 {
 	int startTime = 0;
 	int endTime = 0;
-	bool countTime = false;
 	Settings& settings = *ImgCP::settings;
 	RuneDetector runeDetector(settings);
 	AngleSolverFactory angleSolverFactory;
@@ -66,7 +64,7 @@ void ImgCP::ImageConsumer()
 				CellActualWidth, CellActualHeight, 0.4);
 	angleSolverFactory.setSolver(&angleSolver);
 	angleSolverFactory.setTargetSize(CellActualWidth, CellActualHeight, AngleSolverFactory::TARGET_RUNE);
-	Voter<int> idxVoter(settings.voteSetting);
+	bool countTime = false;
 	while(1)
 	{
 		while (pIdx - cIdx == 0);
@@ -79,22 +77,18 @@ void ImgCP::ImageConsumer()
 		try {
 			int targetIdx = runeDetector.getTarget(original_img, RuneDetector::RUNE_B).second;
 			if (targetIdx == -1)
-				continue;
-			idxVoter.PushElement(targetIdx);
-			if (!idxVoter.GetBestElement(targetIdx))
 			{
 				countTime = true;
 				continue;
 			}
-			idxVoter.RemoveOldElements();
 			cout << "targetIdx:" << targetIdx << endl;
 			RotatedRect targetRect = runeDetector.getRotateRect(targetIdx);
 			double angle_x, angle_y;
 			angleSolverFactory.getAngle(targetRect, AngleSolverFactory::TARGET_RUNE, angle_x, angle_y, 20, 0);
 			cout << "test angle:" << angle_x << ' ' << angle_y << endl;
 			endTime = getTickCount();
-			countTime = false;
 		    cout << "Frame time: " << (endTime - startTime) * 1000.0 / getTickFrequency() << endl;
+			countTime = false;
 		}
 		catch (cv::Exception)
 		{

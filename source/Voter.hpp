@@ -70,7 +70,7 @@ bool Voter<T>::RemoveOldElements(int num)
 {
     if (num == -1)
     {
-        num = voteTime;
+		num = voteTime;
     }
     if (num > data.size() || num < 0)
     {
