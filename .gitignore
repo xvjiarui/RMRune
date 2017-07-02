@@ -43,3 +43,4 @@ CTestTestfile.cmake
 *.app
 function_test
 debug_*
+*.swp

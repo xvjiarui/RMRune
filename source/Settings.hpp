@@ -32,6 +32,11 @@ class Settings {
             cv::Scalar hsvUpperBound;
         } lightSetting;
 
+        struct VoteSetting
+        {
+            int saveTime;
+        } voteSetting;
+
       private:
         std::string filename;
 };

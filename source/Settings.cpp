@@ -30,6 +30,7 @@ void Settings::load() {
 	fin["DistortionMatrix"] >> Settings::cameraSetting.DistortionMatrix;
     fin["HsvLowerBound"] >> Settings::lightSetting.hsvLowerBound;
     fin["HsvUpperBound"] >> Settings::lightSetting.hsvUpperBound;
+    fin["VoterSaveTime"] >> Settings::voteSetting.saveTime;
     fin.release();
 }
 
@@ -43,10 +44,11 @@ void Settings::save() {
     fout << "DigitWidth" << Settings::runeSetting.DigitWidth;
     fout << "DigitHeight" << Settings::runeSetting.DigitHeight;
 	fout << "OneHeight" << Settings::runeSetting.OneHeight;
+    fout << "VoterSaveTime" << Settings::voteSetting.saveTime;
     // fout.writeComment(string("Camera-related settings\n"));
     fout << "ExposureTime" << Settings::cameraSetting.ExposureTime;
-	fout << "CameraMatrix" << Settings::cameraSetting.CameraMatrix;
-	fout << "DistortionMatrix" << Settings::cameraSetting.DistortionMatrix;
     fout << "HsvLowerBound" << Settings::lightSetting.hsvLowerBound;
     fout << "HsvUpperBound" << Settings::lightSetting.hsvUpperBound;
+	fout << "CameraMatrix" << Settings::cameraSetting.CameraMatrix;
+	fout << "DistortionMatrix" << Settings::cameraSetting.DistortionMatrix;
 }

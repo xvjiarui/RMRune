@@ -1,15 +1,18 @@
 <?xml version="1.0"?>
 <opencv_storage>
-<CellRatio>1.1</CellRatio>
+<CellRatio>1.1000000238418579e+00</CellRatio>
 <CellWidth>127</CellWidth>
 <CellHeight>71</CellHeight>
-<DigitRatio>1.2</DigitRatio>
+<DigitRatio>1.2000000476837158e+00</DigitRatio>
 <DigitWidth>42</DigitWidth>
 <DigitHeight>21</DigitHeight>
-<OneHeight> 7 </OneHeight>
+<OneHeight>7</OneHeight>
+<VoterSaveTime>5</VoterSaveTime>
 <ExposureTime>64</ExposureTime>
-<HsvLowerBound>0 0 120 0</HsvLowerBound>
-<HsvUpperBound>255 255 255 0</HsvUpperBound>
+<HsvLowerBound>
+  0. 0. 120. 0.</HsvLowerBound>
+<HsvUpperBound>
+  255. 255. 255. 0.</HsvUpperBound>
 <CameraMatrix type_id="opencv-matrix">
   <rows>3</rows>
   <cols>3</cols>

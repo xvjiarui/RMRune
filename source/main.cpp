@@ -38,7 +38,7 @@
  #define VIDEO_MODE
 // #define IMAGE_MODE
 
-//#define RESET_SETTINGS
+// #define RESET_SETTINGS
 
 #ifdef CAMERA_MODE
 #include "RMVideoCapture.hpp"
@@ -49,10 +49,7 @@ int main(int argc, char** argv )
 
     #ifdef RESET_SETTINGS
     settings.load();
-    settings.runeSetting.DigitHeight = 15;
-    settings.runeSetting.DigitWidth = 27;
-    settings.runeSetting.DigitRatio = 1;
-    settings.runeSetting.RuneSType = 0;
+    settings.voteSetting.saveTime = 5;
     settings.save();
     return 0;
     #endif
