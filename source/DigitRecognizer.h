@@ -8,6 +8,7 @@ using namespace std;
 using namespace cv;
 
 typedef cv::Rect_<float> Rect2f;
+#define ADJUST_HSV
 
 class DigitRecognizer
 {

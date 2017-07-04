@@ -4,7 +4,6 @@
 #include "DigitRecognizer.h"
 #include "RuneDetector.hpp"
 #define SHOW_IMAGE
-#define ADJUST_HSV
 
 void binaryMat2points(const Mat & img, vector<Point> & pts)
 {
