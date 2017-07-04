@@ -20,6 +20,7 @@ class Settings {
 			int OneHeight;
             float DigitRatio;
             short RuneSType; //0 1 2
+			int MnistThreshold;
         } runeSetting;
         struct CameraSetting
         {

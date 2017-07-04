@@ -18,6 +18,8 @@ void Settings::SetFileName(const string& fn) {
 
 void Settings::load() {
     cv::FileStorage fin(Settings::filename, cv::FileStorage::READ);
+	fin["MnistThreshold"] >> Settings::runeSetting.MnistThreshold;
+	fin["RuneSType"] >> Settings::runeSetting.RuneSType;
     fin["CellRatio"] >> Settings::runeSetting.CellRatio;
     fin["CellWidth"] >> Settings::runeSetting.CellWidth;
     fin["CellHeight"] >> Settings::runeSetting.CellHeight;
@@ -37,6 +39,8 @@ void Settings::load() {
 void Settings::save() {
     cv::FileStorage fout(Settings::filename, cv::FileStorage::WRITE);
     // fout.writeComment(string("Rune-related settings\n"));
+	fout << "MnistThreshold" << Settings::runeSetting.MnistThreshold;
+	fout << "RuneSType" << Settings::runeSetting.RuneSType;
     fout << "CellRatio" << Settings::runeSetting.CellRatio;
     fout << "CellWidth" << Settings::runeSetting.CellWidth;
     fout << "CellHeight" << Settings::runeSetting.CellHeight;

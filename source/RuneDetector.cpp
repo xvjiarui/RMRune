@@ -695,7 +695,7 @@ pair <int, int> RuneDetector::chooseMnistTarget(const Mat & inputImg, const vect
             Rect cell_roi(width_start[j]+offset_x, height_start[i]+offset_y, cell_width, cell_height);
             Mat temp;
 			image_persp(cell_roi).copyTo(temp);
-			threshold(temp, temp, 140, 255, THRESH_BINARY);
+			threshold(temp, temp, runeSetting.MnistThreshold, 255, THRESH_BINARY);
 			resize(temp, temp, Size(28, 28));
 			sudoku_imgs.push_back(temp);
 		}
