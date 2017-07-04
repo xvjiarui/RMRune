@@ -30,5 +30,9 @@ private:
     Scalar upperBound;
 
 	RNG rng; // random number generator
+	int fitDigitAndRecognize(Mat& hsvImg);
+#ifdef ADJUST_HSV
+	friend void AdjustHSVImg(int, void*);
+#endif
 
 };

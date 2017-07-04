@@ -162,18 +162,19 @@ void DigitRecognizer::predict(const Mat& inputImg, const Rect2f & sudokuPanel)
 
 #ifdef ADJUST_HSV
 struct DigitRecognizerUserData {
-	Scalar lowerBound;
-	Scalar upperBound;
+	Scalar* lowerBound;
+	Scalar* upperBound;
 	Mat hsvImg;
+	DigitRecognizer* digitRecognizer;
 };
 
 void AdjustHSVImg(int v, void* d)
 {
 	DigitRecognizerUserData* data = (DigitRecognizerUserData*)d;
-	Scalar testLowerBound = data->lowerBound;
+	Scalar& lowerBound = *(data->lowerBound);
 	Mat resImg;
-	testLowerBound[2] = v;
-	inRange(data->hsvImg, testLowerBound, data->upperBound, resImg);
+	lowerBound[2] = v;
+	inRange(data->hsvImg, lowerBound, *(data->upperBound), resImg);
 	imshow("AdjustHsvImg", resImg);
 }
 #endif
@@ -187,17 +188,21 @@ int DigitRecognizer::process(const Mat& img)
 #ifdef ADJUST_HSV
 	int V = lowerBound[2];
 	DigitRecognizerUserData data;
-	data.lowerBound = lowerBound;
-	data.upperBound = upperBound;
+	data.lowerBound = &lowerBound;
+	data.upperBound = &upperBound;
 	hsvImg.copyTo(data.hsvImg);
+	data.digitRecognizer = this;
 	namedWindow("AdjustHsvImg", WINDOW_NORMAL);
 	createTrackbar("Adjust Hsv", "AdjustHsvImg", &V, 255, AdjustHSVImg, (void*)&data);
 	AdjustHSVImg(lowerBound[2], (void*)&data);
 	waitKey(0);
-	return 0;
-#else
-	inRange(hsvImg, lowerBound, upperBound, hsvImg);
 #endif
+	inRange(hsvImg, lowerBound, upperBound, hsvImg);
+	return fitDigitAndRecognize(hsvImg);
+}
+
+int DigitRecognizer::fitDigitAndRecognize(Mat& hsvImg)
+{
 	Mat hsvCopy;
 	hsvImg.copyTo(hsvCopy);
 	vector<vector<Point> > contours;
