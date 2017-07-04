@@ -69,6 +69,7 @@ bool Voter<T>::GetBestElement(T& element)
 template <class T>
 bool Voter<T>::RemoveOldElements(int num)
 {
+	cout << "Removing " << num << " elements" << endl;
     if (num == -1)
     {
 		num = voteTime;
@@ -87,4 +88,5 @@ bool Voter<T>::RemoveOldElements(int num)
             count.erase(mapItr);
         }
     }
+	return true;
 }

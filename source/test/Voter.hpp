@@ -1,17 +1,17 @@
 #pragma once
-#include "define.hpp"
-#include "Settings.hpp"
-#include "RuneDetector.hpp"
 #include <map>
 #include <list>
 
 using namespace std;
 
+struct VoteSetting{
+	int saveTime;
+};
 template <class T>
 class Voter
 {
     public:
-        Voter(const Settings::VoteSetting& vs)
+        Voter(const VoteSetting& vs)
         {
             Voter::voteSetting = vs;
             voteTime = vs.saveTime / 2;
@@ -22,7 +22,7 @@ class Voter
         bool RemoveOldElements(int num = -1);
     
     private:
-        Settings::VoteSetting voteSetting;
+        VoteSetting voteSetting;
         map<T, int> count;
         list<T> data;
         int voteTime;
@@ -69,6 +69,8 @@ bool Voter<T>::GetBestElement(T& element)
 template <class T>
 bool Voter<T>::RemoveOldElements(int num)
 {
+	cout << endl;
+	cout << num << endl;
     if (num == -1)
     {
 		num = voteTime;
@@ -87,4 +89,5 @@ bool Voter<T>::RemoveOldElements(int num)
             count.erase(mapItr);
         }
     }
+	cout << data.size() << endl << endl;
 }
