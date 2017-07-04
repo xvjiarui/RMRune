@@ -239,8 +239,10 @@ DigitRecognizer::~DigitRecognizer()
 int DigitRecognizer::recognize(const Mat& img)
 {
 	int ret = 0;
+#ifdef SHOW_IMAGE
 	Mat temp;
 	img.copyTo(temp);
+#endif
 
 
 	for (int i = 0; i < segmentRects.size(); ++i)
@@ -252,8 +254,13 @@ int DigitRecognizer::recognize(const Mat& img)
 		{
 			ret += 1;
 		}
+#ifdef SHOW_IMAGE
 		rectangle(temp, segmentRects.at(i), Scalar(255, 255, 255));
+#endif
 	}
+#ifdef SHOW_IMAGE
+	imshow("temp", temp);
+#endif
 	try
 	{
 		ret = segmentTable.at(ret);
@@ -263,9 +270,6 @@ int DigitRecognizer::recognize(const Mat& img)
 
 		return -1;
 	}
-#ifdef SHOW_IMAGE
-	imshow("temp", temp);
-#endif
 	return ret;
 }
 
