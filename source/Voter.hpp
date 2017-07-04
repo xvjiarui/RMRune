@@ -1,4 +1,5 @@
 #pragma once
+#include "define.hpp"
 #include "Settings.hpp"
 #include "RuneDetector.hpp"
 #include <map>

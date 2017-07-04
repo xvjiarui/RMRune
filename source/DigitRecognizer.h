@@ -1,5 +1,6 @@
 #pragma once
 
+#include "define.hpp"
 #include <opencv2/opencv.hpp>
 #include <unordered_map>
 #include "Settings.hpp"
@@ -8,7 +9,6 @@ using namespace std;
 using namespace cv;
 
 typedef cv::Rect_<float> Rect2f;
-#define ADJUST_HSV
 
 class DigitRecognizer
 {

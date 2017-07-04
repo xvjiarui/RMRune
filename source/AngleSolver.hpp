@@ -17,6 +17,7 @@ IN THE SOFTWARE.
 
 #pragma once
 #include "opencv2/core/core.hpp"
+#include "define.hpp"
 
 /**
  * @brief The RectPnPSolver class

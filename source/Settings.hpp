@@ -1,6 +1,7 @@
 #pragma once
 #include "opencv2/core/core.hpp"
 #include <string>
+#include "define.hpp"
 
 class Settings {
     public:

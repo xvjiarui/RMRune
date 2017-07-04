@@ -8,7 +8,6 @@
 using namespace std;
 using namespace cv;
 
-#define BUFFER_SIZE 1
 volatile unsigned int pIdx = 0;
 volatile unsigned int cIdx = 0;
 struct ImageData {
@@ -18,35 +17,41 @@ struct ImageData {
 ImageData data[BUFFER_SIZE];
 void ImgCP::ImageProducer()
 {
-#ifdef VIDEO_MODE
-	if (videoPath == NULL)
+	if (isVideoMode)
 	{
-		cout << "excuse me?" << endl;
-		return;
+		if (videoPath == NULL)
+		{
+			cout << "excuse me?" << endl;
+			return;
+		}
+		VideoCapture cap(videoPath);
+		if (!cap.isOpened())
+		{
+			cout << "not open" << endl;
+			return;
+		}
+		while(1)
+		{
+			while (pIdx - cIdx >= BUFFER_SIZE);
+			cap >> data[pIdx % BUFFER_SIZE].img;
+			data[pIdx % BUFFER_SIZE].frame++;
+			++pIdx;
+		}
 	}
-	VideoCapture cap(videoPath);
-	if (!cap.isOpened())
+	else
 	{
-		cout << "not open" << endl;
-		return;
-	}
-#else
-	RMVideoCapture cap("/dev/video0", 3);                                                         
-	cap.setVideoFormat(1280, 720, 1);
-	cap.setExposureTime(0, settings->cameraSetting.ExposureTime);//settings->exposure_time);
-	cap.startStream();
-	cap.info();
-#endif
-	while(1)
-	{
-		while (pIdx - cIdx >= BUFFER_SIZE);
-		cap >> data[pIdx % BUFFER_SIZE].img;
-#ifdef VIDEO_MODE
-		data[pIdx % BUFFER_SIZE].frame++;
-#else
-		data[pIdx % BUFFER_SIZE].frame = cap.getFrameCount();
-#endif
-		++pIdx;
+		RMVideoCapture cap("/dev/video0", 3); 
+		cap.setVideoFormat(1280, 720, 1);
+		cap.setExposureTime(0, settings->cameraSetting.ExposureTime);//settings->exposure_time);
+		cap.startStream();
+		cap.info();
+		while(1)
+		{
+			while (pIdx - cIdx >= BUFFER_SIZE);
+			cap >> data[pIdx % BUFFER_SIZE].img;
+			data[pIdx % BUFFER_SIZE].frame = cap.getFrameCount();
+			++pIdx;
+		}
 	}
 }
 

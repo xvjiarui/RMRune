@@ -3,7 +3,6 @@
 #include <stdexcept> 
 #include "DigitRecognizer.h"
 #include "RuneDetector.hpp"
-#define SHOW_IMAGE
 
 void binaryMat2points(const Mat & img, vector<Point> & pts)
 {
@@ -42,14 +41,32 @@ DigitRecognizer::DigitRecognizer(Settings::LightSetting lightSetting)
     	{123, 9}
     };
 
+	float hXLen, hYLen, vXLen, vYLen;
+	float xOffset, yOffset;
+	hXLen = 40;
+	hYLen = 60.0 / 7.0;
+	vYLen = 60 / 2;
+	vXLen = 40.0 / 3.0;
+	Rect zero = Rect(Point2f(0, 0), Point2f(hXLen, hYLen));
+	Rect one = Rect(Point2f(0, 0), Point2f(vXLen, vYLen));
+
     segmentRects = {
-    	Rect(Point(10, 0), Point(35, 5)), // 0
+		zero, // 0
+		one, // 1
+		one + Point(40 - vXLen, 0), // 2
+		zero + Point(0, (60.0 - hYLen) / 2.0), // 3
+		one + Point(0, 60 / 2), // 4
+		one + Point(40 - vXLen, 60 / 2), // 5
+		zero + Point(0, 60 - hYLen)
+		/*
+    	Rect(Point(0, 0), Point(35, 5)), // 0
     	Rect(Point(6, 5), Point(11, 27)), // 1
     	Rect(Point(32, 5), Point(37, 27)), //2
 	    Rect(Point(5, 27), Point(35, 32)), // 3
 	    Rect(Point(3, 32), Point(8, 58)), // 4
 	    Rect(Point(27, 32), Point(32, 58)), //5
 	    Rect(Point(5, 53), Point(30, 58)) // 6
+		*/
     };
 
 }

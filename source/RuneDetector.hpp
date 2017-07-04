@@ -19,6 +19,7 @@ IN THE SOFTWARE.
 #include "opencv2/core/core.hpp"
 #include "opencv2/opencv.hpp"
 #include "opencv2/highgui/highgui.hpp"
+#include "define.hpp"
 #include "MnistRecognizer.h"
 #include "DigitRecognizer.h"
 #include "Settings.hpp"

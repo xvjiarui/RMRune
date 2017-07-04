@@ -29,9 +29,6 @@ IN THE SOFTWARE.
 #include <unordered_map>
 #include "Voter.hpp"
 
- //#define SHOW_IMAGE
-// #define DEBUG
-#define NoORB
 
 using namespace cv;
 using namespace std;
@@ -66,7 +63,7 @@ pair<int, int> RuneDetector::getTarget(const cv::Mat & image, RuneType rune_type
 		drawContours(show, contours, i, CV_RGB(rand() % 255, rand() % 255, rand() % 255), 3, CV_FILLED);
 	}
 	imshow("Contours", show);
-#elif defined(DEBUG)
+#elif defined(FINDRATIO)
 	Mat show(image.size(), CV_8UC3, Scalar(0,0,0));
 	vector<RotatedRect> contourRects;
 	vector<pair<int, float> > contourRatios;
@@ -190,7 +187,9 @@ bool RuneDetector::checkSudoku(const vector<vector<Point2i>> & contours, vector<
 		curRotatedRect.center -= Point2f(0.3 * digit_avg_width, 0);
 		digit_rects.push_back(curRotatedRect);
 	}
+#ifndef ONLY_SHOW_DETECTED_RESULT
 	cout << sudoku << ' ' << digit_rects.size() << ' ' << one_digit_rects.size() << endl;
+#endif
 
 	if (sudoku > 15 || sudoku < 9)
 	{
@@ -291,7 +290,9 @@ bool RuneDetector::checkSudoku(const vector<vector<Point2i>> & contours, vector<
 				center_idx = i;
 			}
 		}
+#ifndef ONLY_SHOW_DETECTED_RESULT
 		cout << center_idx << endl;
+#endif
 
 
 		// sort distance between each cell and the center cell
@@ -621,7 +622,11 @@ pair <int, int> RuneDetector::chooseMnistTarget(const Mat & inputImg, const vect
 		// waitKey(0);
 	}
 	cout << "]";
+#ifndef ONLY_SHOW_DETECTED_RESULT
 	cout << endl;
+#else
+	cout << ' ';
+#endif
 
 	static Voter<vector<int> > digitVoter(voteSetting);
 	static vector<int> lastDigitResult;
@@ -690,7 +695,7 @@ pair <int, int> RuneDetector::chooseMnistTarget(const Mat & inputImg, const vect
             Rect cell_roi(width_start[j]+offset_x, height_start[i]+offset_y, cell_width, cell_height);
             Mat temp;
 			image_persp(cell_roi).copyTo(temp);
-			threshold(temp, temp, 120, 255, THRESH_BINARY);
+			threshold(temp, temp, 140, 255, THRESH_BINARY);
 			resize(temp, temp, Size(28, 28));
 			sudoku_imgs.push_back(temp);
 		}
@@ -771,6 +776,9 @@ pair <int, int> RuneDetector::chooseMnistTarget(const Mat & inputImg, const vect
 		 mnistVoter.RemoveOldElements(voteSetting.saveTime);
 		 isNewMnist = true;
 	 }
+#ifdef ONLY_HOW_DETECTED_RESULT
+	 return make_pair(-1, -1);
+#endif
 
 	 if (!isNewMnist || !isNewDigit) return make_pair(-1, -1);
 	 isNewMnist = isNewDigit = false;

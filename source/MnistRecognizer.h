@@ -2,6 +2,7 @@
 
 #include "tiny_dnn/tiny_dnn.h"
 #include <opencv2/opencv.hpp>
+#include "define.hpp"
 
 using namespace tiny_dnn;
 using namespace tiny_dnn::activation;
