@@ -29,8 +29,9 @@ IN THE SOFTWARE.
 #include <unordered_map>
 #include "Voter.hpp"
 
-// #define SHOW_IMAGE
+ //#define SHOW_IMAGE
 // #define DEBUG
+#define NoORB
 
 using namespace cv;
 using namespace std;
@@ -318,6 +319,7 @@ bool RuneDetector::checkSudoku(const vector<vector<Point2i>> & contours, vector<
 	}
 	return true;
 }
+#ifndef NoORB
 int RuneDetector::findTargetORB(cv::Mat * cells) {
 	Mat descriptor[9];
 	vector<vector<KeyPoint> > keypoints;
@@ -370,6 +372,7 @@ int RuneDetector::findTargetORB(cv::Mat * cells) {
 	}
 	return min_idx;
 }
+#endif
 
 // int RuneDetector::findTargetCanny(cv::Mat * cells){
 //    int min_count = 65535;
