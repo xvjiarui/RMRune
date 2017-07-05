@@ -6,10 +6,11 @@
 ////////////////////////////////////////
 
 //#define SHOW_IMAGE
-#define ONLY_SHOW_DETECTED_RESULT
+//#define SHOW_DEBUG_DETAILS
 #define NoORB
 //#define ADJUST_HSV
 //#define FINDRATIO
+//#define ADJUST_THRESHOLD
 
 ////////////////////////////////////////
 //const area

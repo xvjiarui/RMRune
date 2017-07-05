@@ -79,6 +79,7 @@ pair<int, int> RuneDetector::getTarget(const cv::Mat &image, RuneType rune_type)
 		contourRatios.push_back(make_pair(RectCount++, (float)rect.size.width / (float)rect.size.height));
 	}
 	sort(contourRatios.begin(), contourRatios.end(), [](const pair<int, float> &a, const pair<int, float> &b) { return a.second < b.second; });
+	imshow("captured window", image);
 	for (int i = 0, c1, c2, c3; i < contourRatios.size(); i++)
 	{
 		RotatedRect &rect = contourRects.at(contourRatios.at(i).first);
@@ -192,7 +193,7 @@ bool RuneDetector::checkSudoku(const vector<vector<Point2i>> &contours, vector<R
 		curRotatedRect.center -= Point2f(0.3 * digit_avg_width, 0);
 		digit_rects.push_back(curRotatedRect);
 	}
-#ifndef ONLY_SHOW_DETECTED_RESULT
+#ifdef SHOW_DEBUG_DETAILS
 	cout << sudoku << ' ' << digit_rects.size() << ' ' << one_digit_rects.size() << endl;
 #endif
 
@@ -312,7 +313,7 @@ bool RuneDetector::checkSudoku(const vector<vector<Point2i>> &contours, vector<R
 				center_idx = i;
 			}
 		}
-#ifndef ONLY_SHOW_DETECTED_RESULT
+#ifdef SHOW_DEBUG_DETAILS
 		cout << center_idx << endl;
 #endif
 
@@ -516,6 +517,24 @@ int RuneDetector::findTargetEdge(cv::Mat *cells)
 	return min_count_idx;
 }
 
+#ifdef ADJUST_THRESHOLD
+struct ThresholdStruct
+{
+	Mat* data;
+	MnistRecognizer* mnistRecognizer;
+};
+
+void AdjustThreshold(int t, void* d)
+{
+	ThresholdStruct* data = (ThresholdStruct*)d;
+	Mat temp;
+	threshold(*(data->data), temp, t, 255, THRESH_BINARY);
+	imshow("AdjustThreshold", temp);
+	resize(temp, temp, Size(28, 28));
+	cout << t << ":" <<  data->mnistRecognizer->recognize(temp) << endl;
+}
+#endif
+
 pair<int, int> RuneDetector::chooseMnistTarget(const Mat &inputImg, const vector<RotatedRect> &sudoku_rects)
 {
 	// get 9(cell) X 4(corner) corner, and 9 cell's center
@@ -677,7 +696,7 @@ pair<int, int> RuneDetector::chooseMnistTarget(const Mat &inputImg, const vector
 		// waitKey(0);
 	}
 	cout << "]";
-#ifndef ONLY_SHOW_DETECTED_RESULT
+#ifdef SHOW_DEBUG_DETAILS
 	cout << endl;
 #else
 	cout << ' ';
@@ -729,6 +748,10 @@ pair<int, int> RuneDetector::chooseMnistTarget(const Mat &inputImg, const vector
 	vector<vector<pair<double, int>>> results(9);
 	vector<thread> mnistThreads;
 
+#ifdef ADJUST_THRESHOLD
+	bool goToNextFrame = false;
+#endif
+
 	for (size_t i = 0; i < 3; i++)
 	{
 		for (size_t j = 0; j < 3; j++)
@@ -737,6 +760,21 @@ pair<int, int> RuneDetector::chooseMnistTarget(const Mat &inputImg, const vector
 			Rect cell_roi(width_start[j] + offset_x, height_start[i] + offset_y, cell_width, cell_height);
 			Mat temp;
 			image_persp(cell_roi).copyTo(temp);
+#ifdef ADJUST_THRESHOLD
+			if (!goToNextFrame)
+			{
+				ThresholdStruct data;
+				data.data = &temp;
+				data.mnistRecognizer = &mnistRecognizer[0];
+				namedWindow("AdjustThreshold", WINDOW_NORMAL);
+				createTrackbar("Adjust Threshold", "AdjustThreshold", &runeSetting.MnistThreshold, 255, AdjustThreshold, (void*)&data);
+				AdjustThreshold(runeSetting.MnistThreshold, (void*)&data);
+				if (waitKey(0) == 'n'){
+					cout << "Next frame" << endl;
+					goToNextFrame = true;
+				}
+			}
+#endif
 			threshold(temp, temp, runeSetting.MnistThreshold, 255, THRESH_BINARY);
 			resize(temp, temp, Size(28, 28));
 			sudoku_imgs.push_back(temp);
@@ -822,6 +860,7 @@ pair<int, int> RuneDetector::chooseMnistTarget(const Mat &inputImg, const vector
 	{
 		if (mnistResult == lastMnistResult)
 		{
+			cout << "pass" << endl;
 			return make_pair(-1, -1);
 		}
 		if (lastDigitResult != digit_results)
@@ -834,9 +873,9 @@ pair<int, int> RuneDetector::chooseMnistTarget(const Mat &inputImg, const vector
 				curShootIdx = 0;
 		}
 		lastDigitResult = digit_results;
-		digitVoter.RemoveOldElements(voteSetting.saveTime);
+		digitVoter.RemoveOldElements(/*voteSetting.saveTime*/);
 		lastMnistResult = mnistResult;
-		mnistVoter.RemoveOldElements(voteSetting.saveTime);
+		mnistVoter.RemoveOldElements(/*voteSetting.saveTime*/);
 	}
 	else
 	{
@@ -863,6 +902,7 @@ pair<int, int> RuneDetector::chooseMnistTarget(const Mat &inputImg, const vector
 
 	return make_pair(1, getSudokuIndex(lastDigitResult.at(curShootIdx)));
 }
+
 
 pair<int, int> RuneDetector::chooseTargetPerspective(const Mat &image, const vector<RotatedRect> &sudoku_rects)
 {
