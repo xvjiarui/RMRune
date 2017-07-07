@@ -89,7 +89,7 @@ pair<int, int> RuneDetector::getTarget(const cv::Mat &image, RuneType rune_type)
 		c3 = rand() % 255;
 		rectangle(show, contourRects.at(contourRatios.at(i).first).boundingRect(), Scalar(c1, c2, c3));
 		putText(show, to_string(i), rect.center, FONT_HERSHEY_SIMPLEX, 0.5, Scalar(c1, c2, c3), 2);
-		cout << i << ": " << contourRatios.at(i).second << ' ' << rect.size.width << ' ' << rect.size.height << endl;
+		cout << i << ": " << contourRatios.at(i).second << ' ' << rect.size.width << ' ' << rect.size.height << ' ' << rect.angle << endl;
 		if ((i && i % 10 == 0) || (i == contourRatios.size() - 1))
 		{
 			imshow("contours", show);
@@ -184,6 +184,9 @@ bool RuneDetector::checkSudoku(const vector<vector<Point2i>> &contours, vector<R
 		{
 			one_digit_rects.push_back(rect);
 		}
+		else{
+		   	cout << rect.size.width/rect.size.height << ' ' << rect.size.width << ' ' << rect.size.height << ' ' << rect.angle << endl;
+		cout << runeSetting.DigitWidth * runeSetting.DigitRatio << ' ' << runeSetting.DigitHeight * runeSetting.DigitRatio << endl;}
 	}
 	if (one_digit_rects.size() == 1)
 	{
@@ -858,11 +861,13 @@ pair<int, int> RuneDetector::chooseMnistTarget(const Mat &inputImg, const vector
 
 	if (digitVoter.GetBestElement(digit_results) && mnistVoter.GetBestElement(mnistResult))
 	{
+		/*
 		if (mnistResult == lastMnistResult)
 		{
 			cout << "pass" << endl;
 			return make_pair(-1, -1);
 		}
+		*/
 		if (lastDigitResult != digit_results)
 		{
 			curShootIdx = 0;

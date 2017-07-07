@@ -41,7 +41,7 @@ void ImgCP::ImageProducer()
 	else
 	{
 		RMVideoCapture cap("/dev/video0", 3); 
-		cap.setVideoFormat(1280, 720, 1);
+		cap.setVideoFormat(640, 480, 1);
 		cap.setExposureTime(0, settings->cameraSetting.ExposureTime);//settings->exposure_time);
 		cap.startStream();
 		cap.info();
@@ -86,11 +86,17 @@ void ImgCP::ImageConsumer()
 				countTime = true;
 				continue;
 			}
+			targetIdx = 8;
 			cout << "targetIdx:" << targetIdx << endl;
 			RotatedRect targetRect = runeDetector.getRotateRect(targetIdx);
+			targetRect.center += Point2f(5,-5);
 			double angle_x, angle_y;
 			angleSolverFactory.getAngle(targetRect, AngleSolverFactory::TARGET_RUNE, angle_x, angle_y, 20, 0);
 			cout << "test angle:" << angle_x << ' ' << angle_y << endl;
+			targetIdx = 7;
+			targetRect = runeDetector.getRotateRect(targetIdx);
+			angleSolverFactory.getAngle(targetRect, AngleSolverFactory::TARGET_RUNE, angle_x, angle_y, 20, 0);
+			cout << "test angle2:" << angle_x << ' ' << angle_y << endl;
 			endTime = getTickCount();
 		    cout << "Frame time: " << (endTime - startTime) * 1000.0 / getTickFrequency() << endl;
 			countTime = false;

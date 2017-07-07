@@ -1,4 +1,3 @@
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
 #set(CMAKE_CXX_STANDARD 14)
 #SET(CMAKE_CXX_STANDARD_REQUIRED ON)
 ####
@@ -26,8 +25,9 @@ include_directories("${PROJECT_SOURCE_DIR}")
 AUX_SOURCE_DIRECTORY(${PROJECT_SOURCE_DIR}/source SRC) 
 
 find_package( OpenCV REQUIRED )
-# find_package( CUDA QUIET REQUIRED)
-# set  (CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS}; -03 -gencode arch=compute_22,code=sm_22)
+ find_package( CUDA QUIET REQUIRED)
+ set  (CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS}; -03 -gencode arch=compute_22,code=sm_22)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
 add_executable( function_test  ${SRC})
 target_link_libraries( function_test -lpthread -lrt  ${OpenCV_LIBS})
 # set(CMAKE_BUILD_TYPE Release)
