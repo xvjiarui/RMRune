@@ -33,7 +33,7 @@
 <ScaleX> 1.0 </ScaleX>
 <ScaleY> 1.0 </ScaleY>
 <ScaleZ> 0.47 </ScaleZ>
-<GimbalX> 0 </GimbalX>
+<GimbalX> -420 </GimbalX>
 <GimbalY> 0.8 </GimbalY>
 <GimbalZ> -20.5 </GimbalZ>
 </opencv_storage>
