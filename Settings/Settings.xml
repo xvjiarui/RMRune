@@ -30,4 +30,10 @@
     -5.0921721554883126e-01 7.2276025099216512e-01
     5.5787433068027912e-03 -3.7665870727476014e-03
     -1.3105697867404533e+00</data></DistortionMatrix>
+<ScaleX> 1.0 </ScaleX>
+<ScaleY> 1.0 </ScaleY>
+<ScaleZ> 1.0 </ScaleZ>
+<GimbalX> 0 </GimbalX>
+<GimbalY> 0 </GimbalY>
+<GimbalZ> 0 </GimbalZ>
 </opencv_storage>

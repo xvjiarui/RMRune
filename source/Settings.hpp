@@ -39,6 +39,16 @@ class Settings {
             int saveTime;
         } voteSetting;
 
+        struct GimbalSetting
+        {
+            float ScaleX;
+            float ScaleY;
+            float ScaleZ;
+            float GimbalX;
+            float GimbalY;
+            float GimbalZ;
+        } gimbalSetting;
+
       private:
         std::string filename;
 };

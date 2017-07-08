@@ -53,6 +53,9 @@ public:
 	{
 		sudoku_width = runeSetting.CellWidth * runeSetting.CellRatio;
 		sudoku_height = runeSetting.CellHeight * runeSetting.CellRatio;
+		digit_width = runeSetting.DigitWidth * runeSetting.DigitRatio;
+		digit_height = runeSetting.DigitHeight * runeSetting.DigitRatio;
+		one_height = runeSetting.OneHeight * runeSetting.DigitRatio;
         use_perspective = true;
         type = (Methed_Type)runeSetting.RuneSType;
 		sudoku_indexs.resize(10);
@@ -94,6 +97,9 @@ private:
 	std::vector<int> digit_results;
 	int sudoku_width;	 // pixel
 	int sudoku_height;   // pixel
+	int digit_width;	 // pixel
+	int digit_height;   // pixel
+	int one_height; 	//pixel
     bool use_perspective;
     Methed_Type type;
 	cv::Mat src;

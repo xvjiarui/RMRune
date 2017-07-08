@@ -35,7 +35,10 @@ void ImgCP::ImageProducer()
 		while(1)
 		{
 			while (pIdx - cIdx >= BUFFER_SIZE);
-			cap >> data[pIdx % BUFFER_SIZE].img;
+			Mat temp;
+			cap >> temp; 
+			resize(temp, temp, Size(640, 480), 0, 0, INTER_CUBIC);
+			temp.copyTo(data[pIdx % BUFFER_SIZE].img);
 			data[pIdx % BUFFER_SIZE].frame++;
 			++pIdx;
 		}

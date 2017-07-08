@@ -41,12 +41,12 @@ int main(int argc, char** argv )
 
 	if (argv[1][0] == 'i')
 	{
-		if (argc != 2)
+		if (argc != 3)
 		{
 			cout << "Please specify the image path!" << endl;
 			return -1;
 		}
-		original_img = imread(argv[1]);
+		original_img = imread(argv[2]);
 		namedWindow("Original Image", WINDOW_AUTOSIZE );
 		imshow("Original Image", original_img);
 		RuneDetector runeDetector(settings);

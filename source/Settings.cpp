@@ -33,6 +33,12 @@ void Settings::load() {
     fin["HsvLowerBound"] >> Settings::lightSetting.hsvLowerBound;
     fin["HsvUpperBound"] >> Settings::lightSetting.hsvUpperBound;
     fin["VoterSaveTime"] >> Settings::voteSetting.saveTime;
+    fin["ScaleX"] >> Settings::gimbalSetting.ScaleX;
+    fin["ScaleY"] >> Settings::gimbalSetting.ScaleY;
+    fin["ScaleZ"] >> Settings::gimbalSetting.ScaleZ;
+    fin["GimbalX"] >> Settings::gimbalSetting.GimbalX;
+    fin["GimbalY"] >> Settings::gimbalSetting.GimbalY;
+    fin["GimbalZ"] >> Settings::gimbalSetting.GimbalZ;
     fin.release();
 }
 
@@ -55,4 +61,11 @@ void Settings::save() {
     fout << "HsvUpperBound" << Settings::lightSetting.hsvUpperBound;
 	fout << "CameraMatrix" << Settings::cameraSetting.CameraMatrix;
 	fout << "DistortionMatrix" << Settings::cameraSetting.DistortionMatrix;
+
+    fout << "ScaleX" << Settings::gimbalSetting.ScaleX;
+    fout << "ScaleY" << Settings::gimbalSetting.ScaleY;
+    fout << "ScaleZ" << Settings::gimbalSetting.ScaleZ;
+    fout << "GimbalX" << Settings::gimbalSetting.GimbalX;
+    fout << "GimbalY" << Settings::gimbalSetting.GimbalY;
+    fout << "GimbalZ" << Settings::gimbalSetting.GimbalZ;
 }
