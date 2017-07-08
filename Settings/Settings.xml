@@ -2,13 +2,13 @@
 <opencv_storage>
 <MnistThreshold>180</MnistThreshold>
 <RuneSType>0</RuneSType>
-<CellRatio>.7</CellRatio>
-<CellWidth>127</CellWidth>
-<CellHeight>71</CellHeight>
-<DigitRatio>0.7</DigitRatio>
-<DigitWidth>42</DigitWidth>
-<DigitHeight>30</DigitHeight>
-<OneHeight>7</OneHeight>
+<CellRatio>1</CellRatio>
+<CellWidth>86</CellWidth>
+<CellHeight>49</CellHeight>
+<DigitRatio>1</DigitRatio>
+<DigitWidth>28</DigitWidth>
+<DigitHeight>19</DigitHeight>
+<OneHeight>3</OneHeight>
 <VoterSaveTime>6</VoterSaveTime>
 <ExposureTime>64</ExposureTime>
 <HsvLowerBound>
@@ -32,7 +32,7 @@
     -1.3105697867404533e+00</data></DistortionMatrix>
 <ScaleX> 1.0 </ScaleX>
 <ScaleY> 1.0 </ScaleY>
-<ScaleZ> 1.0 </ScaleZ>
+<ScaleZ> 0.47 </ScaleZ>
 <GimbalX> 0 </GimbalX>
 <GimbalY> 0 </GimbalY>
 <GimbalZ> 0 </GimbalZ>

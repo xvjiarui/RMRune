@@ -71,7 +71,7 @@ void ImgCP::ImageConsumer()
 	CellActualWidth = settings.runeSetting.CellWidth * settings.runeSetting.CellRatio;
 	CellActualHeight = settings.runeSetting.CellHeight * settings.runeSetting.CellRatio;
 	AngleSolver angleSolver(settings.cameraSetting.CameraMatrix, settings.cameraSetting.DistortionMatrix,
-				CellActualWidth, CellActualHeight, 0.4);
+				CellActualWidth, CellActualHeight, settings.gimbalSetting.ScaleZ);
 	angleSolverFactory.setSolver(&angleSolver);
 	angleSolverFactory.setTargetSize(CellActualWidth, CellActualHeight, AngleSolverFactory::TARGET_RUNE);
 	bool countTime = false;
@@ -94,14 +94,14 @@ void ImgCP::ImageConsumer()
 			targetIdx = 8;
 			cout << "targetIdx:" << targetIdx << endl;
 			RotatedRect targetRect = runeDetector.getRotateRect(targetIdx);
-			targetRect.center += Point2f(20, 20);
+			targetRect.center += Point2f(settings.gimbalSetting.GimbalX, settings.gimbalSetting.GimbalY);
 			double angle_x, angle_y;
 			angleSolverFactory.getAngle(targetRect, AngleSolverFactory::TARGET_RUNE, angle_x, angle_y, 20, 0);
 			cout << targetRect.center << endl;
 			cout << "test angle:" << angle_x << ' ' << angle_y << endl;
 			targetIdx = 7;
 			targetRect = runeDetector.getRotateRect(targetIdx);
-			targetRect.center += Point2f(20, 20);
+			targetRect.center += Point2f(settings.gimbalSetting.GimbalX, settings.gimbalSetting.GimbalY);
 			angleSolverFactory.getAngle(targetRect, AngleSolverFactory::TARGET_RUNE, angle_x, angle_y, 20, 0);
 			cout << targetRect.center << endl;
 			cout << "test angle2:" << angle_x << ' ' << angle_y << endl;

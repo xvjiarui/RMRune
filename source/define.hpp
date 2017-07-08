@@ -9,7 +9,7 @@
 #define SHOW_DEBUG_DETAILS
 #define NoORB
 //#define ADJUST_HSV
-#define FINDRATIO
+//#define FINDRATIO
 //#define ADJUST_THRESHOLD
 
 ////////////////////////////////////////
