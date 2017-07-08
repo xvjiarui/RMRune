@@ -67,14 +67,15 @@ void ImgCP::ImageConsumer()
 	Settings& settings = *ImgCP::settings;
 	RuneDetector runeDetector(settings);
 	AngleSolverFactory angleSolverFactory;
-	float CellActualWidth, CellActualHeight;
-	CellActualWidth = settings.runeSetting.CellWidth * settings.runeSetting.CellRatio;
-	CellActualHeight = settings.runeSetting.CellHeight * settings.runeSetting.CellRatio;
+	//float CellActualWidth = settings.runeSetting.CellWidth * settings.runeSetting.CellRatio;
+	//float CellActualHeight = settings.runeSetting.CellHeight * settings.runeSetting.CellRatio;
+	float CellActualWidth = 28;
+	float CellActualHeight = 16;
 	AngleSolver angleSolver(settings.cameraSetting.CameraMatrix, settings.cameraSetting.DistortionMatrix,
-				CellActualWidth, CellActualHeight, settings.gimbalSetting.ScaleZ);
+				CellActualWidth, CellActualHeight, settings.gimbalSetting.ScaleZ, settings.runeSetting.MinDistance, settings.runeSetting.MaxDistance);
     // parameter of PTZ and barrel
     const double overlap_dist = 100000.0;
-    const double barrel_ptz_offset_y = 3.3;
+    const double barrel_ptz_offset_y = 0;
     const double ptz_camera_x = settings.gimbalSetting.GimbalX;
     const double ptz_camera_y = settings.gimbalSetting.GimbalY;
     const double ptz_camera_z = settings.gimbalSetting.GimbalZ;
@@ -103,18 +104,16 @@ void ImgCP::ImageConsumer()
 				countTime = true;
 				continue;
 			}
-			targetIdx = 8;
-			cout << "targetIdx:" << targetIdx << endl;
-			RotatedRect targetRect = runeDetector.getRotateRect(targetIdx);
-			double angle_x, angle_y;
-			angleSolverFactory.getAngle(targetRect, AngleSolverFactory::TARGET_RUNE, angle_x, angle_y, 20, 0);
-			cout << targetRect.center << endl;
-			cout << "test angle:" << angle_x << ' ' << angle_y << endl;
-			targetIdx = 7;
-			targetRect = runeDetector.getRotateRect(targetIdx);
-			angleSolverFactory.getAngle(targetRect, AngleSolverFactory::TARGET_RUNE, angle_x, angle_y, 20, 0);
-			cout << targetRect.center << endl;
-			cout << "test angle2:" << angle_x << ' ' << angle_y << endl;
+			for(int i = 0; i < 9; i++)
+			{
+				RotatedRect targetRect = runeDetector.getRotateRect(i);
+				double angle_x, angle_y;
+				if(angleSolverFactory.getAngle(targetRect, AngleSolverFactory::TARGET_RUNE, angle_x, angle_y, 20, 0))
+				{
+					cout << i << " " << targetRect.center << endl;
+					cout << "Yaw: " << angle_x << "Pitch: " << angle_y << endl;
+				}
+			}
 			endTime = getTickCount();
 		    cout << "Frame time: " << (endTime - startTime) * 1000.0 / getTickFrequency() << endl;
 			countTime = false;

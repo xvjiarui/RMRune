@@ -141,6 +141,7 @@ bool RuneDetector::checkSudoku(const vector<vector<Point2i>> &contours, vector<R
 	int sudoku = 0;
 
 	float DigitWHRatio = (float)digit_width / (float)digit_height;
+	float OneWHRatio = (float)digit_width / (float)one_height;
 
 	float low_threshold = 0.6;
 	float high_threshold = 1.2;
@@ -175,7 +176,7 @@ bool RuneDetector::checkSudoku(const vector<vector<Point2i>> &contours, vector<R
 			digit_rects.push_back(rect);
 			digit_avg_width += s.height;
 		}
-		else if (ratio_cur > 0.6 * 3 * DigitWHRatio && ratio_cur < 1.4 * 3 * DigitWHRatio &&
+		else if (ratio_cur > 0.6 * OneWHRatio && ratio_cur < 1.4 * OneWHRatio &&
 				 s.width > 0.6 * digit_width && s.width < 1.4 * digit_width &&
 				 s.height > 0.6 * one_height && s.height < 1.4 * one_height &&
 				 (rect.angle > 65 || rect.angle < -65))

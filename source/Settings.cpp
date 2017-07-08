@@ -27,6 +27,8 @@ void Settings::load() {
     fin["DigitWidth"] >> Settings::runeSetting.DigitWidth;
     fin["DigitHeight"] >>  Settings::runeSetting.DigitHeight;
 	fin["OneHeight"] >> Settings::runeSetting.OneHeight;
+	fin["MinDistance"] >> Settings::runeSetting.MinDistance;
+	fin["MaxDistance"] >> Settings::runeSetting.MaxDistance;
     fin["ExposureTime"] >> Settings::cameraSetting.ExposureTime;
 	fin["CameraMatrix"] >> Settings::cameraSetting.CameraMatrix;
 	fin["DistortionMatrix"] >> Settings::cameraSetting.DistortionMatrix;
@@ -54,6 +56,8 @@ void Settings::save() {
     fout << "DigitWidth" << Settings::runeSetting.DigitWidth;
     fout << "DigitHeight" << Settings::runeSetting.DigitHeight;
 	fout << "OneHeight" << Settings::runeSetting.OneHeight;
+	fout << "MinDistance" << Settings::runeSetting.MinDistance;
+	fout << "MaxDistance" << Settings::runeSetting.MaxDistance;
     fout << "VoterSaveTime" << Settings::voteSetting.saveTime;
     // fout.writeComment(string("Camera-related settings\n"));
     fout << "ExposureTime" << Settings::cameraSetting.ExposureTime;
