@@ -72,6 +72,18 @@ void ImgCP::ImageConsumer()
 	CellActualHeight = settings.runeSetting.CellHeight * settings.runeSetting.CellRatio;
 	AngleSolver angleSolver(settings.cameraSetting.CameraMatrix, settings.cameraSetting.DistortionMatrix,
 				CellActualWidth, CellActualHeight, settings.gimbalSetting.ScaleZ);
+    // parameter of PTZ and barrel
+    const double overlap_dist = 100000.0;
+    const double barrel_ptz_offset_y = 3.3;
+    const double ptz_camera_x = settings.gimbalSetting.GimbalX;
+    const double ptz_camera_y = settings.gimbalSetting.GimbalY;
+    const double ptz_camera_z = settings.gimbalSetting.GimbalZ;
+    double theta = -atan((ptz_camera_y + barrel_ptz_offset_y)/overlap_dist);
+    double r_data[] = {1,0,0,0,cos(theta),-sin(theta), 0, sin(theta), cos(theta)};
+    double t_data[] = {0, ptz_camera_y, ptz_camera_z}; // ptz org position in camera coodinate system
+    Mat t_camera_ptz(3,1, CV_64FC1, t_data);
+    Mat r_camera_ptz(3,3, CV_64FC1, r_data);
+    angleSolver.setRelationPoseCameraPTZ(r_camera_ptz, t_camera_ptz, barrel_ptz_offset_y);
 	angleSolverFactory.setSolver(&angleSolver);
 	angleSolverFactory.setTargetSize(CellActualWidth, CellActualHeight, AngleSolverFactory::TARGET_RUNE);
 	bool countTime = false;
@@ -94,14 +106,12 @@ void ImgCP::ImageConsumer()
 			targetIdx = 8;
 			cout << "targetIdx:" << targetIdx << endl;
 			RotatedRect targetRect = runeDetector.getRotateRect(targetIdx);
-			targetRect.center += Point2f(settings.gimbalSetting.GimbalX, settings.gimbalSetting.GimbalY);
 			double angle_x, angle_y;
 			angleSolverFactory.getAngle(targetRect, AngleSolverFactory::TARGET_RUNE, angle_x, angle_y, 20, 0);
 			cout << targetRect.center << endl;
 			cout << "test angle:" << angle_x << ' ' << angle_y << endl;
 			targetIdx = 7;
 			targetRect = runeDetector.getRotateRect(targetIdx);
-			targetRect.center += Point2f(settings.gimbalSetting.GimbalX, settings.gimbalSetting.GimbalY);
 			angleSolverFactory.getAngle(targetRect, AngleSolverFactory::TARGET_RUNE, angle_x, angle_y, 20, 0);
 			cout << targetRect.center << endl;
 			cout << "test angle2:" << angle_x << ' ' << angle_y << endl;
