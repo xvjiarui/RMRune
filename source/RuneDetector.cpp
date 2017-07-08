@@ -142,7 +142,7 @@ bool RuneDetector::checkSudoku(const vector<vector<Point2i>> &contours, vector<R
 	float ratio = 28.0 / 16.0;
 	int sudoku = 0;
 
-	float DigitWHRatio = runeSetting.DigitWidth / runeSetting.DigitHeight;
+	float DigitWHRatio = (float)runeSetting.DigitWidth / (float)runeSetting.DigitHeight;
 
 	float low_threshold = 0.6;
 	float high_threshold = 1.2;
@@ -184,9 +184,16 @@ bool RuneDetector::checkSudoku(const vector<vector<Point2i>> &contours, vector<R
 		{
 			one_digit_rects.push_back(rect);
 		}
-		else{
-		   	cout << rect.size.width/rect.size.height << ' ' << rect.size.width << ' ' << rect.size.height << ' ' << rect.angle << endl;
-		cout << runeSetting.DigitWidth * runeSetting.DigitRatio << ' ' << runeSetting.DigitHeight * runeSetting.DigitRatio << endl;}
+		/*
+		else
+		{
+		   	cout << ratio_cur << ' ' << s.width << ' ' << s.height << ' ' << rect.angle << endl;
+			cout << (ratio_cur > 0.6 * DigitWHRatio )<< ( ratio_cur < 1.4 * DigitWHRatio) << endl;
+			cout << (s.width > 0.6 * runeSetting.DigitWidth * runeSetting.DigitRatio) << ( s.width < 1.4 * runeSetting.DigitWidth * runeSetting.DigitRatio) << endl;
+			cout << (s.height > 0.6 * runeSetting.DigitHeight * runeSetting.DigitRatio) <<  (s.height < 1.4 * runeSetting.DigitHeight * runeSetting.DigitRatio) << endl; 
+			cout <<  (rect.angle > 65 || rect.angle < -65) << endl;
+		}
+		*/
 	}
 	if (one_digit_rects.size() == 1)
 	{

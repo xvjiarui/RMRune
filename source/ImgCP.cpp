@@ -30,6 +30,8 @@ void ImgCP::ImageProducer()
 			cout << "not open" << endl;
 			return;
 		}
+		cap.set(CV_CAP_PROP_FRAME_WIDTH,640);
+		cap.set(CV_CAP_PROP_FRAME_HEIGHT,480);
 		while(1)
 		{
 			while (pIdx - cIdx >= BUFFER_SIZE);
@@ -89,13 +91,16 @@ void ImgCP::ImageConsumer()
 			targetIdx = 8;
 			cout << "targetIdx:" << targetIdx << endl;
 			RotatedRect targetRect = runeDetector.getRotateRect(targetIdx);
-			targetRect.center += Point2f(5,-5);
+			targetRect.center += Point2f(20, 20);
 			double angle_x, angle_y;
 			angleSolverFactory.getAngle(targetRect, AngleSolverFactory::TARGET_RUNE, angle_x, angle_y, 20, 0);
+			cout << targetRect.center << endl;
 			cout << "test angle:" << angle_x << ' ' << angle_y << endl;
 			targetIdx = 7;
 			targetRect = runeDetector.getRotateRect(targetIdx);
+			targetRect.center += Point2f(20, 20);
 			angleSolverFactory.getAngle(targetRect, AngleSolverFactory::TARGET_RUNE, angle_x, angle_y, 20, 0);
+			cout << targetRect.center << endl;
 			cout << "test angle2:" << angle_x << ' ' << angle_y << endl;
 			endTime = getTickCount();
 		    cout << "Frame time: " << (endTime - startTime) * 1000.0 / getTickFrequency() << endl;
