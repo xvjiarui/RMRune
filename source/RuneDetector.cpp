@@ -48,7 +48,7 @@ pair<int, int> RuneDetector::getTarget(const cv::Mat &image, RuneType rune_type)
 {
 	cvtColor(image, src, CV_BGR2GRAY);
 	Mat binary;
-	threshold(src, binary, 133, 255, THRESH_BINARY);
+	threshold(src, binary, contour_threshold, 255, THRESH_BINARY);
 //GaussianBlur(binary, binary, Size(9, 9), 0);
 //threshold(src, binary, 200, 255, THRESH_BINARY);
 #ifdef SHOW_IMAGE
@@ -776,15 +776,15 @@ pair<int, int> RuneDetector::chooseMnistTarget(const Mat &inputImg, const vector
 				data.data = &temp;
 				data.mnistRecognizer = &mnistRecognizer[0];
 				namedWindow("AdjustThreshold", WINDOW_NORMAL);
-				createTrackbar("Adjust Threshold", "AdjustThreshold", &runeSetting.MnistThreshold, 255, AdjustThreshold, (void*)&data);
-				AdjustThreshold(runeSetting.MnistThreshold, (void*)&data);
+				createTrackbar("Adjust Threshold", "AdjustThreshold", &mnist_threshold, 255, AdjustThreshold, (void*)&data);
+				AdjustThreshold(mnist_threshold (void*)&data);
 				if (waitKey(0) == 'n'){
 					cout << "Next frame" << endl;
 					goToNextFrame = true;
 				}
 			}
 #endif
-			threshold(temp, temp, runeSetting.MnistThreshold, 255, THRESH_BINARY);
+			threshold(temp, temp, mnist_threshold, 255, THRESH_BINARY);
 			resize(temp, temp, Size(28, 28));
 			sudoku_imgs.push_back(temp);
 		}
@@ -865,6 +865,7 @@ pair<int, int> RuneDetector::chooseMnistTarget(const Mat &inputImg, const vector
 
 	mnistVoter.PushElement(mnistResult);
 
+#ifndef NO_VOTING
 	if (digitVoter.GetBestElement(digit_results) && mnistVoter.GetBestElement(mnistResult))
 	{
 		/*
@@ -912,6 +913,8 @@ pair<int, int> RuneDetector::chooseMnistTarget(const Mat &inputImg, const vector
 	cout << "----------------------------" << endl;
 
 	return make_pair(1, getSudokuIndex(lastDigitResult.at(curShootIdx)));
+#endif
+	return make_pair(1, getSudokuIndex(digit_results.at(0)));
 }
 
 

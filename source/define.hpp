@@ -8,6 +8,7 @@
 //#define SHOW_IMAGE
 #define SHOW_DEBUG_DETAILS
 #define NoORB
+//#define NO_VOTING
 //#define ADJUST_HSV
 //#define FINDRATIO
 //#define ADJUST_THRESHOLD

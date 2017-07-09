@@ -56,6 +56,8 @@ public:
 		digit_width = runeSetting.DigitWidth * runeSetting.DigitRatio;
 		digit_height = runeSetting.DigitHeight * runeSetting.DigitRatio;
 		one_height = runeSetting.OneHeight * runeSetting.DigitRatio;
+		contour_threshold = runeSetting.ContourThreshold;
+		mnist_threshold = runeSetting.MnistThreshold;
         use_perspective = true;
         type = (Methed_Type)runeSetting.RuneSType;
 		sudoku_indexs.resize(10);
@@ -100,6 +102,8 @@ private:
 	int digit_width;	 // pixel
 	int digit_height;   // pixel
 	int one_height; 	//pixel
+	int contour_threshold;
+	int mnist_threshold;
     bool use_perspective;
     Methed_Type type;
 	cv::Mat src;
