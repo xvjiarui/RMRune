@@ -52,19 +52,14 @@ pair<int, int> RuneDetector::getTarget(const cv::Mat &image, RuneType rune_type)
 //GaussianBlur(binary, binary, Size(9, 9), 0);
 //threshold(src, binary, 200, 255, THRESH_BINARY);
 #ifdef SHOW_IMAGE
+	imshow("image", image);
 	imshow("binary", binary);
+	waitKey(5);
 #endif
 	vector<vector<Point2i>> contours;
 	vector<Vec4i> hierarchy;
 	findContours(binary, contours, hierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE);
-#ifdef SHOW_IMAGE
-	Mat show(image.size(), CV_8UC3, Scalar(0, 0, 0));
-	for (int i = 0; i < contours.size(); ++i)
-	{
-		drawContours(show, contours, i, CV_RGB(rand() % 255, rand() % 255, rand() % 255), 3, CV_FILLED);
-	}
-	imshow("Contours", show);
-#elif defined(FINDRATIO)
+#if defined(FINDRATIO)
 	Mat show(image.size(), CV_8UC3, Scalar(0, 0, 0));
 	vector<RotatedRect> contourRects;
 	vector<pair<int, float>> contourRatios;
@@ -868,13 +863,13 @@ pair<int, int> RuneDetector::chooseMnistTarget(const Mat &inputImg, const vector
 #ifndef NO_VOTING
 	if (digitVoter.GetBestElement(digit_results) && mnistVoter.GetBestElement(mnistResult))
 	{
-		/*
+#ifdef OPTIMIZE_VOTING
 		if (mnistResult == lastMnistResult)
 		{
 			cout << "pass" << endl;
 			return make_pair(-1, -1);
 		}
-		*/
+#endif
 		if (lastDigitResult != digit_results)
 		{
 			curShootIdx = 0;
