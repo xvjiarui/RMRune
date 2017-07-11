@@ -15,6 +15,11 @@ struct ImageData {
 	unsigned int frame;
 };
 ImageData data[BUFFER_SIZE];
+void serialSetup();
+void serialStart();
+void setGimbalAngle(float pitch, float yaw);
+void sendGimbalAngle();
+
 void ImgCP::ImageProducer()
 {
 	if (isVideoMode)
@@ -88,6 +93,12 @@ void ImgCP::ImageConsumer()
 	angleSolverFactory.setSolver(&angleSolver);
 	angleSolverFactory.setTargetSize(CellActualWidth, CellActualHeight, AngleSolverFactory::TARGET_RUNE);
 	bool countTime = false;
+	//UART init
+	serialSetup();
+	serialStart();
+	setGimbalAngle(1.5, 2.5);
+	sendGimbalAngle();
+
 	while(1)
 	{
 		while (pIdx - cIdx == 0);
