@@ -12,7 +12,7 @@
 int fd = 0;
 struct timeval tv_begin;
 struct timeval tv_end;
-char* angleData = (char*)malloc(9 * sizeof(char));
+char* angleData = (char*)malloc(10 * sizeof(char));
 
 void sendGimbalAngle();
 
@@ -76,7 +76,7 @@ int UART0_Send(int fd, char *send_buf, int angleData_len) {
 
 void serialSetup() {
     int err;
-    char port[] = "/dev/ttyTHS1";
+    char port[] = "/dev/ttyTHS2";
 
     fd = UART0_Open(fd, port);
     do {
@@ -109,7 +109,7 @@ void serialStart() {
     ret = timer_create(CLOCK_REALTIME, &evp, &timer);
 
     ts.it_interval.tv_sec = 0;
-    ts.it_interval.tv_nsec = 1000000; //transmitting time interval in nanosecond
+    ts.it_interval.tv_nsec = 1000000000; //transmitting time interval in nanosecond
     ts.it_value.tv_sec = 3;
     ts.it_value.tv_nsec = 0;
 
@@ -119,18 +119,20 @@ void serialStart() {
 /*************************
 ********** API ***********
 **************************/
-void setGimbalAngle(float pitch, float yaw){
+void setGimbalAngle(int index, float pitch, float yaw){
 
     char header = 0xa5;
+	char shootIndex = index;
     float targetAngle[2] = {pitch, yaw};
 
     memcpy(angleData, &header, sizeof(char));
     memcpy(angleData + 1, targetAngle, 2*sizeof(float));
+	memcpy(angleData + 9, &shootIndex, sizeof(char));
 }
 
 void sendGimbalAngle(){
  
-    int len = UART0_Send(fd, angleData, 9);
+    int len = UART0_Send(fd, angleData, 10);
 }
 
 /*

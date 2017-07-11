@@ -17,7 +17,7 @@ struct ImageData {
 ImageData data[BUFFER_SIZE];
 void serialSetup();
 void serialStart();
-void setGimbalAngle(float pitch, float yaw);
+void setGimbalAngle(int index, float pitch, float yaw);
 void sendGimbalAngle();
 
 void ImgCP::ImageProducer()
@@ -96,11 +96,12 @@ void ImgCP::ImageConsumer()
 	//UART init
 	serialSetup();
 	serialStart();
-	setGimbalAngle(1.5, 2.5);
-	sendGimbalAngle();
 
 	while(1)
 	{
+		cout << "sending" << endl;
+		setGimbalAngle(1, 1.5, 2.5);
+		sendGimbalAngle();
 		while (pIdx - cIdx == 0);
 		Mat original_img; 
 		data[cIdx % BUFFER_SIZE].img.copyTo(original_img);

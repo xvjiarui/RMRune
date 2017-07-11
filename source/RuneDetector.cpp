@@ -772,7 +772,7 @@ pair<int, int> RuneDetector::chooseMnistTarget(const Mat &inputImg, const vector
 				data.mnistRecognizer = &mnistRecognizer[0];
 				namedWindow("AdjustThreshold", WINDOW_NORMAL);
 				createTrackbar("Adjust Threshold", "AdjustThreshold", &mnist_threshold, 255, AdjustThreshold, (void*)&data);
-				AdjustThreshold(mnist_threshold (void*)&data);
+				AdjustThreshold(mnist_threshold,(void*)&data);
 				if (waitKey(0) == 'n'){
 					cout << "Next frame" << endl;
 					goToNextFrame = true;
