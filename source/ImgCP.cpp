@@ -99,9 +99,6 @@ void ImgCP::ImageConsumer()
 
 	while(1)
 	{
-		cout << "sending" << endl;
-		setGimbalAngle(1, 1.5, 2.5);
-		sendGimbalAngle();
 		while (pIdx - cIdx == 0);
 		Mat original_img; 
 		data[cIdx % BUFFER_SIZE].img.copyTo(original_img);
@@ -116,18 +113,17 @@ void ImgCP::ImageConsumer()
 				countTime = true;
 				continue;
 			}
-			for(int i = 0; i < 9; i++)
+			RotatedRect targetRect = runeDetector.getRotateRect(targetIdx);
+			double angle_x, angle_y;
+			if(angleSolverFactory.getAngle(targetRect, AngleSolverFactory::TARGET_RUNE, angle_x, angle_y, 20, 0))
 			{
-				RotatedRect targetRect = runeDetector.getRotateRect(i);
-				double angle_x, angle_y;
-				if(angleSolverFactory.getAngle(targetRect, AngleSolverFactory::TARGET_RUNE, angle_x, angle_y, 20, 0))
-				{
-					cout << i << " " << targetRect.center << endl;
-					cout << "Yaw: " << angle_x << "Pitch: " << angle_y << endl;
-				}
+				cout << targetIdx << " " << targetRect.center << endl;
+				cout << "Yaw: " << angle_x << "Pitch: " << angle_y << endl;
 			}
 			endTime = getTickCount();
 		    cout << "Frame time: " << (endTime - startTime) * 1000.0 / getTickFrequency() << endl;
+			setGimbalAngle(targetIdx, angle_x, angle_y);
+			sendGimbalAngle();
 			countTime = false;
 		}
 		catch (cv::Exception)

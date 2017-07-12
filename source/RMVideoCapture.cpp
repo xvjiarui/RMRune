@@ -39,7 +39,7 @@ RMVideoCapture::RMVideoCapture(const char * device, int size_buffer) : video_pat
 
 void RMVideoCapture::restartCapture(){
     close(fd);
-    fd = open(video_path, O_RDWR|O_NONBLOCK);
+    fd = open(video_path, O_RDWR);
     buffr_idx = 0;
     cur_frame = 0;
 }

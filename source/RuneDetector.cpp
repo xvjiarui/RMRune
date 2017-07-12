@@ -165,7 +165,7 @@ bool RuneDetector::checkSudoku(const vector<vector<Point2i>> &contours, vector<R
 		else if (ratio_cur > 0.6 * DigitWHRatio && ratio_cur < 1.4 * DigitWHRatio &&
 				 s.width > 0.6 * digit_width && s.width < 1.4 * digit_width &&
 				 s.height > 0.6 * digit_height && s.height < 1.4 * digit_height &&
-				 (rect.angle > 65 || rect.angle < -65))
+				 (rect.angle > 60 || rect.angle < -60))
 		// ((rect.angle > -10 && rect.angle < 10) || rect.angle < -170 || rect.angle > 170))
 		{
 			digit_rects.push_back(rect);
@@ -174,7 +174,7 @@ bool RuneDetector::checkSudoku(const vector<vector<Point2i>> &contours, vector<R
 		else if (ratio_cur > 0.6 * OneWHRatio && ratio_cur < 1.4 * OneWHRatio &&
 				 s.width > 0.6 * digit_width && s.width < 1.4 * digit_width &&
 				 s.height > 0.6 * one_height && s.height < 1.4 * one_height &&
-				 (rect.angle > 65 || rect.angle < -65))
+				 (rect.angle > 60 || rect.angle < -60))
 		{
 			one_digit_rects.push_back(rect);
 		}
@@ -696,6 +696,10 @@ pair<int, int> RuneDetector::chooseMnistTarget(const Mat &inputImg, const vector
 		{
 			digit_results.at(i) = curDigit;
 		}
+		else
+		{
+			digit_results.at(i) = 1;
+		}
 		cout << digit_results.at(i);
 		// waitKey(0);
 	}
@@ -861,6 +865,7 @@ pair<int, int> RuneDetector::chooseMnistTarget(const Mat &inputImg, const vector
 	mnistVoter.PushElement(mnistResult);
 
 #ifndef NO_VOTING
+	cout << "curShootIdx: " << curShootIdx << endl;
 	if (digitVoter.GetBestElement(digit_results) && mnistVoter.GetBestElement(mnistResult))
 	{
 #ifdef OPTIMIZE_VOTING
