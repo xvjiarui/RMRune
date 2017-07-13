@@ -100,7 +100,7 @@ void CalAngle(void* d)
 	cout << ptz_camera_x << ' ' << ptz_camera_y << ' ' << ptz_camera_z;
 	for (int i = 0; i < 9; i++)
 	{
-		if (!i % 3)
+		if (!(i % 3))
 		{
 			cout << endl;
 		}
@@ -113,7 +113,7 @@ void CalAngle(void* d)
 			cout << "(" << angle_x << ", " << angle_y << ')';
 		}
 	}
-	cout << "-------------------------------" << endl;
+	cout << "\n-------------------------------" << endl;
 }
 
 void AdjustX(int t, void* d)
@@ -188,9 +188,15 @@ void ImgCP::ImageConsumer()
 			startTime = getTickCount();
 		unsigned int frameNum = data[cIdx % BUFFER_SIZE].frame;
 		++cIdx;
-
 #ifdef ADJUST_COORDINATE
-		int x, y, z;
+		if (runeDetector.getTarget(original_img, RuneDetector::RUNE_B).second == -1)
+		{
+			cout << "Cannot detect 9 sudokus." << endl;
+			continue;
+		}
+		int x = ptz_camera_x + 150;
+		int y = ptz_camera_y + 150;
+		int z = ptz_camera_z + 150;
 		namedWindow("AdjustX", WINDOW_NORMAL);
 		createTrackbar("Adjust X", "AdjustX", &x, 300, AdjustX, (void *)&pdata);
 		imshow("AdjustX", original_img);

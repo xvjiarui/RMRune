@@ -864,8 +864,11 @@ pair<int, int> RuneDetector::chooseMnistTarget(const Mat &inputImg, const vector
 
 	mnistVoter.PushElement(mnistResult);
 
-#ifndef NO_VOTING
+#ifdef SHOW_DEBUG_DETAILS
 	cout << "curShootIdx: " << curShootIdx << endl;
+#endif
+
+#ifndef NO_VOTING
 	if (digitVoter.GetBestElement(digit_results) && mnistVoter.GetBestElement(mnistResult))
 	{
 #ifdef OPTIMIZE_VOTING
