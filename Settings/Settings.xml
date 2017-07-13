@@ -12,11 +12,11 @@
 <OneHeight>6</OneHeight>
 <MinDistance>10.0</MinDistance>
 <MaxDistance>800.0</MaxDistance>
-<ContourThreshold>150</ContourThreshold>
-<VoterSaveTime>6</VoterSaveTime>
+<ContourThreshold>130</ContourThreshold>
+<VoterSaveTime>5</VoterSaveTime>
 <ExposureTime>60</ExposureTime>
 <HsvLowerBound>
-	0. 0. 152. 0.</HsvLowerBound>
+	0. 0. 150. 0.</HsvLowerBound>
 <HsvUpperBound>
   255. 255. 255. 0.</HsvUpperBound>
 <CameraMatrix type_id="opencv-matrix">
@@ -24,19 +24,19 @@
   <cols>3</cols>
   <dt>d</dt>
   <data>
-    6.7910495191965936e+02 0. 3.1950000000000000e+02 0.
-    6.7910495191965936e+02 2.3950000000000000e+02 0. 0. 1.</data></CameraMatrix>
+    6.7331032809202316e+02 0. 3.1950000000000000e+02 0.
+    6.7331032809202316e+02 2.3950000000000000e+02 0. 0. 1.</data></CameraMatrix>
 <DistortionMatrix type_id="opencv-matrix">
   <rows>5</rows>
   <cols>1</cols>
   <dt>d</dt>
   <data>
-    -5.1454672692353776e-01 3.3845454412037190e+00 0. 0.
-    -2.7305166419692640e+01</data></DistortionMatrix>
+    -4.5596156984140390e-01 5.8545078662184924e-01 0. 0.
+    -1.2481533839510013e+00</data></DistortionMatrix>
 <ScaleX> 1.0 </ScaleX>
 <ScaleY> 1.0 </ScaleY>
 <ScaleZ> 1.47 </ScaleZ>
-<GimbalX> 15 </GimbalX>
+<GimbalX> 16 </GimbalX>
 <GimbalY> -18 </GimbalY>
 <GimbalZ> 80 </GimbalZ>
 </opencv_storage>

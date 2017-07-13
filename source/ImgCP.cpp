@@ -108,6 +108,18 @@ void CalAngle(void* d)
 		{
 			cout << '\t';
 		}
+		cout << runeDetector.getRotateRect(i).center;
+	}
+	for (int i = 0; i < 9; i++)
+	{
+		if (!(i % 3))
+		{
+			cout << endl;
+		}
+		else
+		{
+			cout << '\t';
+		}
 		if (angleSolverFactory.getAngle(runeDetector.getRotateRect(i), AngleSolverFactory::TARGET_RUNE, angle_x, angle_y, 20, 0))
 		{
 			cout << "(" << angle_x << ", " << angle_y << ')';
