@@ -13,6 +13,7 @@
 //#define ADJUST_HSV
 //#define FINDRATIO
 //#define ADJUST_THRESHOLD
+#define ADJUST_COORDINATE
 
 ////////////////////////////////////////
 //const area

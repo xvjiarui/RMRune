@@ -44,4 +44,5 @@ CTestTestfile.cmake
 function_test
 debug_*
 *.swp
+*.sw*
 hsv_*
