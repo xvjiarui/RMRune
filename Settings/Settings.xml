@@ -36,7 +36,7 @@
 <ScaleX> 1.0 </ScaleX>
 <ScaleY> 1.0 </ScaleY>
 <ScaleZ> 1.47 </ScaleZ>
-<GimbalX> 16 </GimbalX>
+<GimbalX> 10 </GimbalX>
 <GimbalY> -18 </GimbalY>
 <GimbalZ> 80 </GimbalZ>
 </opencv_storage>
