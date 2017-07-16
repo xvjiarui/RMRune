@@ -84,7 +84,7 @@ pair<int, int> RuneDetector::getTarget(const cv::Mat &image, RuneType rune_type)
 		c3 = rand() % 255;
 		rectangle(show, contourRects.at(contourRatios.at(i).first).boundingRect(), Scalar(c1, c2, c3));
 		putText(show, to_string(i), rect.center, FONT_HERSHEY_SIMPLEX, 0.5, Scalar(c1, c2, c3), 2);
-		cout << i << ": " << contourRatios.at(i).second << ' ' << rect.size.width << ' ' << rect.size.height << ' ' << rect.angle << endl;
+		cout << i << ": " << contourRatios.at(i).second << ' ' << rect.size.width << ' ' << rect.size.height << ' ' << rect.angle  << ' ' << rect.center << endl;
 		if ((i && i % 10 == 0) || (i == contourRatios.size() - 1))
 		{
 			imshow("contours", show);
@@ -279,6 +279,10 @@ bool RuneDetector::checkSudoku(const vector<vector<Point2i>> &contours, vector<R
 		return false;
 	}
 
+	sort(sudoku_rects.begin(), sudoku_rects.end(), [](const RotatedRect& r1, const RotatedRect& r2) { return r1.center.y < r2.center.y;});
+	sort(sudoku_rects.begin() + 0, sudoku_rects.begin() + 3, [](const RotatedRect& r1, const RotatedRect& r2) { return r1.center.x < r2.center.x;});
+	sort(sudoku_rects.begin() + 3, sudoku_rects.begin() + 6, [](const RotatedRect& r1, const RotatedRect& r2) { return r1.center.x < r2.center.x;});
+	sort(sudoku_rects.begin() + 6, sudoku_rects.begin() + 9, [](const RotatedRect& r1, const RotatedRect& r2) { return r1.center.x < r2.center.x;});
 	if (digit_rects.size() > 5)
 	{
 		float **dist_map = new float *[digit_rects.size()];

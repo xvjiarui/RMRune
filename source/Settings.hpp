@@ -50,6 +50,7 @@ class Settings {
             float GimbalX;
             float GimbalY;
             float GimbalZ;
+			float CameraTheta;
         } gimbalSetting;
 
       private:

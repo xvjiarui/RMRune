@@ -42,6 +42,7 @@ void Settings::load() {
     fin["GimbalX"] >> Settings::gimbalSetting.GimbalX;
     fin["GimbalY"] >> Settings::gimbalSetting.GimbalY;
     fin["GimbalZ"] >> Settings::gimbalSetting.GimbalZ;
+	fin["CameraTheta"] >> Settings::gimbalSetting.CameraTheta;
     fin.release();
 }
 
@@ -74,4 +75,5 @@ void Settings::save() {
     fout << "GimbalX" << Settings::gimbalSetting.GimbalX;
     fout << "GimbalY" << Settings::gimbalSetting.GimbalY;
     fout << "GimbalZ" << Settings::gimbalSetting.GimbalZ;
+	fout << "CameraTheta" << Settings::gimbalSetting.CameraTheta;
 }

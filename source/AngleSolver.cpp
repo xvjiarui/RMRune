@@ -111,8 +111,8 @@ void AngleSolver::adjustPTZ2Barrel(const cv::Mat & pos_in_ptz, double & angle_x,
     }
     angle_x = atan2(xyz[0], xyz[2]);
     //cout << "angle_x: " << angle_x << "\tangle_y: " << angle_y <<  "\talpha: " << alpha << "\ttheta: " << theta << endl;
-    angle_x = angle_x * 180 / 3.1415926;
-    angle_y = angle_y * 180 / 3.1415926;
+    angle_x = -angle_x * 180 / 3.1415926;
+    angle_y = -angle_y * 180 / 3.1415926;
 }
 
 void AngleSolver::getTarget2dPoinstion(const cv::RotatedRect & rect, vector<Point2f> & target2d, const cv::Point2f & offset){

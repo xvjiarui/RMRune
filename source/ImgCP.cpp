@@ -73,6 +73,7 @@ struct CoordinateStruct {
 	double *ptz_camera_x, *ptz_camera_y, *ptz_camera_z;
 	double *overlap_dist, *barrel_ptz_offset_y;
 	RuneDetector* runeDetector;
+	Settings* settings;
 };
 
 void CalAngle(void* d)
@@ -88,9 +89,10 @@ void CalAngle(void* d)
 	AngleSolverFactory& angleSolverFactory = *(data->angleSolverFactory);
 	AngleSolver& angleSolver = *(data->angleSolver);
 	RuneDetector& runeDetector = *(data->runeDetector);
+	Settings& settings = *(data->settings);
 
     //double theta = -atan((ptz_camera_y + barrel_ptz_offset_y)/overlap_dist);
-	double theta = -3.1415926 / 180 * 14;
+	double theta = -3.1415926 / 180 * settings.gimbalSetting.CameraTheta;
     double r_data[] = {1,0,0,0,cos(theta),-sin(theta), 0, sin(theta), cos(theta)};
     double t_data[] = {ptz_camera_x, ptz_camera_y, ptz_camera_z}; // ptz org position in camera coodinate system
     Mat(3,1, CV_64FC1, t_data).copyTo(t_camera_ptz);
@@ -165,7 +167,7 @@ void ImgCP::ImageConsumer()
     double ptz_camera_x = settings.gimbalSetting.GimbalX;
     double ptz_camera_y = settings.gimbalSetting.GimbalY;
     double ptz_camera_z = settings.gimbalSetting.GimbalZ;
-	double theta = -3.1415926 / 180 * 14;
+	double theta = -3.1415926 / 180 * settings.gimbalSetting.CameraTheta;
     double r_data[] = {1,0,0,0,cos(theta),-sin(theta), 0, sin(theta), cos(theta)};
     double t_data[] = {ptz_camera_x, ptz_camera_y, ptz_camera_z}; // ptz org position in camera coodinate system
     Mat t_camera_ptz(3,1, CV_64FC1, t_data);
@@ -190,6 +192,7 @@ void ImgCP::ImageConsumer()
 	pdata.overlap_dist = &overlap_dist;
 	pdata.barrel_ptz_offset_y = &barrel_ptz_offset_y;
 	pdata.runeDetector = &runeDetector;
+	pdata.settings = &settings;
 #endif
 
 	while(1)
@@ -230,9 +233,7 @@ void ImgCP::ImageConsumer()
 				countTime = true;
 				continue;
 			}
-			static int i = 0;
-			i = (i + 1) % 2;
-			RotatedRect targetRect = runeDetector.getRotateRect(i);
+			RotatedRect targetRect = runeDetector.getRotateRect(targetIdx);
 			double angle_x, angle_y;
 			if(angleSolverFactory.getAngle(targetRect, AngleSolverFactory::TARGET_RUNE, angle_x, angle_y, 20, 0))
 			{
@@ -241,9 +242,9 @@ void ImgCP::ImageConsumer()
 			}
 			endTime = getTickCount();
 		    cout << "Frame time: " << (endTime - startTime) * 1000.0 / getTickFrequency() << endl;
-			setGimbalAngle(i, angle_x, angle_y);
+			setGimbalAngle(targetIdx, angle_x, angle_y);
 			sendGimbalAngle();
-			cout << "current angle:" << angle_x << ' ' << angle_y << ' ' << i << endl;
+			cout << "current angle:" << angle_x << ' ' << angle_y << ' ' << targetIdx << endl;
 			cin.get();
 			countTime = false;
 		}

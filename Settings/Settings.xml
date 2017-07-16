@@ -2,8 +2,8 @@
 <opencv_storage>
 <MnistThreshold>180</MnistThreshold>
 <RuneSType>1</RuneSType>
-<!--<CellRatio>1.2</CellRatio>-->
-<CellRatio>0.67</CellRatio>
+<!--<CellRatio>0.67</CellRatio>-->
+<CellRatio>0.8</CellRatio>
 <CellWidth>127</CellWidth>
 <CellHeight>71</CellHeight>
 <DigitRatio>0.67</DigitRatio>
@@ -35,8 +35,9 @@
     -1.2481533839510013e+00</data></DistortionMatrix>
 <ScaleX> 1.0 </ScaleX>
 <ScaleY> 1.0 </ScaleY>
-<ScaleZ> 1.47 </ScaleZ>
-<GimbalX> 6 </GimbalX>
-<GimbalY> 58 </GimbalY>
-<GimbalZ> 73 </GimbalZ>
+<ScaleZ> 1.0 </ScaleZ>
+<GimbalX> 9 </GimbalX>
+<GimbalY> 82 </GimbalY>
+<GimbalZ> -30 </GimbalZ>
+<CameraTheta> 14 </CameraTheta>
 </opencv_storage>
