@@ -101,7 +101,7 @@ pair<int, int> RuneDetector::getTarget(const cv::Mat &image, RuneType rune_type)
 	sudoku_rects.clear();
 	digit_rects.clear();
 	one_digit_rects.clear();
-	if (checkSudoku(contours, sudoku_rects))
+	if (checkSudoku(contours, sudoku_rects, rune_type))
 	{
 		if (rune_type == RUNE_B)
 		{
@@ -127,7 +127,7 @@ pair<int, int> RuneDetector::getTarget(const cv::Mat &image, RuneType rune_type)
 	return make_pair(-1, -1);
 }
 
-bool RuneDetector::checkSudoku(const vector<vector<Point2i>> &contours, vector<RotatedRect> &sudoku_rects)
+bool RuneDetector::checkSudoku(const vector<vector<Point2i>> &contours, vector<RotatedRect> &sudoku_rects, RuneType rune_type)
 {
 	if (contours.size() < 9)
 		return false;
@@ -206,7 +206,7 @@ bool RuneDetector::checkSudoku(const vector<vector<Point2i>> &contours, vector<R
 		cout << "Sudoku gg." << endl;
 		return false;
 	}
-	if (digit_rects.size() > 10 || digit_rects.size() < 4)
+	if (rune_type == RUNE_B && (digit_rects.size() > 10 || digit_rects.size() < 4))
 	{
 		cout << "digits gg." << endl;
 		return false;
@@ -342,7 +342,7 @@ bool RuneDetector::checkSudoku(const vector<vector<Point2i>> &contours, vector<R
 		}
 		digit_rects_temp.swap(digit_rects);
 	}
-	if (digit_rects.size() != 5)
+	if (rune_type == RUNE_B && digit_rects.size() != 5)
 	{
 		cout << "Digit gg." << endl;
 		return false;

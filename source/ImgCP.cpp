@@ -89,7 +89,8 @@ void CalAngle(void* d)
 	AngleSolver& angleSolver = *(data->angleSolver);
 	RuneDetector& runeDetector = *(data->runeDetector);
 
-    double theta = -atan((ptz_camera_y + barrel_ptz_offset_y)/overlap_dist);
+    //double theta = -atan((ptz_camera_y + barrel_ptz_offset_y)/overlap_dist);
+	double theta = -3.1415926 / 180 * 14;
     double r_data[] = {1,0,0,0,cos(theta),-sin(theta), 0, sin(theta), cos(theta)};
     double t_data[] = {ptz_camera_x, ptz_camera_y, ptz_camera_z}; // ptz org position in camera coodinate system
     Mat(3,1, CV_64FC1, t_data).copyTo(t_camera_ptz);
@@ -164,7 +165,7 @@ void ImgCP::ImageConsumer()
     double ptz_camera_x = settings.gimbalSetting.GimbalX;
     double ptz_camera_y = settings.gimbalSetting.GimbalY;
     double ptz_camera_z = settings.gimbalSetting.GimbalZ;
-    double theta = -atan((ptz_camera_y + barrel_ptz_offset_y)/overlap_dist);
+	double theta = -3.1415926 / 180 * 14;
     double r_data[] = {1,0,0,0,cos(theta),-sin(theta), 0, sin(theta), cos(theta)};
     double t_data[] = {ptz_camera_x, ptz_camera_y, ptz_camera_z}; // ptz org position in camera coodinate system
     Mat t_camera_ptz(3,1, CV_64FC1, t_data);

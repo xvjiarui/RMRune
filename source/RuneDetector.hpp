@@ -87,7 +87,7 @@ protected:
     int findTargetCanny(cv::Mat * cells);
 
 	cv::RotatedRect adjustRotatedRect(const cv::RotatedRect & rect);
-	bool checkSudoku(const std::vector<std::vector<cv::Point2i> > & contours,std::vector<cv::RotatedRect> & sudoku_rects);
+	bool checkSudoku(const std::vector<std::vector<cv::Point2i> > & contours,std::vector<cv::RotatedRect> & sudoku_rects, RuneType rune_type);
 	cv::Mat transformSudokuPerspective(const cv::Mat & image, const std::vector<cv::RotatedRect> & sudoku_rects);
 
 private:
