@@ -40,4 +40,5 @@
 <GimbalY> 82 </GimbalY>
 <GimbalZ> -30 </GimbalZ>
 <CameraTheta> 14 </CameraTheta>
+<ShootingSpeed> 20 </ShootingSpeed>
 </opencv_storage>

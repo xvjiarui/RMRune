@@ -51,6 +51,7 @@ class Settings {
             float GimbalY;
             float GimbalZ;
 			float CameraTheta;
+			float ShootingSpeed;
         } gimbalSetting;
 
       private:

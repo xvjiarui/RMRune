@@ -123,7 +123,7 @@ void CalAngle(void* d)
 		{
 			cout << '\t';
 		}
-		if (angleSolverFactory.getAngle(runeDetector.getRotateRect(i), AngleSolverFactory::TARGET_RUNE, angle_x, angle_y, 20, 0))
+		if (angleSolverFactory.getAngle(runeDetector.getRotateRect(i), AngleSolverFactory::TARGET_RUNE, angle_x, angle_y, settings.gimbalSetting.ShootingSpeed, 0))
 		{
 			cout << "(" << angle_x << ", " << angle_y << ')';
 		}
@@ -236,9 +236,12 @@ void ImgCP::ImageConsumer()
 				countTime = true;
 				continue;
 			}
+			static int i = 0;
+			i = ++i % 9;
+			targetIdx = i;
 			RotatedRect targetRect = runeDetector.getRotateRect(targetIdx);
 			double angle_x, angle_y;
-			if(angleSolverFactory.getAngle(targetRect, AngleSolverFactory::TARGET_RUNE, angle_x, angle_y, 20, 0))
+			if(angleSolverFactory.getAngle(targetRect, AngleSolverFactory::TARGET_RUNE, angle_x, angle_y, settings.gimbalSetting.ShootingSpeed, 0))
 			{
 				cout << targetIdx << " " << targetRect.center << endl;
 				cout << "Yaw: " << angle_x << "Pitch: " << angle_y << endl;

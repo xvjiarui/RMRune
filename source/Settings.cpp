@@ -34,7 +34,7 @@ void Settings::load() {
 	fin["CameraMatrix"] >> Settings::cameraSetting.CameraMatrix;
 	fin["DistortionMatrix"] >> Settings::cameraSetting.DistortionMatrix;
     fin["HsvLowerBound"] >> Settings::lightSetting.hsvLowerBound;
-    fin["HsvUpperBound"] >> Settings::lightSetting.hsvUpperBound;
+	fin["HsvUpperBound"] >> Settings::lightSetting.hsvUpperBound;
     fin["VoterSaveTime"] >> Settings::voteSetting.saveTime;
     fin["ScaleX"] >> Settings::gimbalSetting.ScaleX;
     fin["ScaleY"] >> Settings::gimbalSetting.ScaleY;
@@ -43,6 +43,7 @@ void Settings::load() {
     fin["GimbalY"] >> Settings::gimbalSetting.GimbalY;
     fin["GimbalZ"] >> Settings::gimbalSetting.GimbalZ;
 	fin["CameraTheta"] >> Settings::gimbalSetting.CameraTheta;
+	fin["ShootingSpeed"] >> Settings::gimbalSetting.ShootingSpeed;
     fin.release();
 }
 
@@ -76,4 +77,5 @@ void Settings::save() {
     fout << "GimbalY" << Settings::gimbalSetting.GimbalY;
     fout << "GimbalZ" << Settings::gimbalSetting.GimbalZ;
 	fout << "CameraTheta" << Settings::gimbalSetting.CameraTheta;
+	fout << "ShootingSpeed" << Settings::gimbalSetting.ShootingSpeed;
 }
