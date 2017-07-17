@@ -1092,10 +1092,10 @@ pair<int, int> RuneDetector::chooseTargetPerspective(const Mat &image, const vec
 	}
 
 	int idx = -1;
-	/*
+	
 	if (type == RUNE_ORB)
 		idx = findTargetORB(cell);
-		*/
+		
 	if (type == RUNE_GRAD)
 		idx = findTargetEdge(cell);
 	else if (type == RUNE_CANNY)
@@ -1103,7 +1103,17 @@ pair<int, int> RuneDetector::chooseTargetPerspective(const Mat &image, const vec
 
 	//int idxx = findTargetCanny(cell);
 	//cout << "Canny: " << idxx << "\tEDGE: " << idx << endl;
-	return idx < 0 ? make_pair(-1, -1) : make_pair((int)centers[idx].idx, idx);
+	static Voter<int> indexVoter(voteSetting);	
+	static int lastIndexResult = -1;
+	indexVoter.PushElement(idx);
+	if (indexVoter.GetBestElement(idx))
+	{
+		lastIndexResult = idx;
+		indexVoter.RemoveOldElements();
+	}
+	else return make_pair(-1, -1);
+	// return idx < 0 ? make_pair(-1, -1) : make_pair((int)centers[idx].idx, idx);
+	return idx < 0 ? make_pair(-1, -1) : make_pair(idx, (int)centers[idx].idx);
 }
 
 pair<int, int> RuneDetector::chooseTarget(const Mat &image, const vector<RotatedRect> &sudoku_rects)
@@ -1148,10 +1158,10 @@ pair<int, int> RuneDetector::chooseTarget(const Mat &image, const vector<Rotated
 	}
 
 	int idx = -1;
-	/*
+	
 	if (type == RUNE_ORB)
 	    idx = findTargetORB(cell);
-		*/
+		
 	if (type == RUNE_GRAD)
 		idx = findTargetEdge(cell);
 	else if (type == RUNE_CANNY)
@@ -1159,7 +1169,17 @@ pair<int, int> RuneDetector::chooseTarget(const Mat &image, const vector<Rotated
 
 	//int idxx = findTargetCanny(cell);
 	//cout << "Canny: " << idxx << "\tEDGE: " << idx << endl;
-	return idx < 0 ? make_pair(-1, -1) : make_pair((int)centers[idx].idx, idx);
+	static Voter<int> indexVoter(voteSetting);	
+	static int lastIndexResult = -1;
+	indexVoter.PushElement(idx);
+	if (indexVoter.GetBestElement(idx))
+	{
+		lastIndexResult = idx;
+		indexVoter.RemoveOldElements();
+	}
+	else return make_pair(-1, -1);
+	// return idx < 0 ? make_pair(-1, -1) : make_pair((int)centers[idx].idx, idx);
+	return idx < 0 ? make_pair(-1, -1) : make_pair(idx, (int)centers[idx].idx);
 }
 
 RotatedRect RuneDetector::adjustRotatedRect(const RotatedRect &rect)

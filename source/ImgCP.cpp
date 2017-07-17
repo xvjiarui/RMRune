@@ -205,7 +205,9 @@ void ImgCP::ImageConsumer()
 		unsigned int frameNum = data[cIdx % BUFFER_SIZE].frame;
 		++cIdx;
 #ifdef ADJUST_COORDINATE
-		if (runeDetector.getTarget(original_img, RuneDetector::RUNE_B).second == -1)
+		RuneDetector::RuneType runeType = RuneDetector::RUNE_B;
+		int targetIdx = runeDetector.getTarget(original_img, runeType).second;
+		if (targetIdx == -1)
 		{
 			cout << "Cannot detect 9 sudokus." << endl;
 			continue;
@@ -227,7 +229,8 @@ void ImgCP::ImageConsumer()
 #endif
 
 		try {
-			int targetIdx = runeDetector.getTarget(original_img, RuneDetector::RUNE_B).second;
+			RuneDetector::RuneType runeType = RuneDetector::RUNE_B;
+			int targetIdx = runeDetector.getTarget(original_img, runeType).second;
 			if (targetIdx == -1)
 			{
 				countTime = true;
