@@ -61,7 +61,7 @@ public:
 class AngleSolver : public RectPnPSolver {
 public:
     AngleSolver(const cv::Mat & camera_matrix, const cv::Mat & dist_coeff,
-                double target_width = 0, double target_height = 0, double z_scale = 1.0,
+                double target_width = 0, double target_height = 0, double z_scale = 1.0, double y_scale = 1.0, 
                 double min_dist = 50.0, double max_dist = 600.0)
         : RectPnPSolver(camera_matrix, dist_coeff, target_width, target_height){
         min_distance = min_dist;
@@ -71,6 +71,7 @@ public:
         trans_camera2ptz = cv::Mat::zeros(3,1,CV_64FC1);
         offset_y_barrel_ptz = 0;
         scale_z = z_scale;
+        scale_y = y_scale;
     }
 
     void setScaleZ(double scale) {scale_z = scale;}
@@ -113,6 +114,7 @@ private:
     double min_distance;
     double max_distance;
     double scale_z;
+	double scale_y;
 };
 
 

@@ -160,7 +160,7 @@ void ImgCP::ImageConsumer()
 	float CellActualWidth = 28;
 	float CellActualHeight = 16;
 	AngleSolver angleSolver(settings.cameraSetting.CameraMatrix, settings.cameraSetting.DistortionMatrix,
-				CellActualWidth, CellActualHeight, settings.gimbalSetting.ScaleZ, settings.runeSetting.MinDistance, settings.runeSetting.MaxDistance);
+				CellActualWidth, CellActualHeight, settings.gimbalSetting.ScaleZ, settings.gimbalSetting.ScaleY, settings.runeSetting.MinDistance, settings.runeSetting.MaxDistance);
     // parameter of PTZ and barrel
     double overlap_dist = 100000.0;
     double barrel_ptz_offset_y = 0;

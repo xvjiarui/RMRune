@@ -68,6 +68,7 @@ bool AngleSolver::getAngle(const cv::RotatedRect & rect, double & angle_x, doubl
     //position_in_camera.at<double>(2, 0) = 1.4596 * position_in_camera.at<double>(2, 0);  // for camera-2 calibration (unfix center)
     //position_in_camera.at<double>(2, 0) = 1.5348 * position_in_camera.at<double>(2, 0);  // for camera-MH calibration (unfix center)
     position_in_camera.at<double>(2, 0) = scale_z * position_in_camera.at<double>(2, 0);
+    //position_in_camera.at<double>(1, 0) = scale_y * position_in_camera.at<double>(1, 0);
     if (position_in_camera.at<double>(2, 0) < min_distance || position_in_camera.at<double>(2, 0) > max_distance){
         cout << "out of range: [" << min_distance << ", " << max_distance << "]\n";
         return false;
@@ -117,7 +118,8 @@ void AngleSolver::adjustPTZ2Barrel(const cv::Mat & pos_in_ptz, double & angle_x,
     angle_x = atan2(xyz[0], xyz[2]);
 	*/
 	angle_x = atan2(_xyz[0], _xyz[2]);
-	double h = abs(_xyz[1]/100.0);
+	double h = abs(_xyz[1]/100.0) * scale_y;
+	cout << "H; " << h << endl;
 	double z = abs(_xyz[2]/100.0);
 	double szh = sqrt(h * h + z * z);
 	angle_y = 0.5 * ( acos(z/szh) + asin( (h + 9.8 * z * z / (bullet_speed * bullet_speed))/szh));
