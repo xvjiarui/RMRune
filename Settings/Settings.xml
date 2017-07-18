@@ -12,7 +12,7 @@
 <OneHeight>6</OneHeight>
 <MinDistance>10.0</MinDistance>
 <MaxDistance>800.0</MaxDistance>
-<ContourThreshold>130</ContourThreshold>
+<ContourThreshold>180</ContourThreshold>
 <VoterSaveTime>5</VoterSaveTime>
 <ExposureTime>30</ExposureTime>
 <HsvLowerBound>
@@ -36,9 +36,9 @@
 <ScaleX> 1.0 </ScaleX>
 <ScaleY> 1.0 </ScaleY>
 <ScaleZ> 1.0 </ScaleZ>
-<GimbalX> 9 </GimbalX>
+<GimbalX> 4 </GimbalX>
 <GimbalY> 82 </GimbalY>
 <GimbalZ> -30 </GimbalZ>
 <CameraTheta> 14 </CameraTheta>
-<ShootingSpeed> 20 </ShootingSpeed>
+<ShootingSpeed> 15 </ShootingSpeed>
 </opencv_storage>

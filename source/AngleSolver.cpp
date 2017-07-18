@@ -89,11 +89,16 @@ void AngleSolver::tranformationCamera2PTZ(const cv::Mat & pos, cv::Mat & transed
 
 void AngleSolver::adjustPTZ2Barrel(const cv::Mat & pos_in_ptz, double & angle_x, double & angle_y, double bullet_speed, double current_ptz_angle){
     const double *_xyz = (const double *)pos_in_ptz.data;
+	/*
     double down_t = 0.0;
     if (bullet_speed > 10e-3)
-        down_t = _xyz[2] / 100.0 / bullet_speed;
-    double offset_gravity = 0.5 * 9.8 * down_t * down_t * 100;
+	{
+		double cos_theta = abs(_xyz[2]) / sqrt(_xyz[1] * _xyz[1] + _xyz[2] * _xyz[2]);
+        down_t = _xyz[2] / 100.0 / (bullet_speed * cos_theta);
+	}
+    double offset_gravity = 10 + 0.5 * 9.8 * down_t * down_t * 100;
     double xyz[3] = {_xyz[0], _xyz[1] - offset_gravity, _xyz[2]};
+
     double alpha = 0.0, theta = 0.0;
 
     alpha = asin(offset_y_barrel_ptz/sqrt(xyz[1]*xyz[1] + xyz[2]*xyz[2]));
@@ -110,9 +115,15 @@ void AngleSolver::adjustPTZ2Barrel(const cv::Mat & pos_in_ptz, double & angle_x,
         angle_y = (theta-alpha);   // camera coordinate
     }
     angle_x = atan2(xyz[0], xyz[2]);
+	*/
+	angle_x = atan2(_xyz[0], _xyz[2]);
+	double h = abs(_xyz[1]/100.0);
+	double z = abs(_xyz[2]/100.0);
+	double szh = sqrt(h * h + z * z);
+	angle_y = 0.5 * ( acos(z/szh) + asin( (h + 9.8 * z * z / (bullet_speed * bullet_speed))/szh));
     //cout << "angle_x: " << angle_x << "\tangle_y: " << angle_y <<  "\talpha: " << alpha << "\ttheta: " << theta << endl;
     angle_x = -angle_x * 180 / 3.1415926;
-    angle_y = -angle_y * 180 / 3.1415926;
+    angle_y = angle_y * 180 / 3.1415926;
 }
 
 void AngleSolver::getTarget2dPoinstion(const cv::RotatedRect & rect, vector<Point2f> & target2d, const cv::Point2f & offset){
