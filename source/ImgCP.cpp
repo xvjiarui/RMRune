@@ -236,9 +236,6 @@ void ImgCP::ImageConsumer()
 				countTime = true;
 				continue;
 			}
-			static int i = 0;
-			i = ++i % 9;
-			targetIdx = i;
 			RotatedRect targetRect = runeDetector.getRotateRect(targetIdx);
 			double angle_x, angle_y;
 			if(angleSolverFactory.getAngle(targetRect, AngleSolverFactory::TARGET_RUNE, angle_x, angle_y, settings.gimbalSetting.ShootingSpeed, 0))
@@ -249,9 +246,10 @@ void ImgCP::ImageConsumer()
 			endTime = getTickCount();
 		    cout << "Frame time: " << (endTime - startTime) * 1000.0 / getTickFrequency() << endl;
 			setGimbalAngle(targetIdx, angle_x, angle_y);
+			cout << "sending... " << endl;
 			sendGimbalAngle();
 			cout << "current angle:" << angle_x << ' ' << angle_y << ' ' << targetIdx << endl;
-			cin.get();
+			//cin.get();
 			countTime = false;
 		}
 		catch (cv::Exception)
