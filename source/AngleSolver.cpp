@@ -90,7 +90,6 @@ void AngleSolver::tranformationCamera2PTZ(const cv::Mat & pos, cv::Mat & transed
 
 void AngleSolver::adjustPTZ2Barrel(const cv::Mat & pos_in_ptz, double & angle_x, double & angle_y, double bullet_speed, double current_ptz_angle){
     const double *_xyz = (const double *)pos_in_ptz.data;
-	/*
     double down_t = 0.0;
     if (bullet_speed > 10e-3)
 	{
@@ -116,16 +115,18 @@ void AngleSolver::adjustPTZ2Barrel(const cv::Mat & pos_in_ptz, double & angle_x,
         angle_y = (theta-alpha);   // camera coordinate
     }
     angle_x = atan2(xyz[0], xyz[2]);
-	*/
+	/*
 	angle_x = atan2(_xyz[0], _xyz[2]);
 	double h = abs(_xyz[1]/100.0) * scale_y;
-	cout << "H; " << h << endl;
+	cout << "x; " << _xyz[0] << endl;
+	cout << "y; " << h << endl;
 	double z = abs(_xyz[2]/100.0);
 	double szh = sqrt(h * h + z * z);
 	angle_y = 0.5 * ( acos(z/szh) + asin( (h + 9.8 * z * z / (bullet_speed * bullet_speed))/szh));
+	*/
     //cout << "angle_x: " << angle_x << "\tangle_y: " << angle_y <<  "\talpha: " << alpha << "\ttheta: " << theta << endl;
     angle_x = -angle_x * 180 / 3.1415926;
-    angle_y = angle_y * 180 / 3.1415926;
+    angle_y = -angle_y * 180 / 3.1415926;
 }
 
 void AngleSolver::getTarget2dPoinstion(const cv::RotatedRect & rect, vector<Point2f> & target2d, const cv::Point2f & offset){

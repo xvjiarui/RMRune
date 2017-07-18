@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<opencv_storage>
+<MnistThreshold>180</MnistThreshold>
+<RuneSType>1</RuneSType>
+<!--<CellRatio>0.67</CellRatio>-->
+<CellRatio>0.8</CellRatio>
+<CellWidth>127</CellWidth>
+<CellHeight>71</CellHeight>
+<DigitRatio>0.67</DigitRatio>
+<DigitWidth>42</DigitWidth>
+<DigitHeight>28</DigitHeight>
+<OneHeight>6</OneHeight>
+<MinDistance>10.0</MinDistance>
+<MaxDistance>800.0</MaxDistance>
+<ContourThreshold>100</ContourThreshold>
+<VoterSaveTime>5</VoterSaveTime>
+<ExposureTime>30</ExposureTime>
+<HsvLowerBound>
+	0. 0. 150. 0.</HsvLowerBound>
+<HsvUpperBound>
+  255. 255. 255. 0.</HsvUpperBound>
+<CameraMatrix type_id="opencv-matrix">
+  <rows>3</rows>
+  <cols>3</cols>
+  <dt>d</dt>
+  <data>
+    6.2976607273296383e+02 0. 3.1950000000000000e+02 0.
+    6.2976607273296383e+02 2.3950000000000000e+02 0. 0. 1.</data></CameraMatrix>
+<DistortionMatrix type_id="opencv-matrix">
+  <rows>5</rows>
+  <cols>1</cols>
+  <dt>d</dt>
+  <data>
+    -3.5094954347984941e-01 -1.1830081688176673e-01 0. 0.
+    3.8916784929321241e-01</data></DistortionMatrix>
+<ScaleX> 1.0 </ScaleX>
+<ScaleY> 1.0 </ScaleY>
+<ScaleZ> 1.0 </ScaleZ>
+<GimbalX> 3 </GimbalX>
+<GimbalY> 69 </GimbalY>
+<GimbalZ> -30 </GimbalZ>
+<CameraTheta> 14 </CameraTheta>
+<ShootingSpeed> 15 </ShootingSpeed>
+</opencv_storage>
