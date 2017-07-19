@@ -240,7 +240,7 @@ void ImgCP::ImageConsumer()
 #endif
 
 		try {
-			RuneDetector::RuneType runeType = RuneDetector::RUNE_B;
+			RuneDetector::RuneType runeType = RuneDetector::RUNE_S;
 			int targetIdx = runeDetector.getTarget(original_img, runeType).second;
 			if (targetIdx == -1)
 			{

@@ -5,7 +5,7 @@
 //for debug
 ////////////////////////////////////////
 
-//#define SHOW_IMAGE
+#define SHOW_IMAGE
 #define SHOW_DEBUG_DETAILS
 //#define NoORB
 //#define NO_VOTING

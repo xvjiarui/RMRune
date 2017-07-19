@@ -48,8 +48,10 @@ pair<int, int> RuneDetector::getTarget(const cv::Mat &image, RuneType rune_type)
 {
 	cvtColor(image, src, CV_BGR2GRAY);
 	Mat binary;
-	threshold(src, binary, contour_threshold, 255, THRESH_BINARY);
-//GaussianBlur(binary, binary, Size(9, 9), 0);
+	//threshold(src, binary, contour_threshold, 255, THRESH_BINARY);
+	GaussianBlur(src, binary, Size(9, 9), 0);
+	morphologyEx(binary, binary, MORPH_CLOSE, getStructuringElement(MORPH_RECT,Size(3,3)));
+	adaptiveThreshold(binary, binary, 255, ADAPTIVE_THRESH_GAUSSIAN_C, THRESH_BINARY, 5, 0);
 //threshold(src, binary, 200, 255, THRESH_BINARY);
 #ifdef SHOW_IMAGE
 	imshow("image", image);
@@ -1095,8 +1097,7 @@ pair<int, int> RuneDetector::chooseTargetPerspective(const Mat &image, const vec
 	
 	if (type == RUNE_ORB)
 		idx = findTargetORB(cell);
-		
-	if (type == RUNE_GRAD)
+	else if (type == RUNE_GRAD)
 		idx = findTargetEdge(cell);
 	else if (type == RUNE_CANNY)
 		idx = findTargetCanny(cell);
@@ -1108,6 +1109,11 @@ pair<int, int> RuneDetector::chooseTargetPerspective(const Mat &image, const vec
 	indexVoter.PushElement(idx);
 	if (indexVoter.GetBestElement(idx))
 	{
+		if(lastIndexResult == idx)
+		{
+			cout << "Pass" << endl;
+			return make_pair(-1, -1);
+		}
 		lastIndexResult = idx;
 		indexVoter.RemoveOldElements();
 	}
@@ -1161,8 +1167,7 @@ pair<int, int> RuneDetector::chooseTarget(const Mat &image, const vector<Rotated
 	
 	if (type == RUNE_ORB)
 	    idx = findTargetORB(cell);
-		
-	if (type == RUNE_GRAD)
+	else if (type == RUNE_GRAD)
 		idx = findTargetEdge(cell);
 	else if (type == RUNE_CANNY)
 		idx = findTargetCanny(cell);
@@ -1174,6 +1179,11 @@ pair<int, int> RuneDetector::chooseTarget(const Mat &image, const vector<Rotated
 	indexVoter.PushElement(idx);
 	if (indexVoter.GetBestElement(idx))
 	{
+		if(lastIndexResult == idx)
+		{
+			cout << "Pass" << endl;
+			return make_pair(-1, -1);
+		}
 		lastIndexResult = idx;
 		indexVoter.RemoveOldElements();
 	}

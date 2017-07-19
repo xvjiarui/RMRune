@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <opencv_storage>
 <MnistThreshold>180</MnistThreshold>
-<RuneSType>1</RuneSType>
+<RuneSType>0</RuneSType>
 <!--<CellRatio>0.67</CellRatio>-->
 <CellRatio>0.8</CellRatio>
 <CellWidth>127</CellWidth>
@@ -16,7 +16,7 @@
 <VoterSaveTime>5</VoterSaveTime>
 <ExposureTime>30</ExposureTime>
 <HsvLowerBound>
-	0. 0. 162. 0.</HsvLowerBound>
+	0. 0. 177. 0.</HsvLowerBound>
 <HsvUpperBound>
   255. 255. 255. 0.</HsvUpperBound>
 <CameraMatrix type_id="opencv-matrix">

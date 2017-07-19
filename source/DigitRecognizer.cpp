@@ -71,6 +71,7 @@ DigitRecognizer::DigitRecognizer(Settings::LightSetting lightSetting): horizonta
 		*/
     };
 
+
 }
 
 void DigitRecognizer::predict(const Mat& inputImg, const Rect2f & sudokuPanel)
@@ -235,13 +236,12 @@ int DigitRecognizer::fitDigitAndRecognize(Mat& hsvImg)
 	if (ratio < 0.5)
 	{
 		resize(hsvImg, hsvImg, Size(40, 60));
-		ret = adaptiveRecognize(hsvImg);
 	}
 	else{
 		hsvImg = hsvImg(boundingRect(curContoursPoly));
 		resize(hsvImg, hsvImg, Size(40, 60));
-		ret = adaptiveRecognize(hsvImg);
 	} 
+	ret = similarityRecognize(hsvImg);
 #ifdef SHOW_IMAGE
 	imshow("hsvImg", hsvImg);
 #endif
@@ -254,6 +254,47 @@ DigitRecognizer::~DigitRecognizer()
 	digitLabels.clear();
 }
 
+int DigitRecognizer::similarityRecognize(const Mat& img)
+{
+	int ret = 0;
+#ifdef SHOW_IMAGE
+	Mat temp;
+	img.copyTo(temp);
+#endif
+	static int digitTemplates[10][7] = {
+		{1, 1, 1, 0, 1, 1, 1},
+		{0, 0, 1, 0, 0, 1, 0},
+		{1, 0, 1, 1, 1, 0, 1},
+		{1, 0, 1, 1, 0, 1, 1},
+		{0, 1, 1, 1, 0, 1, 0},
+		{1, 1, 0, 1, 0, 1, 1},
+		{1, 1, 0, 1, 1, 1, 1},
+		{1, 0, 1, 0, 0, 1, 0},
+		{1, 1, 1, 1, 1, 1, 1},
+		{1, 1, 1, 1, 0, 1, 1}
+	};
+	struct Candidate{
+		float difference;
+		int index;
+	} candidates[10];
+	for (int i = 0; i < 10; i++)
+	{
+		candidates[i].difference = 0;
+		candidates[i].index = i;
+	}
+	for (int i = 0; i < segmentRects.size(); ++i)
+	{
+		Mat curImg = img(segmentRects.at(i));
+		int total = countNonZero(curImg);
+		float curRatio = (float)total/ (float) segmentRects.at(i).area();
+		for (int j = 0; j < 10; ++j)
+		{
+			candidates[j].difference += abs(curRatio - digitTemplates[j][i]);
+		}
+	}
+	sort(candidates, candidates + 10, [](const Candidate& a, const Candidate& b) { return a.difference < b.difference; } );
+	return candidates[0].index;
+}
 
 int DigitRecognizer::recognize(const Mat& img)
 {
