@@ -224,6 +224,7 @@ int DigitRecognizer::fitDigitAndRecognize(Mat& hsvImg)
 {
 	Mat hsvCopy;
 	hsvImg.copyTo(hsvCopy);
+	morphologyEx(hsvCopy, hsvCopy, MORPH_CLOSE, getStructuringElement(MORPH_RECT,Size(3,3)));
 	vector<vector<Point> > contours;
 	vector<Vec4i> hierarchy;
 	findContours( hsvCopy, contours, hierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE, Point(0, 0) );			
