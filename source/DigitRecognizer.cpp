@@ -238,7 +238,7 @@ int DigitRecognizer::fitDigitAndRecognize(Mat& hsvImg)
 	else{
 		hsvImg = hsvImg(boundingRect(curContoursPoly));
 		resize(hsvImg, hsvImg, Size(40, 60));
-		ret = recognize(hsvImg);
+		ret = adaptiveRecognize(hsvImg);
 	} 
 #ifdef SHOW_IMAGE
 	imshow("hsvImg", hsvImg);
@@ -290,6 +290,82 @@ int DigitRecognizer::recognize(const Mat& img)
 	return ret;
 }
 
+int DigitRecognizer::adaptiveRecognize(const Mat& img)
+{
+	int ret = 0;
+#ifdef SHOW_IMAGE
+	Mat temp;
+	img.copyTo(temp);
+#endif
+
+	const int step = 1;
+	Rect horizontalRect(Point(0, 0), Point(40, 5));
+	Rect verticalRect(Point(0, 0), Point(5, 30));
+	for (int i = 0; i < 3; ++i)
+	{
+		for (int j = 0; j < 15; j+=step)
+		{
+			Rect curRect = horizontalRect + Point(0, 20 * i + j);
+			Mat curImg = img(curRect);
+			int total = countNonZero(curImg);
+			if ((float)total / (float)curRect.area() > 0.5)
+			{
+#ifdef SHOW_IMAGE
+				rectangle(temp, curRect, Scalar(255, 255, 255));
+#endif
+				ret += (1 << (3 * (6 - i)));
+				break;
+			}
+		}
+	}
+	for (int i = 0; i < 2; ++i)
+	{
+		for (int j = 0; j < 15; j+=step)
+		{
+			Rect curRect = verticalRect + Point(20 * i + j, 0);
+			Mat curImg = img(curRect);
+			int total = countNonZero(curImg);
+			if ((float)total / (float)curRect.area() > 0.5)
+			{
+#ifdef SHOW_IMAGE
+				rectangle(temp, curRect, Scalar(255, 255, 255));
+#endif
+				ret += (1 << (5 - i));
+				break;
+			}
+		}
+	}
+	for (int i = 0; i < 2; ++i)
+	{
+		for (int j = 0; j < 15; j+=step)
+		{
+			Rect curRect = verticalRect + Point(20 * i + j, 30);
+			Mat curImg = img(curRect);
+			int total = countNonZero(curImg);
+			if ((float)total / (float)curRect.area() > 0.5)
+			{
+#ifdef SHOW_IMAGE
+				rectangle(temp, curRect, Scalar(255, 255, 255));
+#endif
+				ret += (1 << (2 - i));
+				break;
+			}
+		}
+	}
+#ifdef SHOW_IMAGE
+	imshow("temp", temp);
+#endif
+	try
+	{
+		ret = segmentTable.at(ret);
+	}
+	catch (out_of_range e)
+	{
+
+		return -1;
+	}
+	return ret;
+}
 
 void DigitRecognizer::clear()
 {

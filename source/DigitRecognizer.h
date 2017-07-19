@@ -22,6 +22,7 @@ public:
 
 private:
 	int recognize(const Mat& img);
+	int adaptiveRecognize(const Mat& img)
 	void clear();
 	Mat imgCopy;
 	unordered_map<int, int> segmentTable;
