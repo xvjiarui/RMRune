@@ -3,10 +3,12 @@
 #include "RMVideoCapture.hpp"
 #include "Voter.hpp"
 #include <highgui.h>
+#include "manifoldGPIO.h"
 #include <string>
 
 using namespace std;
 using namespace cv;
+using manifoldGPIO::gpioExport;
 
 volatile unsigned int pIdx = 0;
 volatile unsigned int cIdx = 0;
@@ -15,10 +17,14 @@ struct ImageData {
 	unsigned int frame;
 };
 ImageData data[BUFFER_SIZE];
+unsigned int runeGPIO = manifoldGPIO::low;
+manifoldGPIO::GPIO runeToggleButton = manifoldGPIO::gpio157;
 void serialSetup();
 void serialStart();
+void UART0_Close(int fd);
 void setGimbalAngle(int index, float pitch, float yaw);
 void sendGimbalAngle();
+extern int fd;
 
 void ImgCP::ImageProducer()
 {
@@ -176,6 +182,11 @@ void ImgCP::ImageConsumer()
 	angleSolverFactory.setSolver(&angleSolver);
 	angleSolverFactory.setTargetSize(CellActualWidth, CellActualHeight, AngleSolverFactory::TARGET_RUNE);
 	bool countTime = false;
+	//GPIO init
+	//manifoldGPIO::gpioExport(runeToggleButton);
+	gpioExport(runeToggleButton);
+	manifoldGPIO::gpioSetDirection(runeToggleButton, manifoldGPIO::input);
+	manifoldGPIO::gpioGetValue(runeToggleButton, &runeGPIO);
 	//UART init
 	serialSetup();
 	serialStart();
@@ -262,5 +273,8 @@ void ImgCP::ImageConsumer()
 		}
 		cout << endl;
 	}
+	// close GPIO and UART
+	manifoldGPIO::gpioUnexport(runeToggleButton);
+	UART0_Close(fd);
 }
 		

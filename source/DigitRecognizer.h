@@ -22,7 +22,7 @@ public:
 
 private:
 	int recognize(const Mat& img);
-	int adaptiveRecognize(const Mat& img)
+	int adaptiveRecognize(const Mat& img);
 	void clear();
 	Mat imgCopy;
 	unordered_map<int, int> segmentTable;
@@ -32,6 +32,11 @@ private:
     Scalar upperBound;
 
 	RNG rng; // random number generator
+
+	Rect horizontalRect;
+	Rect verticalRect;
+	float areaThreshold;
+
 	int fitDigitAndRecognize(Mat& hsvImg);
 #ifdef ADJUST_HSV
 	friend void AdjustHSVImg(int, void*);

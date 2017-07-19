@@ -20,7 +20,7 @@ void binaryMat2points(const Mat & img, vector<Point> & pts)
 }
 
 
-DigitRecognizer::DigitRecognizer(Settings::LightSetting lightSetting)
+DigitRecognizer::DigitRecognizer(Settings::LightSetting lightSetting): horizontalRect(Point(0, 0), Point(40, 10)), verticalRect(Point(0, 0), Point(10, 30))
 {
 
 	rng = RNG(12345);
@@ -40,6 +40,8 @@ DigitRecognizer::DigitRecognizer(Settings::LightSetting lightSetting)
     	{127, 8},
     	{123, 9}
     };
+
+	areaThreshold = 0.6;
 
 	float hXLen, hYLen, vXLen, vYLen;
 	float xOffset, yOffset;
@@ -169,7 +171,7 @@ void DigitRecognizer::predict(const Mat& inputImg, const Rect2f & sudokuPanel)
 	cout << "Digit: " << digitImgs.size() << endl;
 	for (int i = 0; i < digitImgs.size(); ++i)
 	{
-		digitLabels.push_back(recognize(digitImgs.at(i)));
+		digitLabels.push_back(adaptiveRecognize(digitImgs.at(i)));
 		cout << digitLabels.at(i);
 	}
 	cout << endl;
@@ -233,7 +235,7 @@ int DigitRecognizer::fitDigitAndRecognize(Mat& hsvImg)
 	if (ratio < 0.5)
 	{
 		resize(hsvImg, hsvImg, Size(40, 60));
-		ret = recognize(hsvImg);
+		ret = adaptiveRecognize(hsvImg);
 	}
 	else{
 		hsvImg = hsvImg(boundingRect(curContoursPoly));
@@ -299,33 +301,31 @@ int DigitRecognizer::adaptiveRecognize(const Mat& img)
 #endif
 
 	const int step = 1;
-	Rect horizontalRect(Point(0, 0), Point(40, 5));
-	Rect verticalRect(Point(0, 0), Point(5, 30));
 	for (int i = 0; i < 3; ++i)
 	{
-		for (int j = 0; j < 15; j+=step)
+		for (int j = 0; j < 10; j+=step)
 		{
 			Rect curRect = horizontalRect + Point(0, 20 * i + j);
 			Mat curImg = img(curRect);
 			int total = countNonZero(curImg);
-			if ((float)total / (float)curRect.area() > 0.5)
+			if ((float)total / (float)curRect.area() > areaThreshold)
 			{
 #ifdef SHOW_IMAGE
 				rectangle(temp, curRect, Scalar(255, 255, 255));
 #endif
-				ret += (1 << (3 * (6 - i)));
+				ret += (1 << (6 - 3 * i));
 				break;
 			}
 		}
 	}
 	for (int i = 0; i < 2; ++i)
 	{
-		for (int j = 0; j < 15; j+=step)
+		for (int j = 0; j < 10; j+=step)
 		{
 			Rect curRect = verticalRect + Point(20 * i + j, 0);
 			Mat curImg = img(curRect);
 			int total = countNonZero(curImg);
-			if ((float)total / (float)curRect.area() > 0.5)
+			if ((float)total / (float)curRect.area() > areaThreshold)
 			{
 #ifdef SHOW_IMAGE
 				rectangle(temp, curRect, Scalar(255, 255, 255));
@@ -337,12 +337,12 @@ int DigitRecognizer::adaptiveRecognize(const Mat& img)
 	}
 	for (int i = 0; i < 2; ++i)
 	{
-		for (int j = 0; j < 15; j+=step)
+		for (int j = 0; j < 10; j+=step)
 		{
 			Rect curRect = verticalRect + Point(20 * i + j, 30);
 			Mat curImg = img(curRect);
 			int total = countNonZero(curImg);
-			if ((float)total / (float)curRect.area() > 0.5)
+			if ((float)total / (float)curRect.area() > areaThreshold)
 			{
 #ifdef SHOW_IMAGE
 				rectangle(temp, curRect, Scalar(255, 255, 255));
