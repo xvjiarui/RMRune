@@ -278,6 +278,7 @@ int DigitRecognizer::fitDigitAndRecognize(Mat& hsvImg)
 	vector<vector<Point> > contours;
 	vector<Vec4i> hierarchy;
 	findContours( hsvCopy, contours, hierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE, Point(0, 0) );			
+	if (!contours.size()) return -1;
 	sort(contours.begin(), contours.end(), [](const vector<Point> & a, const vector<Point> & b) {return a.size()>b.size();});
 	vector<Point> curContoursPoly;
 	approxPolyDP(contours.at(0), curContoursPoly, 3, true);

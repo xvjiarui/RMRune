@@ -105,6 +105,8 @@ private:
 	int contour_threshold;
 	int mnist_threshold;
     bool use_perspective;
+	int oneIndex;
+	bool oneConfirmed;
     Methed_Type type;
 	cv::Mat src;
 	MnistRecognizer mnistRecognizer[9]; // 9 for 9 sudoku_img, cannot share due to multi thread

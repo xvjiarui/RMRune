@@ -42,7 +42,7 @@ int main(int argc, char** argv )
 		Settings settings(path, camPath);
 		settings.load();
 		original_img = imread(argv[2]);
-		// resize(original_img, original_img, Size(640, 480), 0, 0, INTER_CUBIC);
+		resize(original_img, original_img, Size(640, 480), 0, 0, INTER_CUBIC);
 		namedWindow("Original Image", WINDOW_AUTOSIZE );
 		imshow("Original Image", original_img);
 		RuneDetector runeDetector(settings);

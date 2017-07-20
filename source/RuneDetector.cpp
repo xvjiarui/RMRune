@@ -144,6 +144,7 @@ bool RuneDetector::checkSudoku(const vector<vector<Point2i>> &contours, vector<R
 	float high_threshold = 1.2;
 	vector<Point2f> centers;
 	float digit_avg_width = 0;
+	float digit_avg_height = 0;
 	for (size_t i = 0; i < contours.size(); i++)
 	{
 		RotatedRect rect = minAreaRect(contours[i]);
@@ -169,7 +170,9 @@ bool RuneDetector::checkSudoku(const vector<vector<Point2i>> &contours, vector<R
 		{
 			digit_rects.push_back(rect);
 			digit_avg_width += s.height;
+			digit_avg_height += s.width;
 		}
+		/*
 		else if (ratio_cur > 0.6 * OneWHRatio && ratio_cur < 1.4 * OneWHRatio &&
 				 s.width > 0.6 * digit_width && s.width < 1.4 * digit_width &&
 				 s.height > 0.6 * one_height && s.height < 1.4 * one_height &&
@@ -177,13 +180,75 @@ bool RuneDetector::checkSudoku(const vector<vector<Point2i>> &contours, vector<R
 		{
 			one_digit_rects.push_back(rect);
 		}
+		*/
 	}
+	/* 
 	if (one_digit_rects.size() == 1)
 	{
 		digit_avg_width /= digit_rects.size();
 		RotatedRect curRotatedRect = one_digit_rects.at(0);
 		curRotatedRect.size.height = digit_avg_width;
 		curRotatedRect.center -= Point2f(0.3 * digit_avg_width, 0);
+		digit_rects.push_back(curRotatedRect);
+	}
+	*/
+	oneIndex = -1;
+	oneConfirmed = false;
+	if (digit_rects.size() == 4)
+	{
+		digit_avg_width /= digit_rects.size();
+		sort(digit_rects.begin(), digit_rects.end(), [](const RotatedRect& a, const RotatedRect& b) { return a.center.x < b.center.x;});
+		float targetX = 0;
+		RotatedRect curRotatedRect;
+		float avgDistance = 0;
+		int maxDistance = -1;
+		vector<float> distance;
+		for (int i = 0; i < digit_rects.size() - 1; i++)
+		{
+			float curDistance = digit_rects.at(i + 1).center.x - digit_rects.at(i).center.x;
+			distance.push_back(curDistance);
+			if (curDistance > maxDistance)
+			{
+				maxDistance = curDistance;
+				oneIndex = i + 1;
+			}
+			avgDistance += curDistance;
+		}
+		avgDistance /= 4.0;
+		float stddev = 0;
+		for_each(distance.begin(), distance.end(), [&](const float& a){
+			stddev += (a - avgDistance) * (a - avgDistance);
+		});
+		stddev = sqrt(stddev);
+		if (stddev > 15)
+		{
+			oneConfirmed = true;
+			targetX = digit_rects.at(oneIndex - 1).center.x + avgDistance;
+		}
+		else
+		{
+			oneIndex = 0;
+			targetX = digit_rects.at(0).center.x - avgDistance;
+		}
+		/*
+		for (int i = 0; i < digit_rects.size() - 1; i++)
+		{
+			if (digit_rects.at(i + 1).center.x - digit_rects.at(i).center.x > 2 * digit_avg_width)
+			{
+				targetX = digit_rects.at(i).center.x + digit_avg_width;
+				oneIndex = i + 1;
+				oneConfirmed = true;
+				break;
+			}
+		}
+		if (!targetX)
+		{
+			targetX = digit_rects.at(0).center.x - digit_avg_width;
+			oneIndex = 0;
+		}
+		*/
+		curRotatedRect = digit_rects.at(0);
+		curRotatedRect.center.x  = targetX;
 		digit_rects.push_back(curRotatedRect);
 	}
 #ifdef SHOW_DEBUG_DETAILS
@@ -649,7 +714,7 @@ pair<int, int> RuneDetector::chooseMnistTarget(const Mat &inputImg, const vector
 	sort(digit_rects.begin(), digit_rects.end(), [](const RotatedRect &a, const RotatedRect &b) { return a.center.x < b.center.x; });
 	vector<Mat> digit_images;
 	cout << "[";
-	for (int i = 0; i < digit_rects.size(); i++)
+	for (int i = 0, writeI = 0; i < digit_rects.size(); i++)
 	{
 		Point2f pts[4];
 		vector<Point2f> vpts, t;
@@ -660,18 +725,33 @@ pair<int, int> RuneDetector::chooseMnistTarget(const Mat &inputImg, const vector
 #ifdef SHOW_IMAGE
 		imshow("showtime", digit_images[i]);
 #endif
-		int curDigit = digitRecognizer.process(digit_images.at(i));
-		if (curDigit != -1)
+		int curDigit;
+		if (i == oneIndex && oneConfirmed)
 		{
-			digit_results.at(i) = curDigit;
+			curDigit = 1;
 		}
 		else
 		{
-			digit_results.at(i) = 1;
+			curDigit = digitRecognizer.process(digit_images.at(i));
 		}
-		cout << digit_results.at(i);
-		// waitKey(0);
+		if (i == oneIndex && curDigit != 1)
+		{
+			digit_results.back() = 1;
+		}
+		else
+		{
+			if (curDigit != -1)
+			{
+				digit_results.at(writeI) = curDigit;
+			}
+			else
+			{
+				digit_results.at(writeI) = 1;
+			}
+			writeI++;
+		}
 	}
+	for_each(digit_results.begin(), digit_results.end(), [](const int& a) { cout << a;});
 	cout << "]";
 #ifdef SHOW_DEBUG_DETAILS
 	cout << endl;
