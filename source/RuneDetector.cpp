@@ -160,15 +160,12 @@ bool RuneDetector::checkSudoku(const vector<vector<Point2i>> &contours, vector<R
 
 			sudoku_rects.push_back(rect);
 			centers.push_back(rect.center);
-			//vector<Point2i> poly;
-			//approxPolyDP(contours[i], poly, 20, true);
 			++sudoku;
 		}
 		else if (ratio_cur > 0.6 * DigitWHRatio && ratio_cur < 1.4 * DigitWHRatio &&
 				 s.width > 0.6 * digit_width && s.width < 1.4 * digit_width &&
 				 s.height > 0.6 * digit_height && s.height < 1.4 * digit_height &&
 				 (rect.angle > 60 || rect.angle < -60))
-		// ((rect.angle > -10 && rect.angle < 10) || rect.angle < -170 || rect.angle > 170))
 		{
 			digit_rects.push_back(rect);
 			digit_avg_width += s.height;
@@ -180,16 +177,6 @@ bool RuneDetector::checkSudoku(const vector<vector<Point2i>> &contours, vector<R
 		{
 			one_digit_rects.push_back(rect);
 		}
-		/*
-		else
-		{
-		   	cout << ratio_cur << ' ' << s.width << ' ' << s.height << ' ' << rect.angle << endl;
-			cout << (ratio_cur > 0.6 * DigitWHRatio )<< ( ratio_cur < 1.4 * DigitWHRatio) << endl;
-			cout << (s.width > 0.6 * runeSetting.DigitWidth * runeSetting.DigitRatio) << ( s.width < 1.4 * runeSetting.DigitWidth * runeSetting.DigitRatio) << endl;
-			cout << (s.height > 0.6 * runeSetting.DigitHeight * runeSetting.DigitRatio) <<  (s.height < 1.4 * runeSetting.DigitHeight * runeSetting.DigitRatio) << endl; 
-			cout <<  (rect.angle > 65 || rect.angle < -65) << endl;
-		}
-		*/
 	}
 	if (one_digit_rects.size() == 1)
 	{
@@ -418,35 +405,6 @@ int RuneDetector::findTargetORB(cv::Mat *cells)
 }
 #endif
 
-// int RuneDetector::findTargetCanny(cv::Mat * cells){
-//    int min_count = 65535;
-//    int min_count_idx = -1;
-//    for (size_t i = 0; i < 9; i++)	{
-//        int black_count = 0;
-//        Mat edge;
-//        Canny(cells[i], edge, 20, 50);
-//        uchar * ptr = (uchar *)edge.data;
-
-//        for (size_t j = 0; j < cells[i].rows; ++j){
-//            for (size_t k = 0; k < cells[i].cols; ++k, ++ptr)	{
-//                int v = *ptr;
-//                if (v == 255)
-//                    ++black_count;
-//            }
-//        }
-
-//        //cout << black_count << "  ";
-//        if(min_count > black_count){
-//            min_count = black_count;
-//            min_count_idx = i;
-//        }
-//        //imshow(string("bin")+char(i+'0'), edge);
-
-//    }
-//    //cout << "\n";
-//    return min_count_idx;
-// }
-
 int RuneDetector::findTargetCanny(cv::Mat *cells)
 {
 	int min_count_idx = -1;
@@ -484,10 +442,7 @@ int RuneDetector::findTargetCanny(cv::Mat *cells)
 			min_count_idx = i;
 		}
 
-		//rectangle(edge, Rect(w_3,0,w_23-w_3,cells[i].rows), CV_RGB(255,255,255), 1);
-		//imshow(string("bin")+char(i+'0'), edge);
 	}
-	//cout << "\n";
 	return min_count_idx;
 }
 
@@ -522,7 +477,6 @@ int RuneDetector::findTargetEdge(cv::Mat *cells)
 			min_count = large_grad_count;
 			min_count_idx = i;
 		}
-		//imshow(string("bin")+char(i+'0'), cells[i]);
 	}
 	return min_count_idx;
 }
