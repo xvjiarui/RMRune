@@ -10,7 +10,8 @@
 //#define NoORB
 //#define NO_VOTING
 #define OPTIMIZE_VOTING
-//#define ADJUST_HSV
+#define BACK_PROJECTION
+#define ADJUST_HSV
 //#define FINDRATIO
 //#define ADJUST_THRESHOLD
 //#define ADJUST_COORDINATE

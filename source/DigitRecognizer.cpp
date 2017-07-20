@@ -53,13 +53,22 @@ DigitRecognizer::DigitRecognizer(Settings::LightSetting lightSetting): horizonta
 	Rect one = Rect(Point2f(0, 0), Point2f(vXLen, vYLen));
 
     segmentRects = {
+		Rect(Point(0, 0), Point(40, 20)), //0
+		Rect(Point(0, 0), Point(20, 30)), //1
+		Rect(Point(20, 0), Point(40, 30)),//2
+		Rect(Point(0, 20), Point(40, 40)),//3
+		Rect(Point(0, 30), Point(20, 60)),//4
+		Rect(Point(20, 30), Point(40, 60)),//5
+		Rect(Point(0, 40), Point(40, 60)),//6
+		/*
 		zero, // 0
 		one, // 1
 		one + Point(40 - vXLen, 0), // 2
 		zero + Point(0, (60.0 - hYLen) / 2.0), // 3
 		one + Point(0, 60 / 2), // 4
 		one + Point(40 - vXLen, 60 / 2), // 5
-		zero + Point(0, 60 - hYLen)
+		zero + Point(0, 60 - hYLen) //6
+		*/.
 		/*
     	Rect(Point(0, 0), Point(35, 5)), // 0
     	Rect(Point(6, 5), Point(11, 27)), // 1
@@ -204,6 +213,26 @@ int DigitRecognizer::process(const Mat& img)
 	GaussianBlur(img, hsvImg, Size(9, 9), 0);
 	dilate(hsvImg, hsvImg, getStructuringElement(0, Size(9, 9)));
 	cvtColor(img, hsvImg, CV_BGR2HSV);
+#ifdef BACK_PROJECTION
+	Mat valueFrame, hsvFrame;
+	hsvImg.copyTo(hsvFrame);
+	valueFrame.create(hsvFrame.size(), hsvFrame.depth());
+	int ch[] = {2, 0};
+	mixChannels(&hsvFrame, 1, &valueFrame, 1, ch, 1);
+	MatND hist;
+	int histSize = 15;
+	float valueRange[] = {100, 255};
+	const float* ranges = {valueRange};
+	calcHist(&valueFrame, 1, 0, Mat(), hist, 1, &histSize, &ranges, true, false);
+	normalize(hist, hist, 0, 255, NORM_MINMAX, -1, Mat());
+	Mat backProjection;
+	calcBackProject(&valueFrame, 1, 0, hist, backProjection, &ranges, 1, true);
+	//morphologyEx(backProjection, backProjection, MORPH_CLOSE, getStructuringElement(MORPH_RECT,Size(3,3)));
+	inRange(backProjection, {5}, {255}, backProjection);
+#ifdef SHOW_IMAGE
+	imshow("BackProj", backProjection);
+#endif
+#endif
 #ifdef ADJUST_HSV
 	int V = lowerBound[2];
 	DigitRecognizerUserData data;
@@ -217,6 +246,9 @@ int DigitRecognizer::process(const Mat& img)
 	waitKey(0);
 #endif
 	inRange(hsvImg, lowerBound, upperBound, hsvImg);
+#ifdef BACK_PROJECTION
+	return fitDigitAndRecognize(backProjection);
+#endif
 	return fitDigitAndRecognize(hsvImg);
 }
 
@@ -257,7 +289,6 @@ DigitRecognizer::~DigitRecognizer()
 
 int DigitRecognizer::similarityRecognize(const Mat& img)
 {
-	int ret = 0;
 #ifdef SHOW_IMAGE
 	Mat temp;
 	img.copyTo(temp);
@@ -288,12 +319,18 @@ int DigitRecognizer::similarityRecognize(const Mat& img)
 		Mat curImg = img(segmentRects.at(i));
 		int total = countNonZero(curImg);
 		float curRatio = (float)total/ (float) segmentRects.at(i).area();
+#ifdef SHOW_IMAGE
+		rectangle(temp, segmentRects.at(i), Scalar(255, 255, 255));
+#endif
 		for (int j = 0; j < 10; ++j)
 		{
 			candidates[j].difference += abs(curRatio - digitTemplates[j][i]);
 		}
 	}
 	sort(candidates, candidates + 10, [](const Candidate& a, const Candidate& b) { return a.difference < b.difference; } );
+#ifdef SHOW_IMAGE
+	imshow("temp", temp);
+#endif
 	return candidates[0].index;
 }
 

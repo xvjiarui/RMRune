@@ -16,7 +16,7 @@
 <VoterSaveTime>5</VoterSaveTime>
 <ExposureTime>30</ExposureTime>
 <HsvLowerBound>
-	0. 0. 177. 0.</HsvLowerBound>
+	0. 0. 139. 0.</HsvLowerBound>
 <HsvUpperBound>
   255. 255. 255. 0.</HsvUpperBound>
 <CameraMatrix type_id="opencv-matrix">
