@@ -18,19 +18,10 @@
 
 // #define RESET_SETTINGS
 
-
 int main(int argc, char** argv )
 {
-    Settings settings("./Settings/Settings.xml");
-
-    #ifdef RESET_SETTINGS
-    settings.load();
-    settings.voteSetting.saveTime = 5;
-    settings.save();
-    return 0;
-    #endif
-
-    settings.load();
+	string path = "./Settings/Settings.xml";
+	string camPath = "./Settings/Camera/";
     Mat original_img;
 
 	if (argc == 1)
@@ -41,13 +32,17 @@ int main(int argc, char** argv )
 
 	if (argv[1][0] == 'i')
 	{
-		if (argc != 3)
+		if (argc < 3)
 		{
-			cout << "Please specify the image path!" << endl;
+			cerr << "Please specify the image path!" << endl;
 			return -1;
 		}
+		camPath += (argc == 4 ? argv[3] : "1");
+		camPath += ".xml";
+		Settings settings(path, camPath);
+		settings.load();
 		original_img = imread(argv[2]);
-		resize(original_img, original_img, Size(640, 480), 0, 0, INTER_CUBIC);
+		// resize(original_img, original_img, Size(640, 480), 0, 0, INTER_CUBIC);
 		namedWindow("Original Image", WINDOW_AUTOSIZE );
 		imshow("Original Image", original_img);
 		RuneDetector runeDetector(settings);
@@ -56,6 +51,17 @@ int main(int argc, char** argv )
 	}
 	else
 	{
+		if (argv[1][0] == 'v')
+		{
+			camPath += (argc == 4 ? argv[3] : "1");
+		}
+		else
+		{
+			camPath += (argc == 3 ? argv[2] : "1");
+		}
+		camPath += ".xml";
+		Settings settings(path, camPath);
+		settings.load();
 		ImgCP imgCP(&settings, argv[1][0], argv[2], 0);
 		cout << "imgCP" << endl;
 		std::thread t1(&ImgCP::ImageProducer, imgCP); // pass by reference

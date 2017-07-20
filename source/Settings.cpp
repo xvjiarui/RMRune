@@ -1,23 +1,27 @@
 #include "opencv2/core/core.hpp"
 #include "Settings.hpp"
 #include <string>
+#include <fstream>
 
 using namespace std;
 
-Settings::Settings(const string& fn){
-    SetFileName(fn);
+Settings::Settings(const string& fn, const string& camFn){
+    SetFileName(fn, camFn);
 }
 
 Settings::~Settings() {
 
 }
 
-void Settings::SetFileName(const string& fn) {
+void Settings::SetFileName(const string& fn, const string& camFn) {
+    assert(fileExist(fn) && fileExist(camFn));
     Settings::filename = fn;
+    Settings::camFilename = camFn;
 }
 
 void Settings::load() {
     cv::FileStorage fin(Settings::filename, cv::FileStorage::READ);
+    cv::FileStorage camFin(Settings::camFilename, cv::FileStorage::READ);
 	fin["MnistThreshold"] >> Settings::runeSetting.MnistThreshold;
 	fin["RuneSType"] >> Settings::runeSetting.RuneSType;
     fin["CellRatio"] >> Settings::runeSetting.CellRatio;
@@ -31,8 +35,8 @@ void Settings::load() {
 	fin["MaxDistance"] >> Settings::runeSetting.MaxDistance;
 	fin["ContourThreshold"]  >> Settings::runeSetting.ContourThreshold;
     fin["ExposureTime"] >> Settings::cameraSetting.ExposureTime;
-	fin["CameraMatrix"] >> Settings::cameraSetting.CameraMatrix;
-	fin["DistortionMatrix"] >> Settings::cameraSetting.DistortionMatrix;
+	camFin["CameraMatrix"] >> Settings::cameraSetting.CameraMatrix;
+	camFin["DistortionMatrix"] >> Settings::cameraSetting.DistortionMatrix;
     fin["HsvLowerBound"] >> Settings::lightSetting.hsvLowerBound;
 	fin["HsvUpperBound"] >> Settings::lightSetting.hsvUpperBound;
     fin["VoterSaveTime"] >> Settings::voteSetting.saveTime;
@@ -45,10 +49,12 @@ void Settings::load() {
 	fin["CameraTheta"] >> Settings::gimbalSetting.CameraTheta;
 	fin["ShootingSpeed"] >> Settings::gimbalSetting.ShootingSpeed;
     fin.release();
+    camFin.release();
 }
 
 void Settings::save() {
     cv::FileStorage fout(Settings::filename, cv::FileStorage::WRITE);
+    cv::FileStorage camFout(Settings::camFilename, cv::FileStorage::WRITE);
     // fout.writeComment(string("Rune-related settings\n"));
 	fout << "MnistThreshold" << Settings::runeSetting.MnistThreshold;
 	fout << "RuneSType" << Settings::runeSetting.RuneSType;
@@ -67,9 +73,8 @@ void Settings::save() {
     fout << "ExposureTime" << Settings::cameraSetting.ExposureTime;
     fout << "HsvLowerBound" << Settings::lightSetting.hsvLowerBound;
     fout << "HsvUpperBound" << Settings::lightSetting.hsvUpperBound;
-	fout << "CameraMatrix" << Settings::cameraSetting.CameraMatrix;
-	fout << "DistortionMatrix" << Settings::cameraSetting.DistortionMatrix;
-
+	camFout << "CameraMatrix" << Settings::cameraSetting.CameraMatrix;
+	camFout << "DistortionMatrix" << Settings::cameraSetting.DistortionMatrix;
     fout << "ScaleX" << Settings::gimbalSetting.ScaleX;
     fout << "ScaleY" << Settings::gimbalSetting.ScaleY;
     fout << "ScaleZ" << Settings::gimbalSetting.ScaleZ;
@@ -78,4 +83,9 @@ void Settings::save() {
     fout << "GimbalZ" << Settings::gimbalSetting.GimbalZ;
 	fout << "CameraTheta" << Settings::gimbalSetting.CameraTheta;
 	fout << "ShootingSpeed" << Settings::gimbalSetting.ShootingSpeed;
+}
+
+bool Settings::fileExist(const string& filename)
+{
+	return (bool)ifstream(filename);
 }

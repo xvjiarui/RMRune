@@ -5,11 +5,11 @@
 
 class Settings {
     public:
-        Settings(const std::string& filename);
+        Settings(const std::string& filename, const std::string& camFilename);
         ~Settings();
         void save();
         void load();
-        void SetFileName(const std::string& fn);
+        void SetFileName(const std::string& fn, const std::string& camFn);
         struct RuneSetting
         {
             float CellRatio;
@@ -56,4 +56,6 @@ class Settings {
 
       private:
         std::string filename;
+        std::string camFilename;
+        bool fileExist(const std::string& filename);
 };
