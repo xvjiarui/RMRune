@@ -1095,9 +1095,12 @@ pair<int, int> RuneDetector::chooseTargetPerspective(const Mat &image, const vec
 
 	int idx = -1;
 	
+#ifndef NoORB
 	if (type == RUNE_ORB)
 		idx = findTargetORB(cell);
-	else if (type == RUNE_GRAD)
+	else
+#endif
+	if (type == RUNE_GRAD)
 		idx = findTargetEdge(cell);
 	else if (type == RUNE_CANNY)
 		idx = findTargetCanny(cell);
@@ -1165,9 +1168,12 @@ pair<int, int> RuneDetector::chooseTarget(const Mat &image, const vector<Rotated
 
 	int idx = -1;
 	
+#ifndef NoORB
 	if (type == RUNE_ORB)
 	    idx = findTargetORB(cell);
-	else if (type == RUNE_GRAD)
+	else
+#endif
+	if (type == RUNE_GRAD)
 		idx = findTargetEdge(cell);
 	else if (type == RUNE_CANNY)
 		idx = findTargetCanny(cell);

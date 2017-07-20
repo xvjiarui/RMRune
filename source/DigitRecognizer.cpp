@@ -44,15 +44,24 @@ DigitRecognizer::DigitRecognizer(Settings::LightSetting lightSetting): horizonta
 	areaThreshold = 0.6;
 
 	float hXLen, hYLen, vXLen, vYLen;
-	float xOffset, yOffset;
-	hXLen = 40;
-	hYLen = 60.0 / 7.0;
-	vYLen = 60 / 2;
-	vXLen = 40.0 / 3.0;
-	Rect zero = Rect(Point2f(0, 0), Point2f(hXLen, hYLen));
-	Rect one = Rect(Point2f(0, 0), Point2f(vXLen, vYLen));
+	float hXLenRatio = 1.0 / 3.0;
+	float hYLenRatio = 1.0 / 7.0;
+	hXLen = 40.0 * hXLenRatio;
+	hYLen = 60.0 * hYLenRatio;
+	vXLen = 40.0 * ((1 - hXLenRatio) / 2.0);
+	vYLen = 60.0 * ((1 - 3 * hYLenRatio) / 2.0);
+	Rect zero = Rect(Point2f(vXLen, 0), Point2f(vXLen + hXLen, hYLen));
+	Rect one = Rect(Point2f(0, hYLen), Point2f(vXLen, hYLen + vYLen));
 
     segmentRects = {
+		zero, // 0
+		one, // 1
+		one + Point(hXLen + vXLen, 0), // 2
+		zero + Point(0, hYLen + vYLen), // 3
+		one + Point(0, hYLen + vYLen), // 4
+		one + Point(hXLen + vXLen, hYLen + vYLen), // 5
+		zero + Point(0, 2 * (hYLen + vYLen))
+		/*, 
 		Rect(Point(0, 0), Point(40, 20)), //0
 		Rect(Point(0, 0), Point(20, 30)), //1
 		Rect(Point(20, 0), Point(40, 30)),//2
@@ -60,15 +69,17 @@ DigitRecognizer::DigitRecognizer(Settings::LightSetting lightSetting): horizonta
 		Rect(Point(0, 30), Point(20, 60)),//4
 		Rect(Point(20, 30), Point(40, 60)),//5
 		Rect(Point(0, 40), Point(40, 60)),//6
+		*/
 		/*
 		zero, // 0
 		one, // 1
 		one + Point(40 - vXLen, 0), // 2
+		one + Point(hXLen, 0)
 		zero + Point(0, (60.0 - hYLen) / 2.0), // 3
 		one + Point(0, 60 / 2), // 4
 		one + Point(40 - vXLen, 60 / 2), // 5
 		zero + Point(0, 60 - hYLen) //6
-		*/.
+		*/
 		/*
     	Rect(Point(0, 0), Point(35, 5)), // 0
     	Rect(Point(6, 5), Point(11, 27)), // 1

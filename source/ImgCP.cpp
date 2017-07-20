@@ -182,6 +182,7 @@ void ImgCP::ImageConsumer()
 	angleSolverFactory.setSolver(&angleSolver);
 	angleSolverFactory.setTargetSize(CellActualWidth, CellActualHeight, AngleSolverFactory::TARGET_RUNE);
 	bool countTime = false;
+#ifndef NO_COMMUNICATION
 	//GPIO init
 	//manifoldGPIO::gpioExport(runeToggleButton);
 	gpioExport(runeToggleButton);
@@ -190,6 +191,7 @@ void ImgCP::ImageConsumer()
 	//UART init
 	serialSetup();
 	serialStart();
+#endif
 
 #ifdef ADJUST_COORDINATE
 	CoordinateStruct pdata;
@@ -256,9 +258,11 @@ void ImgCP::ImageConsumer()
 			}
 			endTime = getTickCount();
 		    cout << "Frame time: " << (endTime - startTime) * 1000.0 / getTickFrequency() << endl;
+#ifndef NO_COMMUNICATION
 			setGimbalAngle(targetIdx, angle_x, angle_y);
 			cout << "sending... " << endl;
 			sendGimbalAngle();
+#endif
 			cout << "current angle:" << angle_x << ' ' << angle_y << ' ' << targetIdx << endl;
 			//cin.get();
 			countTime = false;

@@ -7,7 +7,8 @@
 
 #define SHOW_IMAGE
 #define SHOW_DEBUG_DETAILS
-//#define NoORB
+#define NoORB
+#define NO_COMMUNICATION
 //#define NO_VOTING
 #define OPTIMIZE_VOTING
 #define BACK_PROJECTION
