@@ -223,7 +223,12 @@ int DigitRecognizer::process(const Mat& img)
 	Mat hsvImg;
 	GaussianBlur(img, hsvImg, Size(9, 9), 0);
 	dilate(hsvImg, hsvImg, getStructuringElement(0, Size(9, 9)));
+#ifdef ADAPTIVE_THRESHOLD_IN_DIGIT
+	cvtColor(img, hsvImg, CV_GRAY2BGR);
+	cvtColor(hsvImg, hsvImg, CV_BGR2HSV);
+#else
 	cvtColor(img, hsvImg, CV_BGR2HSV);
+#endif
 #ifdef BACK_PROJECTION
 	Mat valueFrame, hsvFrame;
 	hsvImg.copyTo(hsvFrame);

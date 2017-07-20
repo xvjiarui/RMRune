@@ -49,7 +49,7 @@ pair<int, int> RuneDetector::getTarget(const cv::Mat &image, RuneType rune_type)
 	cvtColor(image, src, CV_BGR2GRAY);
 	Mat binary;
 	//threshold(src, binary, contour_threshold, 255, THRESH_BINARY);
-	GaussianBlur(src, binary, Size(9, 9), 0);
+	GaussianBlur(src, binary, Size(13, 13), 0);
 	morphologyEx(binary, binary, MORPH_CLOSE, getStructuringElement(MORPH_RECT,Size(3,3)));
 	adaptiveThreshold(binary, binary, 255, ADAPTIVE_THRESH_GAUSSIAN_C, THRESH_BINARY, 5, 0);
 //threshold(src, binary, 200, 255, THRESH_BINARY);
@@ -680,8 +680,17 @@ pair<int, int> RuneDetector::chooseMnistTarget(const Mat &inputImg, const vector
 	dst_p.push_back(_lu + Point2f(_width, _height));
 	perspective_mat = getPerspectiveTransform(src_p, dst_p);
 	Point2f perspective_center = MatDotPoint(perspective_mat, center_avg);
+#ifdef ADAPTIVE_THRESHOLD_IN_DIGIT
+	Mat binary, perspective_image;
+	cvtColor(inputImg, binary, CV_BGR2GRAY);
+	GaussianBlur(binary, binary, Size(9, 9), 0);
+	morphologyEx(binary, binary, MORPH_CLOSE, getStructuringElement(MORPH_RECT,Size(3,3)));
+	adaptiveThreshold(binary, binary, 255, ADAPTIVE_THRESH_GAUSSIAN_C, THRESH_BINARY, 5, 0);
+	warpPerspective(binary, perspective_image, perspective_mat, inputImg.size());
+#else
 	Mat perspective_image;
 	warpPerspective(inputImg, perspective_image, perspective_mat, inputImg.size());
+#endif
 	vector<Rect> digitBoundingRect;
 	sort(digit_rects.begin(), digit_rects.end(), [](const RotatedRect &a, const RotatedRect &b) { return a.center.x < b.center.x; });
 	vector<Mat> digit_images;
