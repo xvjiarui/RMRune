@@ -230,21 +230,23 @@ int DigitRecognizer::process(const Mat& img)
 	cvtColor(img, hsvImg, CV_BGR2HSV);
 #endif
 #ifdef BACK_PROJECTION
-	Mat valueFrame, hsvFrame;
+	Mat hsvFrame;
 	hsvImg.copyTo(hsvFrame);
-	valueFrame.create(hsvFrame.size(), hsvFrame.depth());
-	int ch[] = {2, 0};
-	mixChannels(&hsvFrame, 1, &valueFrame, 1, ch, 1);
-	MatND hist;
-	int histSize = 15;
+	int ch[] = {0, 2};
+	Mat hist;
+	int histSize[] = {15, 15};
+	float hueRange[] = {0, 255};
 	float valueRange[] = {100, 255};
-	const float* ranges = {valueRange};
-	calcHist(&valueFrame, 1, 0, Mat(), hist, 1, &histSize, &ranges, true, false);
+	const float* ranges[] = {hueRange, valueRange};
+	calcHist(&hsvFrame, 1, ch, Mat(), hist, 2, histSize, ranges, true, false);
 	normalize(hist, hist, 0, 255, NORM_MINMAX, -1, Mat());
 	Mat backProjection;
-	calcBackProject(&valueFrame, 1, 0, hist, backProjection, &ranges, 1, true);
+	calcBackProject(&hsvFrame, 1, ch, hist, backProjection, ranges, 1, true);
 	//morphologyEx(backProjection, backProjection, MORPH_CLOSE, getStructuringElement(MORPH_RECT,Size(3,3)));
-	inRange(backProjection, {5}, {255}, backProjection);
+#ifdef SHOW_IMAGE
+	imshow("Before binary", backProjection);
+#endif
+	inRange(backProjection, Scalar(0, 5), Scalar(255, 255), backProjection);
 #ifdef SHOW_IMAGE
 	imshow("BackProj", backProjection);
 #endif
