@@ -246,7 +246,7 @@ int DigitRecognizer::process(const Mat& img)
 #ifdef SHOW_IMAGE
 	imshow("Before binary", backProjection);
 #endif
-	inRange(backProjection, Scalar(0, 5), Scalar(255, 255), backProjection);
+	inRange(backProjection, Scalar(5, 5), Scalar(255, 255), backProjection);
 #ifdef SHOW_IMAGE
 	imshow("BackProj", backProjection);
 #endif
