@@ -1,12 +1,12 @@
 <?xml version="1.0"?>
 <opencv_storage>
-<MnistThreshold>180</MnistThreshold>
+<MnistThreshold>68</MnistThreshold>
 <RuneSType>0</RuneSType>
 <!--<CellRatio>0.67</CellRatio>-->
-<CellRatio>0.8</CellRatio>
+<CellRatio>0.5</CellRatio>
 <CellWidth>127</CellWidth>
 <CellHeight>71</CellHeight>
-<DigitRatio>0.67</DigitRatio>
+<DigitRatio>0.5</DigitRatio>
 <DigitWidth>42</DigitWidth>
 <DigitHeight>28</DigitHeight>
 <OneHeight>6</OneHeight>
@@ -14,7 +14,7 @@
 <MaxDistance>800.0</MaxDistance>
 <ContourThreshold>100</ContourThreshold>
 <VoterSaveTime>5</VoterSaveTime>
-<ExposureTime>30</ExposureTime>
+<ExposureTime>60</ExposureTime>
 <HsvLowerBound>
 	0. 0. 139. 0.</HsvLowerBound>
 <HsvUpperBound>

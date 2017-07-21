@@ -549,6 +549,7 @@ void AdjustThreshold(int t, void* d)
 pair<int, int> RuneDetector::chooseMnistTarget(const Mat &inputImg, const vector<RotatedRect> &sudoku_rects)
 {
 	// get 9(cell) X 4(corner) corner, and 9 cell's center
+	
 	Mat image;
 	cvtColor(inputImg, image, CV_BGR2GRAY);
 	vector<Point2fWithIdx> centers;
@@ -573,6 +574,7 @@ pair<int, int> RuneDetector::chooseMnistTarget(const Mat &inputImg, const vector
 	// 0  1  2
 	// 3  4  5
 	// 6  7  8
+	
 	sort(centers.begin(), centers.end(), [](const Point2fWithIdx &p1, const Point2fWithIdx &p2) { return p1.p.y < p2.p.y; });
 	sort(centers.begin() + 0, centers.begin() + 3, [](const Point2fWithIdx &p1, const Point2fWithIdx &p2) { return p1.p.x < p2.p.x; });
 	sort(centers.begin() + 3, centers.begin() + 6, [](const Point2fWithIdx &p1, const Point2fWithIdx &p2) { return p1.p.x < p2.p.x; });
@@ -590,6 +592,7 @@ pair<int, int> RuneDetector::chooseMnistTarget(const Mat &inputImg, const vector
 		}
 	}
 
+	
 	// find approx corner of sudoku
 	RotatedRect rect = minAreaRect(corner_0268);
 	Point2f vertices[4];
@@ -696,7 +699,7 @@ pair<int, int> RuneDetector::chooseMnistTarget(const Mat &inputImg, const vector
 	sort(digit_rects.begin(), digit_rects.end(), [](const RotatedRect &a, const RotatedRect &b) { return a.center.x < b.center.x; });
 	vector<Mat> digit_images;
 	vector<vector<pair<double, int> > > digit_scores(5);
-	cout << "[";
+	cout << "[" << endl;
 	for (int i = 0, writeI = 0; i < digit_rects.size(); i++)
 	{
 		Point2f pts[4];
@@ -706,7 +709,7 @@ pair<int, int> RuneDetector::chooseMnistTarget(const Mat &inputImg, const vector
 		perspectiveTransform(vpts, t, perspective_mat);
 		digit_images.push_back(perspective_image(boundingRect(t)));
 #ifdef SHOW_IMAGE
-		imshow("showtime", digit_images[i]);
+		imshow("showtime", digit_images.at(i));
 #endif
 		if (i == oneIndex && oneConfirmed)
 		{
@@ -737,7 +740,15 @@ pair<int, int> RuneDetector::chooseMnistTarget(const Mat &inputImg, const vector
 			writeI++;
 		}
 	}
-	for_each(digit_scores.begin(), digit_scores.end(), [](const vector<pair<double, int> >& a) { cout << a[0].second;});
+	for (auto &a : digit_scores)
+	{
+		if (!a.size())
+		{
+			cout << endl;
+			return make_pair(-1, -1);
+		}
+		cout << a.at(0).second;
+	}
 	cout << endl;
 	getUniqueResult(digit_scores, digit_results);
 	for_each(digit_results.begin(), digit_results.end(), [](const int& a) { cout << a;});
