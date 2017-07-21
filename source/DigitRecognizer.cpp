@@ -60,7 +60,7 @@ DigitRecognizer::DigitRecognizer(Settings::LightSetting lightSetting): horizonta
 		zero + Point(0, hYLen + vYLen), // 3
 		one + Point(0, hYLen + vYLen), // 4
 		one + Point(hXLen + vXLen, hYLen + vYLen), // 5
-		zero + Point(0, 2 * (hYLen + vYLen))
+		zero + Point(0, 2 * (hYLen + vYLen)) // 6
 		/*, 
 		Rect(Point(0, 0), Point(40, 20)), //0
 		Rect(Point(0, 0), Point(20, 30)), //1
@@ -218,7 +218,7 @@ void AdjustHSVImg(int v, void* d)
 }
 #endif
 
-int DigitRecognizer::process(const Mat& img)
+Mat DigitRecognizer::preprocess(const Mat& img)
 {
 	Mat hsvImg;
 	GaussianBlur(img, hsvImg, Size(9, 9), 0);
@@ -265,12 +265,67 @@ int DigitRecognizer::process(const Mat& img)
 #endif
 	inRange(hsvImg, lowerBound, upperBound, hsvImg);
 #ifdef BACK_PROJECTION
-	return fitDigitAndRecognize(backProjection);
+	return backProjection;
 #endif
-	return fitDigitAndRecognize(hsvImg);
+	return hsvImg;
 }
 
-int DigitRecognizer::fitDigitAndRecognize(Mat& hsvImg)
+int DigitRecognizer::process(const Mat& img)
+{
+	Mat digitImg;
+	if (fitDigit(preprocess(img), digitImg))
+	{
+		return similarityRecognize(digitImg);
+	}
+	return -1;
+}
+
+vector<pair<double, int> > DigitRecognizer::process_primary(const Mat& img)
+{
+	Mat digitImg;
+	if (fitDigit(preprocess(img), digitImg))
+	{
+		return similarityRecognize_primary(digitImg);
+	}
+	return vector<pair<double, int> >();
+}
+
+bool DigitRecognizer::fitDigit(const Mat& hsvImg, Mat& resImg)
+{
+	Mat hsvCopy;
+	hsvImg.copyTo(hsvCopy);
+	morphologyEx(hsvCopy, hsvCopy, MORPH_CLOSE, getStructuringElement(MORPH_RECT,Size(3,3)));
+	vector<vector<Point> > contours;
+	vector<Vec4i> hierarchy;
+	findContours( hsvCopy, contours, hierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE, Point(0, 0) );			
+	if (!contours.size()) return false;
+	sort(contours.begin(), contours.end(), [](const vector<Point> & a, const vector<Point> & b) {return a.size()>b.size();});
+	vector<Point> curContoursPoly;
+	approxPolyDP(contours.at(0), curContoursPoly, 3, true);
+	Rect curBoundingRect = boundingRect(curContoursPoly);
+	float ratio = (float)curBoundingRect.width / (float)curBoundingRect.height;
+	int ret = 0;
+	if (ratio < 0.5)
+	{
+		resize(hsvImg, hsvCopy, Size(40, 60));
+	}
+	else{
+		hsvCopy = hsvImg(boundingRect(curContoursPoly));
+		resize(hsvCopy, hsvCopy, Size(40, 60));
+	} 
+#ifdef SHOW_IMAGE
+	imshow("hsvImg", hsvCopy);
+#endif
+	hsvCopy.copyTo(resImg);
+	return true;
+}
+/*
+vector<pair<double, int> > DigitRecognizer::fitDigitAndRecognize_primary(const Mat& hsvImg)
+{
+	ret = similarityRecognize(hsvCopy);
+	return ret;
+}
+int DigitRecognizer::fitDigitAndRecognize(const Mat& hsvImg)
 {
 	Mat hsvCopy;
 	hsvImg.copyTo(hsvCopy);
@@ -287,18 +342,19 @@ int DigitRecognizer::fitDigitAndRecognize(Mat& hsvImg)
 	int ret = 0;
 	if (ratio < 0.5)
 	{
-		resize(hsvImg, hsvImg, Size(40, 60));
+		resize(hsvImg, hsvCopy, Size(40, 60));
 	}
 	else{
-		hsvImg = hsvImg(boundingRect(curContoursPoly));
-		resize(hsvImg, hsvImg, Size(40, 60));
+		hsvCopy = hsvImg(boundingRect(curContoursPoly));
+		resize(hsvCopy, hsvCopy, Size(40, 60));
 	} 
-	ret = similarityRecognize(hsvImg);
+	ret = similarityRecognize(hsvCopy);
 #ifdef SHOW_IMAGE
-	imshow("hsvImg", hsvImg);
+	imshow("hsvImg", hsvCopy);
 #endif
 	return ret;
 }
+*/
 
 DigitRecognizer::~DigitRecognizer()
 {
@@ -307,6 +363,11 @@ DigitRecognizer::~DigitRecognizer()
 }
 
 int DigitRecognizer::similarityRecognize(const Mat& img)
+{
+	return similarityRecognize_primary(img)[0].second;
+}
+
+vector<pair<double, int> > DigitRecognizer::similarityRecognize_primary(const Mat& img)
 {
 #ifdef SHOW_IMAGE
 	Mat temp;
@@ -324,33 +385,30 @@ int DigitRecognizer::similarityRecognize(const Mat& img)
 		{1, 1, 1, 1, 1, 1, 1},
 		{1, 1, 1, 1, 0, 1, 1}
 	};
-	struct Candidate{
-		float difference;
-		int index;
-	} candidates[10];
-	for (int i = 0; i < 10; i++)
+	vector<pair<double, int> > candidates(10);
+	for (int i = 0; i < candidates.size(); i++)
 	{
-		candidates[i].difference = 0;
-		candidates[i].index = i;
+		candidates[i].first = 0;
+		candidates[i].second = i;
 	}
 	for (int i = 0; i < segmentRects.size(); ++i)
 	{
 		Mat curImg = img(segmentRects.at(i));
 		int total = countNonZero(curImg);
-		float curRatio = (float)total/ (float) segmentRects.at(i).area();
+		double curRatio = (double)total/ (double)segmentRects.at(i).area();
 #ifdef SHOW_IMAGE
 		rectangle(temp, segmentRects.at(i), Scalar(255, 255, 255));
 #endif
 		for (int j = 0; j < 10; ++j)
 		{
-			candidates[j].difference += abs(curRatio - digitTemplates[j][i]);
+			candidates[j].first += abs(curRatio - digitTemplates[j][i]);
 		}
 	}
-	sort(candidates, candidates + 10, [](const Candidate& a, const Candidate& b) { return a.difference < b.difference; } );
+	sort(candidates.begin(), candidates.end(), [](const pair<double, int>& a, const pair<double, int>& b) { return a.first < b.first; } );
 #ifdef SHOW_IMAGE
 	imshow("temp", temp);
 #endif
-	return candidates[0].index;
+	return candidates;
 }
 
 int DigitRecognizer::recognize(const Mat& img)

@@ -91,6 +91,7 @@ protected:
 	cv::Mat transformSudokuPerspective(const cv::Mat & image, const std::vector<cv::RotatedRect> & sudoku_rects);
 
 private:
+	void getUniqueResult(vector<vector<pair<double, int> > >& results, vector<int>& mnistResult);
 	std::vector<cv::RotatedRect> sudoku_rects; // before perspective transform
 	std::vector<cv::RotatedRect> digit_rects; // before perspective transform
 	std::vector<cv::RotatedRect> one_digit_rects; // before perspective transform

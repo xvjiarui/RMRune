@@ -214,13 +214,12 @@ bool RuneDetector::checkSudoku(const vector<vector<Point2i>> &contours, vector<R
 			}
 			avgDistance += curDistance;
 		}
-		avgDistance /= 4.0;
-		float stddev = 0;
+		avgDistance /= 3.0;
+		float var = 0;
 		for_each(distance.begin(), distance.end(), [&](const float& a){
-			stddev += (a - avgDistance) * (a - avgDistance);
+			var += (a - avgDistance) * (a - avgDistance);
 		});
-		stddev = sqrt(stddev);
-		if (stddev > 15)
+		if (var > 225)
 		{
 			oneConfirmed = true;
 			targetX = digit_rects.at(oneIndex - 1).center.x + avgDistance;
@@ -230,23 +229,6 @@ bool RuneDetector::checkSudoku(const vector<vector<Point2i>> &contours, vector<R
 			oneIndex = 0;
 			targetX = digit_rects.at(0).center.x - avgDistance;
 		}
-		/*
-		for (int i = 0; i < digit_rects.size() - 1; i++)
-		{
-			if (digit_rects.at(i + 1).center.x - digit_rects.at(i).center.x > 2 * digit_avg_width)
-			{
-				targetX = digit_rects.at(i).center.x + digit_avg_width;
-				oneIndex = i + 1;
-				oneConfirmed = true;
-				break;
-			}
-		}
-		if (!targetX)
-		{
-			targetX = digit_rects.at(0).center.x - digit_avg_width;
-			oneIndex = 0;
-		}
-		*/
 		curRotatedRect = digit_rects.at(0);
 		curRotatedRect.center.x  = targetX;
 		digit_rects.push_back(curRotatedRect);
@@ -713,6 +695,7 @@ pair<int, int> RuneDetector::chooseMnistTarget(const Mat &inputImg, const vector
 	vector<Rect> digitBoundingRect;
 	sort(digit_rects.begin(), digit_rects.end(), [](const RotatedRect &a, const RotatedRect &b) { return a.center.x < b.center.x; });
 	vector<Mat> digit_images;
+	vector<vector<pair<double, int> > > digit_scores(5);
 	cout << "[";
 	for (int i = 0, writeI = 0; i < digit_rects.size(); i++)
 	{
@@ -725,22 +708,24 @@ pair<int, int> RuneDetector::chooseMnistTarget(const Mat &inputImg, const vector
 #ifdef SHOW_IMAGE
 		imshow("showtime", digit_images[i]);
 #endif
-		int curDigit;
 		if (i == oneIndex && oneConfirmed)
 		{
-			curDigit = 1;
+			digit_scores.at(writeI).clear();
+			digit_scores.at(writeI).push_back(make_pair<double, int>(100, 1));
 		}
 		else
 		{
-			curDigit = digitRecognizer.process(digit_images.at(i));
+			digit_scores.at(writeI) = digitRecognizer.process_primary(digit_images.at(i));
 		}
-		if (i == oneIndex && curDigit != 1)
+		if (i == oneIndex && !digit_scores.at(writeI).size())
 		{
-			digit_results.back() = 1;
+			digit_scores.back().clear();
+			digit_scores.back().push_back(make_pair<double, int>(100, 1));
 		}
 		else
 		{
-			if (curDigit != -1)
+			/*
+			if (digit_scores.size())
 			{
 				digit_results.at(writeI) = curDigit;
 			}
@@ -748,9 +733,13 @@ pair<int, int> RuneDetector::chooseMnistTarget(const Mat &inputImg, const vector
 			{
 				digit_results.at(writeI) = 1;
 			}
+			*/
 			writeI++;
 		}
 	}
+	for_each(digit_scores.begin(), digit_scores.end(), [](const vector<pair<double, int> >& a) { cout << a[0].second;});
+	cout << endl;
+	getUniqueResult(digit_scores, digit_results);
 	for_each(digit_results.begin(), digit_results.end(), [](const int& a) { cout << a;});
 	cout << "]";
 #ifdef SHOW_DEBUG_DETAILS
@@ -850,54 +839,7 @@ pair<int, int> RuneDetector::chooseMnistTarget(const Mat &inputImg, const vector
 		t.join();
 	}
 
-	vector<vector<pair<double, int>>::iterator> FinalResults;
-	deque<int> check_index;
-
-	for (size_t i = 0; i < results.size(); i++)
-	{
-		FinalResults.push_back(results.at(i).begin());
-		check_index.push_back(i);
-	}
-
-	for (deque<int>::iterator idxitr1 = check_index.begin(); idxitr1 != check_index.end(); idxitr1++)
-	{
-		for (int j = 0; j < results.size(); j++)
-		{
-			if (*idxitr1 == j)
-				continue;
-			int i = *idxitr1;
-			if (FinalResults.at(i)->second == FinalResults.at(j)->second)
-			{
-				if ((FinalResults.at(i)) + 1 != results.at(i).end() && (*(FinalResults.at(i))).first < (*(FinalResults.at(j))).first)
-				{
-					(FinalResults.at(i))++;
-					check_index.insert(idxitr1 + 1, *idxitr1);
-					break; //recompare from beginning
-				}
-				else
-				{
-					if (FinalResults.at(j) + 1 == results.at(j).end())
-					{
-						if ((FinalResults.at(i)) + 1 != results.at(i).end())
-						{
-							(FinalResults.at(i))++;
-							check_index.insert(idxitr1 + 1, *idxitr1);
-							break; //recompare from beginning
-						}
-						else
-						{
-							//both conflict > 10 times -> should be impossible to solve
-							return make_pair(-1, -1);
-						}
-					}
-					(FinalResults.at(j))++;
-					check_index.insert(idxitr1 + 1, j);
-				}
-			}
-		}
-	}
-
-	vector<int> mnistResult;
+/*
 
 	cout << "(";
 	for (int i = 0; i < FinalResults.size(); i++)
@@ -906,6 +848,12 @@ pair<int, int> RuneDetector::chooseMnistTarget(const Mat &inputImg, const vector
 		cout << FinalResults.at(i)->second;
 		mnistResult.push_back(FinalResults.at(i)->second);
 	}
+	cout << ")" << endl;
+	*/
+	vector<int> mnistResult;
+	getUniqueResult(results, mnistResult);
+	cout << "(";
+	for_each(mnistResult.begin(), mnistResult.end(), [](const int& a) { cout << a;});
 	cout << ")" << endl;
 
 	static Voter<vector<int>> mnistVoter(voteSetting);
@@ -969,6 +917,52 @@ pair<int, int> RuneDetector::chooseMnistTarget(const Mat &inputImg, const vector
 	return make_pair(1, getSudokuIndex(digit_results.at(0)));
 }
 
+void RuneDetector::getUniqueResult(vector<vector<pair<double, int> > >& results, vector<int>& uniqueResults)
+{
+	vector<vector<pair<double, int>>::iterator> FinalResults;
+	deque<int> check_index;
+
+	for (int i = 0; i < results.size(); i++)
+	{
+		FinalResults.push_back(results.at(i).begin());
+		check_index.push_back(i);
+	}
+
+	for (auto idxitr1 = check_index.begin(); idxitr1 != check_index.end(); idxitr1++)
+	{
+		for (int j = 0; j < results.size(); j++)
+		{
+			if (*idxitr1 == j)
+				continue;
+			int i = *idxitr1;
+			if (FinalResults.at(i)->second == FinalResults.at(j)->second)
+			{
+				if ((FinalResults.at(i)) + 1 != results.at(i).end() && (*(FinalResults.at(i))).first < (*(FinalResults.at(j))).first)
+				{
+					(FinalResults.at(i))++;
+					check_index.insert(idxitr1 + 1, *idxitr1);
+					break; //recompare from beginning
+				}
+				else
+				{
+					if (FinalResults.at(j) + 1 == results.at(j).end())
+					{
+						(FinalResults.at(i))++;
+						check_index.insert(idxitr1 + 1, *idxitr1);
+						break; //recompare from beginning
+					}
+					(FinalResults.at(j))++;
+					check_index.insert(idxitr1 + 1, j);
+				}
+			}
+		}
+	}
+	uniqueResults.clear();
+	for (auto &itr : FinalResults)
+	{
+		uniqueResults.push_back(itr->second);
+	}
+}
 
 pair<int, int> RuneDetector::chooseTargetPerspective(const Mat &image, const vector<RotatedRect> &sudoku_rects)
 {
