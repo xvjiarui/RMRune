@@ -3,7 +3,7 @@
 <MnistThreshold>180</MnistThreshold>
 <RuneSType>0</RuneSType>
 <!--<CellRatio>0.67</CellRatio>-->
-<CellRatio>0.8</CellRatio>
+<CellRatio>0.5</CellRatio>
 <CellWidth>127</CellWidth>
 <CellHeight>71</CellHeight>
 <DigitRatio>0.67</DigitRatio>

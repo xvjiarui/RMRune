@@ -23,6 +23,7 @@ public:
 
 private:
 	Mat preprocess(const Mat& img);
+	Mat kmeanPreprocess(const Mat& img);
 	int recognize(const Mat& img);
 	int adaptiveRecognize(const Mat& img);
 	int similarityRecognize(const Mat& img);

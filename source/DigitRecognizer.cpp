@@ -3,6 +3,7 @@
 #include <stdexcept> 
 #include "DigitRecognizer.h"
 #include "RuneDetector.hpp"
+#include "Cluster.hpp"
 
 void binaryMat2points(const Mat & img, vector<Point> & pts)
 {
@@ -270,6 +271,75 @@ Mat DigitRecognizer::preprocess(const Mat& img)
 	return hsvImg;
 }
 
+Mat DigitRecognizer::kmeanPreprocess(const Mat& img)
+{
+	ClusterPixels cluster(img, 3);
+	Mat colorResults = cluster.clusterColorImageByKmeans();
+	Mat alt1, alt2;
+	Mat alts[2];
+	int channels = img.channels();
+	img.copyTo(alts[0]);
+	img.copyTo(alts[1]);
+	int blackClass = colorResults.at<int>(img.rows * img.cols + 1)
+	int sum = 0 + 1 + 2; //little trick
+	for (int c = 0, altClass = 0; c < 2; c++)
+	{
+		if (c == blackClass) continue;
+		int currentClass = sum - c - blackClass;
+		float *pdata = alts.ptr<float>(0);
+		for (int i = 0; i < img.rows; i++)
+		{
+			for (int j = 0; j < img.cols * channels; j += channels)
+			{
+				if (colorResults.at<int>(i * (j / channels)) != currentClass)
+				{
+					alts[altClass] 
+					pdata[i * cols * ]
+				}
+			}
+		}
+		altClass++;
+	}
+/*
+	hconcat(img, colorResults, colorResults);  
+	imshow("clusterImage", colorResults);
+	*/
+	waitKey(0);
+
+/*
+	// Mat img;
+	// cvtColor(inputImg, img, )
+	Mat2f samples(img.rows * img.cols, 1, CV_32FC2);
+	// Mat2i result(img.rows, 1, CV_32FC2);
+	Mat2i result;
+	int k = 0;
+	for (int i = 0; i < img.rows; i++)
+	{
+		for (int j = 0; j < img.cols; j++)
+		{
+			Vec3b c = img.at<Vec3b>(j, i);
+			// samples.at<Vec3b>(k++, 0) = c;
+			samples.at<float>(k, 0) = c.val[0];
+			samples.at<float>(k, 1) = c.val[1];
+			samples.at<float>(k++, 2) = c.val[2];
+			samples.at<float>(j, i * j).val[0] = 
+			s[0] = img.at<float>(j, i)[0];
+			s[0] = img.at<float>(j, i)[0];
+			s[0] = img.at<float>(j, i)[0];
+			s.val[0] = (float)cvGet2D(img, j, i).val[0];
+			s.val[1] = (float)cvGet2D(img, j, i).val[1];
+			s.val[2] = (float)cvGet2D(img, j, i).val[2];
+			// cvSet2D(samples, k++, 0, s);
+		}
+	}
+	cout<<"HII"<<endl;
+	kmeans(samples, 3, result, TermCriteria(CV_TERMCRIT_EPS + CV_TERMCRIT_ITER, 10, 0), 2, KMEANS_RANDOM_CENTERS);
+	while(1);
+	cout << result;
+	while(1);
+	*/
+
+}
 int DigitRecognizer::process(const Mat& img)
 {
 	Mat digitImg;
@@ -282,6 +352,8 @@ int DigitRecognizer::process(const Mat& img)
 
 vector<pair<double, int> > DigitRecognizer::process_primary(const Mat& img)
 {
+	cout<< "hi"<<endl;
+	kmeanPreprocess(img);
 	Mat digitImg;
 	if (fitDigit(preprocess(img), digitImg))
 	{
@@ -289,6 +361,8 @@ vector<pair<double, int> > DigitRecognizer::process_primary(const Mat& img)
 	}
 	return vector<pair<double, int> >();
 }
+
+
 
 bool DigitRecognizer::fitDigit(const Mat& hsvImg, Mat& resImg)
 {
