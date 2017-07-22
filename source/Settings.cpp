@@ -35,8 +35,8 @@ void Settings::load() {
 	fin["MaxDistance"] >> Settings::runeSetting.MaxDistance;
 	fin["ContourThreshold"]  >> Settings::runeSetting.ContourThreshold;
     fin["ExposureTime"] >> Settings::cameraSetting.ExposureTime;
-	camFin["CameraMatrix"] >> Settings::cameraSetting.CameraMatrix;
-	camFin["DistortionMatrix"] >> Settings::cameraSetting.DistortionMatrix;
+	camFin["Camera_Matrix"] >> Settings::cameraSetting.CameraMatrix;
+	camFin["Distortion_Coefficients"] >> Settings::cameraSetting.DistortionMatrix;
     fin["HsvLowerBound"] >> Settings::lightSetting.hsvLowerBound;
 	fin["HsvUpperBound"] >> Settings::lightSetting.hsvUpperBound;
     fin["VoterSaveTime"] >> Settings::voteSetting.saveTime;
@@ -73,8 +73,8 @@ void Settings::save() {
     fout << "ExposureTime" << Settings::cameraSetting.ExposureTime;
     fout << "HsvLowerBound" << Settings::lightSetting.hsvLowerBound;
     fout << "HsvUpperBound" << Settings::lightSetting.hsvUpperBound;
-	camFout << "CameraMatrix" << Settings::cameraSetting.CameraMatrix;
-	camFout << "DistortionMatrix" << Settings::cameraSetting.DistortionMatrix;
+	camFout << "Camera_Matrix" << Settings::cameraSetting.CameraMatrix;
+	camFout << "Distortion_Matrix" << Settings::cameraSetting.DistortionMatrix;
     fout << "ScaleX" << Settings::gimbalSetting.ScaleX;
     fout << "ScaleY" << Settings::gimbalSetting.ScaleY;
     fout << "ScaleZ" << Settings::gimbalSetting.ScaleZ;

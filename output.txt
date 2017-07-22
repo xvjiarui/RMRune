@@ -1,0 +1,208 @@
+imgCP
+Driver Caps:
+  Driver: "uvcvideo"
+  Card: "HD USB Camera"
+  Bus: "usb-0000:00:14.0-1"
+  Version: 1.0
+  Capabilities: 84200001
+Camera Cropping:
+  Bounds: 640x480+0+0
+  Default: 640x480+0+0
+  Aspect: 1/1
+  FMT : CE Desc
+--------------------
+  MJPG: C  Motion-JPEG
+  YUYV:    YUYV 4:2:2
+Selected Camera Mode:
+  Width: 640
+  Height: 480
+  PixFmt: MJPG
+  Field: 1
+Frame Rate:  30.000000
+====================
+0 1 0
+Sudoku gg.
+Fail
+0 5 0
+Sudoku gg.
+Fail
+0 2 0
+Sudoku gg.
+Fail
+0 0 0
+Sudoku gg.
+Fail
+0 1 0
+Sudoku gg.
+Fail
+0 1 0
+Sudoku gg.
+Fail
+0 0 0
+Sudoku gg.
+Fail
+0 0 0
+Sudoku gg.
+Fail
+0 1 0
+Sudoku gg.
+Fail
+0 0 0
+Sudoku gg.
+Fail
+0 0 0
+Sudoku gg.
+Fail
+0 0 0
+Sudoku gg.
+Fail
+0 0 0
+Sudoku gg.
+Fail
+0 0 0
+Sudoku gg.
+Fail
+0 0 0
+Sudoku gg.
+Fail
+0 0 0
+Sudoku gg.
+Fail
+0 1 0
+Sudoku gg.
+Fail
+0 1 0
+Sudoku gg.
+Fail
+0 0 0
+Sudoku gg.
+Fail
+0 0 0
+Sudoku gg.
+Fail
+0 0 0
+Sudoku gg.
+Fail
+0 0 0
+Sudoku gg.
+Fail
+0 0 0
+Sudoku gg.
+Fail
+0 0 0
+Sudoku gg.
+Fail
+0 0 0
+Sudoku gg.
+Fail
+0 0 0
+Sudoku gg.
+Fail
+0 1 0
+Sudoku gg.
+Fail
+0 0 0
+Sudoku gg.
+Fail
+0 0 0
+Sudoku gg.
+Fail
+0 0 0
+Sudoku gg.
+Fail
+0 0 0
+Sudoku gg.
+Fail
+0 0 0
+Sudoku gg.
+Fail
+0 0 0
+Sudoku gg.
+Fail
+0 0 0
+Sudoku gg.
+Fail
+0 0 0
+Sudoku gg.
+Fail
+0 0 0
+Sudoku gg.
+Fail
+0 0 0
+Sudoku gg.
+Fail
+0 0 0
+Sudoku gg.
+Fail
+0 1 0
+Sudoku gg.
+Fail
+0 0 0
+Sudoku gg.
+Fail
+0 0 0
+Sudoku gg.
+Fail
+0 0 0
+Sudoku gg.
+Fail
+0 1 0
+Sudoku gg.
+Fail
+0 0 0
+Sudoku gg.
+Fail
+0 0 0
+Sudoku gg.
+Fail
+0 1 0
+Sudoku gg.
+Fail
+0 1 0
+Sudoku gg.
+Fail
+0 0 0
+Sudoku gg.
+Fail
+0 1 0
+Sudoku gg.
+Fail
+0 1 0
+Sudoku gg.
+Fail
+0 1 0
+Sudoku gg.
+Fail
+0 0 0
+Sudoku gg.
+Fail
+0 0 0
+Sudoku gg.
+Fail
+0 1 0
+Sudoku gg.
+Fail
+0 0 0
+Sudoku gg.
+Fail
+0 0 0
+Sudoku gg.
+Fail
+0 0 0
+Sudoku gg.
+Fail
+1 0 0
+Sudoku gg.
+Fail
+0 0 0
+Sudoku gg.
+Fail
+0 0 0
+Sudoku gg.
+Fail
+0 0 0
+Sudoku gg.
+Fail
+0 0 0
+Sudoku gg.
+Fail
