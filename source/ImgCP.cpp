@@ -272,6 +272,7 @@ void ImgCP::ImageConsumer()
 		}
 		catch (cv::Exception)
 		{
+
 			continue;
 		}
 		catch (exception)

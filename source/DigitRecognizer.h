@@ -2,6 +2,8 @@
 
 #include "define.hpp"
 #include <opencv2/opencv.hpp>
+#include <opencv2/features2d/features2d.hpp>
+#include <opencv2/nonfree/features2d.hpp>
 #include <unordered_map>
 #include "Settings.hpp"
 
@@ -23,9 +25,13 @@ public:
 
 private:
 	Mat preprocess(const Mat& img);
+	bool fitDigit(const Mat& hsvImg, Mat& digitImg);
+	Mat kmeanPreprocess(const Mat& img);
 	int recognize(const Mat& img);
 	int adaptiveRecognize(const Mat& img);
 	int similarityRecognize(const Mat& img);
+	int featureProcess(const Mat& img);
+	int knearestRecognize(const Mat& img);
 	vector<pair<double, int> > similarityRecognize_primary(const Mat& img);
 	void clear();
 #ifdef ADJUST_HSV
@@ -41,6 +47,10 @@ private:
 	Rect horizontalRect;
 	Rect verticalRect;
 	float areaThreshold;
-	bool fitDigit(const Mat& hsvImg, Mat& digitImg);
+	vector<Mat> digitTemplateImgs;
+	vector<Mat> descriptors;
+	vector<vector<KeyPoint>> keyPoints;
+	SurfFeatureDetector detector;
+	SurfDescriptorExtractor extractor;
 
 };
