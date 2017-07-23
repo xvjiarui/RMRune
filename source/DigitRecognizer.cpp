@@ -44,7 +44,7 @@ DigitRecognizer::DigitRecognizer(Settings::LightSetting lightSetting): horizonta
 	areaThreshold = 0.6;
 
 	float hXLen, hYLen, vXLen, vYLen;
-	float hXLenRatio = 1.0 / 3.0;
+	float hXLenRatio = 1.0 / 2.0;
 	float hYLenRatio = 1.0 / 7.0;
 	hXLen = 40.0 * hXLenRatio;
 	hYLen = 60.0 * hYLenRatio;
@@ -291,7 +291,7 @@ Mat DigitRecognizer::kmeanPreprocess(const Mat& img)
 	pdata[rows * cols * channels] = 255;
 	pdata[rows * cols * channels + 1] = 255;
 	pdata[rows * cols * channels + 2] = 255;
-	kmeans(pixels, 3, labels, TermCriteria(CV_TERMCRIT_EPS + CV_TERMCRIT_ITER, 5, 0), 5, KMEANS_PP_CENTERS);
+	kmeans(pixels, 2, labels, TermCriteria(CV_TERMCRIT_EPS + CV_TERMCRIT_ITER, 5, 0), 5, KMEANS_PP_CENTERS);
 	Mat redImg;
 	img.copyTo(redImg);
 	int redClass = labels.at<int>(rows * cols);
@@ -304,11 +304,13 @@ Mat DigitRecognizer::kmeanPreprocess(const Mat& img)
 			{
 				redImg.at<Vec3b>(i, j) = Vec3b(0, 0, 0);
 			}
+			else redImg.at<Vec3b>(i, j) = Vec3b(255, 255, 255);
 		}
 	}
-	imshow("test", redImg);
-	waitKey(0);
 	cvtColor(redImg, redImg, CV_BGR2GRAY);
+	imshow("before", redImg);
+	//imshow("after", redImg);
+	waitKey(0);
 	return redImg;
 }
 int DigitRecognizer::process(const Mat& img)
@@ -334,36 +336,51 @@ vector<pair<double, int> > DigitRecognizer::process_primary(const Mat& img)
 
 
 
-bool DigitRecognizer::fitDigit(const Mat& hsvImg, Mat& resImg)
+bool DigitRecognizer::fitDigit(const Mat& inputImg, Mat& resImg)
 {
-	Mat hsvCopy;
-	hsvImg.copyTo(hsvCopy);
-	morphologyEx(hsvCopy, hsvCopy, MORPH_CLOSE, getStructuringElement(MORPH_RECT,Size(3,3)));
+	Mat inputCopy;
+	inputImg.copyTo(inputCopy);
+	//morphologyEx(inputCopy, inputCopy, MORPH_CLOSE, getStructuringElement(MORPH_RECT,Size(3,3)));
+	//adaptiveThreshold(redImg, redImg, 255, ADAPTIVE_THRESH_GAUSSIAN_C, THRESH_BINARY, 3, 0);
 	vector<vector<Point> > contours;
 	vector<Vec4i> hierarchy;
-	findContours( hsvCopy, contours, hierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE, Point(0, 0) );			
+	findContours( inputCopy, contours, hierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE, Point(0, 0) );			
 	if (!contours.size()) return false;
 	sort(contours.begin(), contours.end(), [](const vector<Point> & a, const vector<Point> & b) {return a.size()>b.size();});
 	vector<Point> curContoursPoly;
 	approxPolyDP(contours.at(0), curContoursPoly, 3, true);
 	Rect curBoundingRect = boundingRect(curContoursPoly);
 	float ratio = (float)curBoundingRect.width / (float)curBoundingRect.height;
-	int ret = 0;
 	if (ratio < 0.5)
 	{
-		resize(hsvImg, hsvCopy, Size(40, 60));
+		resize(inputImg, inputCopy, Size(40, 60));
 	}
 	else{
-		hsvCopy = hsvImg(boundingRect(curContoursPoly));
-		resize(hsvCopy, hsvCopy, Size(40, 60));
+		inputCopy = inputImg(boundingRect(curContoursPoly));
+		resize(inputCopy, inputCopy, Size(40, 60));
 	} 
 	float data[] = {1, 0.1, 0,  0, 1, 0};
 	Mat affine(2, 3, CV_32FC1, data);  
-	warpAffine( hsvCopy, hsvCopy, affine, hsvCopy.size());
+	warpAffine( inputCopy, inputCopy, affine, inputCopy.size());
+	findContours( inputCopy, contours, hierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE, Point(0, 0) );			
+	if (!contours.size()) return false;
+	sort(contours.begin(), contours.end(), [](const vector<Point> & a, const vector<Point> & b) {return a.size()>b.size();});
+	approxPolyDP(contours.at(0), curContoursPoly, 3, true);
+	curBoundingRect = boundingRect(curContoursPoly);
+	ratio = (float)curBoundingRect.width / (float)curBoundingRect.height;
+	if (ratio < 0.5)
+	{
+		resize(inputCopy, inputCopy, Size(40, 60));
+	}
+	else{
+		inputCopy = inputImg(boundingRect(curContoursPoly));
+		resize(inputCopy, inputCopy, Size(40, 60));
+	} 
+	//dilate(inputCopy, inputCopy, getStructuringElement(MORPH_RECT,Size(3,3)), Point(-1, -1), 3);
 #ifdef SHOW_IMAGE
-	imshow("hsvImg", hsvCopy);
+	imshow("inputImg", inputCopy);
 #endif
-	hsvCopy.copyTo(resImg);
+	inputCopy.copyTo(resImg);
 	return true;
 }
 /*
@@ -432,9 +449,6 @@ vector<pair<double, int> > DigitRecognizer::similarityRecognize_primary(const Ma
 		{1, 1, 1, 1, 1, 1, 1},
 		{1, 1, 1, 1, 0, 1, 1}
 	};
-	static int digitTemplateSizes[10] = {
-		6, 2, 5, 5, 4, 5, 6, 3, 7, 6
-	};
 	vector<pair<double, int> > candidates(10);
 	for (int i = 0; i < candidates.size(); i++)
 	{
@@ -451,7 +465,7 @@ vector<pair<double, int> > DigitRecognizer::similarityRecognize_primary(const Ma
 #endif
 		for (int j = 0; j < 10; ++j)
 		{
-			candidates[j].first += abs(curRatio - digitTemplates[j][i])/digitTemplateSizes[j];
+			candidates[j].first += abs(curRatio - digitTemplates[j][i]);
 		}
 	}
 	sort(candidates.begin(), candidates.end(), [](const pair<double, int>& a, const pair<double, int>& b) { return a.first < b.first; } );
