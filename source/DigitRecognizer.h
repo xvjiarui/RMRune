@@ -23,10 +23,12 @@ public:
 
 private:
 	Mat preprocess(const Mat& img);
+	bool fitDigit(const Mat& hsvImg, Mat& digitImg);
 	Mat kmeanPreprocess(const Mat& img);
 	int recognize(const Mat& img);
 	int adaptiveRecognize(const Mat& img);
 	int similarityRecognize(const Mat& img);
+	int featureProcess(const Mat& img);
 	vector<pair<double, int> > similarityRecognize_primary(const Mat& img);
 	void clear();
 #ifdef ADJUST_HSV
@@ -42,6 +44,10 @@ private:
 	Rect horizontalRect;
 	Rect verticalRect;
 	float areaThreshold;
-	bool fitDigit(const Mat& hsvImg, Mat& digitImg);
+	vector<Mat> digitTemplateImgs(10);
+	vector<Mat> descriptor(10);
+	vector<vector<KeyPoint>> keyPoints(10);
+	SurfFeatureDetector detector( 400 );
+	SurfDescriptorExtractor extractor;
 
 };

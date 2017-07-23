@@ -1,16 +1,16 @@
 #include <iostream>
 #include <string>
-#include <stdexcept> 
+#include <stdexcept>
 #include "DigitRecognizer.h"
 #include "RuneDetector.hpp"
 
 void binaryMat2points(const Mat & img, vector<Point> & pts)
 {
-	for(int x = 0; x < img.cols; x++)
+	for (int x = 0; x < img.cols; x++)
 	{
-		for(int y = 0; y < img.rows; y++)
+		for (int y = 0; y < img.rows; y++)
 		{
-			if(img.at<char>(x, y) >0)
+			if (img.at<char>(x, y) > 0)
 			{
 				pts.push_back(Point(x, y));
 			}
@@ -25,21 +25,21 @@ DigitRecognizer::DigitRecognizer(Settings::LightSetting lightSetting): horizonta
 
 	rng = RNG(12345);
 
-    lowerBound = lightSetting.hsvLowerBound;
-    upperBound = lightSetting.hsvUpperBound;
+	lowerBound = lightSetting.hsvLowerBound;
+	upperBound = lightSetting.hsvUpperBound;
 
-    segmentTable = {
-    	{119, 0},
-    	{18, 1},
-    	{93, 2},
-    	{91, 3},
-    	{58, 4},
-    	{107, 5},
-    	{111, 6},
-    	{82, 7},
-    	{127, 8},
-    	{123, 9}
-    };
+	segmentTable = {
+		{119, 0},
+		{18, 1},
+		{93, 2},
+		{91, 3},
+		{58, 4},
+		{107, 5},
+		{111, 6},
+		{82, 7},
+		{127, 8},
+		{123, 9}
+	};
 
 	areaThreshold = 0.6;
 
@@ -53,7 +53,7 @@ DigitRecognizer::DigitRecognizer(Settings::LightSetting lightSetting): horizonta
 	Rect zero = Rect(Point2f(vXLen, 0), Point2f(vXLen + hXLen, hYLen));
 	Rect one = Rect(Point2f(0, hYLen), Point2f(vXLen, hYLen + vYLen));
 
-    segmentRects = {
+	segmentRects = {
 		zero, // 0
 		one, // 1
 		one + Point(hXLen + vXLen, 0), // 2
@@ -61,7 +61,7 @@ DigitRecognizer::DigitRecognizer(Settings::LightSetting lightSetting): horizonta
 		one + Point(0, hYLen + vYLen), // 4
 		one + Point(hXLen + vXLen, hYLen + vYLen), // 5
 		zero + Point(0, 2 * (hYLen + vYLen)) // 6
-		/*, 
+		/*,
 		Rect(Point(0, 0), Point(40, 20)), //0
 		Rect(Point(0, 0), Point(20, 30)), //1
 		Rect(Point(20, 0), Point(40, 30)),//2
@@ -81,16 +81,27 @@ DigitRecognizer::DigitRecognizer(Settings::LightSetting lightSetting): horizonta
 		zero + Point(0, 60 - hYLen) //6
 		*/
 		/*
-    	Rect(Point(0, 0), Point(35, 5)), // 0
-    	Rect(Point(6, 5), Point(11, 27)), // 1
-    	Rect(Point(32, 5), Point(37, 27)), //2
-	    Rect(Point(5, 27), Point(35, 32)), // 3
-	    Rect(Point(3, 32), Point(8, 58)), // 4
-	    Rect(Point(27, 32), Point(32, 58)), //5
-	    Rect(Point(5, 53), Point(30, 58)) // 6
+		Rect(Point(0, 0), Point(35, 5)), // 0
+		Rect(Point(6, 5), Point(11, 27)), // 1
+		Rect(Point(32, 5), Point(37, 27)), //2
+		Rect(Point(5, 27), Point(35, 32)), // 3
+		Rect(Point(3, 32), Point(8, 58)), // 4
+		Rect(Point(27, 32), Point(32, 58)), //5
+		Rect(Point(5, 53), Point(30, 58)) // 6
 		*/
-    };
+	};
 
+	for (int i = 0; i < digitTemplateImgs.size(); ++i)
+	{
+		const char digit = '0' + i;
+		digitTemplateImgs.at(i) = imread( "template_digit/" + i + ".png", IMREAD_GRAY);
+	}
+
+	for (int i = 0; i < digitTemplateImgs.size(); ++i)
+	{
+		detector.detect(digitTemplateImgs.at(i), keyPoints.at(i));
+		extractor.compute(digitTemplateImgs.at(i), keyPoints.at(i), descriptor.at(i));
+	}
 
 }
 
@@ -99,15 +110,15 @@ void DigitRecognizer::predict(const Mat& inputImg, const Rect2f & sudokuPanel)
 	clear();
 
 	Rect2f digitBoardRect = sudokuPanel;
-	digitBoardRect.width = sudokuPanel.width / (280.0*3)*104.5*5;
-	digitBoardRect.height = sudokuPanel.height / (160.0*3)*125.0;
+	digitBoardRect.width = sudokuPanel.width / (280.0 * 3) * 104.5 * 5;
+	digitBoardRect.height = sudokuPanel.height / (160.0 * 3) * 125.0;
 	digitBoardRect -= Point2f(sudokuPanel.width * 0.25, sudokuPanel.height * 0.8);
 	Mat img = inputImg(digitBoardRect);
 	Mat grayImg;
 	Mat digitBoardImg = img;
 	cvtColor(img, grayImg, CV_BGR2GRAY);
 	GaussianBlur(grayImg, grayImg, Size(9, 9), 0);
-	Canny(grayImg, grayImg, 120, 120*2, 3);
+	Canny(grayImg, grayImg, 120, 120 * 2, 3);
 #ifdef SHOW_IMAGE
 	imshow("Canny", grayImg);
 #endif
@@ -123,14 +134,14 @@ void DigitRecognizer::predict(const Mat& inputImg, const Rect2f & sudokuPanel)
 	int digitAvgWidth = 0;
 	float lowerThreshold = 1;
 	float upperThreshold = 1.6;
-	for ( int i = 0; i < digitContours.size(); i++ ) 
+	for ( int i = 0; i < digitContours.size(); i++ )
 	{
 		vector<Point> curDigitContoursPoly;
 		approxPolyDP( digitContours.at(i), curDigitContoursPoly, 3, true );
 		digitContoursPolys.push_back(curDigitContoursPoly);
 		Rect2f curBoundingRect = boundingRect(Mat(curDigitContoursPoly));
-		float ratio = (float) curBoundingRect.width / (float) curBoundingRect.height;	
-		if (ratio < 0.5 * upperThreshold && ratio > 0.5 *lowerThreshold)
+		float ratio = (float) curBoundingRect.width / (float) curBoundingRect.height;
+		if (ratio < 0.5 * upperThreshold && ratio > 0.5 * lowerThreshold)
 		{
 			digitAvgWidth += curBoundingRect.width;
 			digitBoundRects.push_back(curBoundingRect);
@@ -175,12 +186,12 @@ void DigitRecognizer::predict(const Mat& inputImg, const Rect2f & sudokuPanel)
 	// }
 	// imshow("digitBoardRect", digitBoardImg);
 
-    Mat hsvFrame;
-    cvtColor(digitBoardImg, hsvFrame, CV_BGR2HSV);
-    inRange(hsvFrame, lowerBound, upperBound, hsvFrame);
-    hsvFrame.copyTo(digitBoardImg);
+	Mat hsvFrame;
+	cvtColor(digitBoardImg, hsvFrame, CV_BGR2HSV);
+	inRange(hsvFrame, lowerBound, upperBound, hsvFrame);
+	hsvFrame.copyTo(digitBoardImg);
 #ifdef SHOW_IMAGE
-    imshow("hsvFrame", hsvFrame);
+	imshow("hsvFrame", hsvFrame);
 #endif
 
 	for (int i = 0; i < digitBoundRects.size(); ++i)
@@ -196,7 +207,7 @@ void DigitRecognizer::predict(const Mat& inputImg, const Rect2f & sudokuPanel)
 		cout << digitLabels.at(i);
 	}
 	cout << endl;
-	
+
 }
 
 #ifdef ADJUST_HSV
@@ -344,9 +355,9 @@ bool DigitRecognizer::fitDigit(const Mat& inputImg, Mat& resImg)
 	//adaptiveThreshold(redImg, redImg, 255, ADAPTIVE_THRESH_GAUSSIAN_C, THRESH_BINARY, 3, 0);
 	vector<vector<Point> > contours;
 	vector<Vec4i> hierarchy;
-	findContours( inputCopy, contours, hierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE, Point(0, 0) );			
+	findContours( inputCopy, contours, hierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE, Point(0, 0) );
 	if (!contours.size()) return false;
-	sort(contours.begin(), contours.end(), [](const vector<Point> & a, const vector<Point> & b) {return a.size()>b.size();});
+	sort(contours.begin(), contours.end(), [](const vector<Point> & a, const vector<Point> & b) {return a.size() > b.size();});
 	vector<Point> curContoursPoly;
 	approxPolyDP(contours.at(0), curContoursPoly, 3, true);
 	Rect curBoundingRect = boundingRect(curContoursPoly);
@@ -355,16 +366,16 @@ bool DigitRecognizer::fitDigit(const Mat& inputImg, Mat& resImg)
 	{
 		resize(inputImg, inputCopy, Size(40, 60));
 	}
-	else{
+	else {
 		inputCopy = inputImg(boundingRect(curContoursPoly));
 		resize(inputCopy, inputCopy, Size(40, 60));
-	} 
+	}
 	float data[] = {1, 0.1, 0,  0, 1, 0};
-	Mat affine(2, 3, CV_32FC1, data);  
+	Mat affine(2, 3, CV_32FC1, data);
 	warpAffine( inputCopy, inputCopy, affine, inputCopy.size());
-	findContours( inputCopy, contours, hierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE, Point(0, 0) );			
+	findContours( inputCopy, contours, hierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE, Point(0, 0) );
 	if (!contours.size()) return false;
-	sort(contours.begin(), contours.end(), [](const vector<Point> & a, const vector<Point> & b) {return a.size()>b.size();});
+	sort(contours.begin(), contours.end(), [](const vector<Point> & a, const vector<Point> & b) {return a.size() > b.size();});
 	approxPolyDP(contours.at(0), curContoursPoly, 3, true);
 	curBoundingRect = boundingRect(curContoursPoly);
 	ratio = (float)curBoundingRect.width / (float)curBoundingRect.height;
@@ -372,16 +383,64 @@ bool DigitRecognizer::fitDigit(const Mat& inputImg, Mat& resImg)
 	{
 		resize(inputCopy, inputCopy, Size(40, 60));
 	}
-	else{
+	else {
 		inputCopy = inputImg(boundingRect(curContoursPoly));
 		resize(inputCopy, inputCopy, Size(40, 60));
-	} 
+	}
 	//dilate(inputCopy, inputCopy, getStructuringElement(MORPH_RECT,Size(3,3)), Point(-1, -1), 3);
 #ifdef SHOW_IMAGE
 	imshow("inputImg", inputCopy);
 #endif
 	inputCopy.copyTo(resImg);
 	return true;
+}
+
+int DigitRecognizer::featureProcess(const Mat& inputImg)
+{
+	Mat inputCopy;
+	inputImg.copyTo(inputCopy);
+	vecotr<KeyPoints> curKeyPoints;
+	detect.detect(inputCopy, curKeyPoints);
+	Mat curDescriptors;
+	extractor.compute( inputCopy, curKeyPoints, curDescriptors);
+	FlannBasedMatcher matcher;
+	vector<vector <DMatch> > matches;
+	vector<pair<int, int> > scores(10); // <num, score>
+	for (int i = 0; i < digitTemplateImgs.size(); ++i)
+	{
+		scores.at(i) = 0;
+		static double maxDist = 0.0;
+		static double minDist = 100.0;
+		matcher.match(curDescriptors, descriptor.at(i), matches.at(i));
+		for ( int j = 0; j < curDescriptors.rows; j++ )
+		{
+			double dist = matches.at(i).at(j).distance;
+			if ( dist < min_dist ) min_dist = dist;
+			if ( dist > max_dist ) max_dist = dist;
+		}
+		vector< DMatch > good_matches;
+
+		for ( int j = 0; j < curDescriptors.rows; j++ )
+		{
+			if ( matches.at(i).at(j).distance <= max(2 * min_dist, 0.02) )
+			{
+				good_matches.push_back( matches.at(i).at(j));
+				scores.at(i).second++;
+			}
+		}
+
+		//-- Draw only "good" matches
+		Mat img_matches;
+		drawMatches( inputCopy, curKeyPoints, digitTemplateImgs.at(i), keyPoints.at(i),
+		             good_matches, img_matches, Scalar::all(-1), Scalar::all(-1),
+		             vector<char>(), DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS );
+
+		imshow( "Good Matches", img_matches );
+		waitKey(0);
+	}
+	sort(scores.begin(), scores.end(), [] (const pair<int, int>& a, const pair<int, int>& b) { return a.second > b.second;});
+	return scores.at(i).first;
+
 }
 /*
 vector<pair<double, int> > DigitRecognizer::fitDigitAndRecognize_primary(const Mat& hsvImg)
@@ -396,7 +455,7 @@ int DigitRecognizer::fitDigitAndRecognize(const Mat& hsvImg)
 	morphologyEx(hsvCopy, hsvCopy, MORPH_CLOSE, getStructuringElement(MORPH_RECT,Size(3,3)));
 	vector<vector<Point> > contours;
 	vector<Vec4i> hierarchy;
-	findContours( hsvCopy, contours, hierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE, Point(0, 0) );			
+	findContours( hsvCopy, contours, hierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE, Point(0, 0) );
 	if (!contours.size()) return -1;
 	sort(contours.begin(), contours.end(), [](const vector<Point> & a, const vector<Point> & b) {return a.size()>b.size();});
 	vector<Point> curContoursPoly;
@@ -411,7 +470,7 @@ int DigitRecognizer::fitDigitAndRecognize(const Mat& hsvImg)
 	else{
 		hsvCopy = hsvImg(boundingRect(curContoursPoly));
 		resize(hsvCopy, hsvCopy, Size(40, 60));
-	} 
+	}
 	ret = similarityRecognize(hsvCopy);
 #ifdef SHOW_IMAGE
 	imshow("hsvImg", hsvCopy);
@@ -459,7 +518,7 @@ vector<pair<double, int> > DigitRecognizer::similarityRecognize_primary(const Ma
 	{
 		Mat curImg = img(segmentRects.at(i));
 		int total = countNonZero(curImg);
-		double curRatio = (double)total/ (double)segmentRects.at(i).area();
+		double curRatio = (double)total / (double)segmentRects.at(i).area();
 #ifdef SHOW_IMAGE
 		rectangle(temp, segmentRects.at(i), Scalar(255, 255, 255));
 #endif
@@ -489,7 +548,7 @@ int DigitRecognizer::recognize(const Mat& img)
 		ret <<= 1;
 		Mat curImg = img(segmentRects.at(i));
 		int total = countNonZero(curImg);
-		if ((float)total/ (float) segmentRects.at(i).area() > 0.5)
+		if ((float)total / (float) segmentRects.at(i).area() > 0.5)
 		{
 			ret += 1;
 		}
@@ -523,7 +582,7 @@ int DigitRecognizer::adaptiveRecognize(const Mat& img)
 	const int step = 1;
 	for (int i = 0; i < 3; ++i)
 	{
-		for (int j = 0; j < 10; j+=step)
+		for (int j = 0; j < 10; j += step)
 		{
 			Rect curRect = horizontalRect + Point(0, 20 * i + j);
 			Mat curImg = img(curRect);
@@ -540,7 +599,7 @@ int DigitRecognizer::adaptiveRecognize(const Mat& img)
 	}
 	for (int i = 0; i < 2; ++i)
 	{
-		for (int j = 0; j < 10; j+=step)
+		for (int j = 0; j < 10; j += step)
 		{
 			Rect curRect = verticalRect + Point(20 * i + j, 0);
 			Mat curImg = img(curRect);
@@ -557,7 +616,7 @@ int DigitRecognizer::adaptiveRecognize(const Mat& img)
 	}
 	for (int i = 0; i < 2; ++i)
 	{
-		for (int j = 0; j < 10; j+=step)
+		for (int j = 0; j < 10; j += step)
 		{
 			Rect curRect = verticalRect + Point(20 * i + j, 30);
 			Mat curImg = img(curRect);
