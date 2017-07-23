@@ -357,6 +357,9 @@ bool DigitRecognizer::fitDigit(const Mat& hsvImg, Mat& resImg)
 		hsvCopy = hsvImg(boundingRect(curContoursPoly));
 		resize(hsvCopy, hsvCopy, Size(40, 60));
 	} 
+	float data[] = {1, 0.1, 0,  0, 1, 0};
+	Mat affine(2, 3, CV_32FC1, data);  
+	warpAffine( hsvCopy, hsvCopy, affine, hsvCopy.size());
 #ifdef SHOW_IMAGE
 	imshow("hsvImg", hsvCopy);
 #endif
@@ -429,6 +432,9 @@ vector<pair<double, int> > DigitRecognizer::similarityRecognize_primary(const Ma
 		{1, 1, 1, 1, 1, 1, 1},
 		{1, 1, 1, 1, 0, 1, 1}
 	};
+	static int digitTemplateSizes[10] = {
+		6, 2, 5, 5, 4, 5, 6, 3, 7, 6
+	};
 	vector<pair<double, int> > candidates(10);
 	for (int i = 0; i < candidates.size(); i++)
 	{
@@ -445,7 +451,7 @@ vector<pair<double, int> > DigitRecognizer::similarityRecognize_primary(const Ma
 #endif
 		for (int j = 0; j < 10; ++j)
 		{
-			candidates[j].first += abs(curRatio - digitTemplates[j][i]);
+			candidates[j].first += abs(curRatio - digitTemplates[j][i])/digitTemplateSizes[j];
 		}
 	}
 	sort(candidates.begin(), candidates.end(), [](const pair<double, int>& a, const pair<double, int>& b) { return a.first < b.first; } );
