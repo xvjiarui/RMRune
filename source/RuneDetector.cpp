@@ -219,7 +219,7 @@ bool RuneDetector::checkSudoku(const vector<vector<Point2i>> &contours, vector<R
 		for_each(distance.begin(), distance.end(), [&](const float& a){
 			var += (a - avgDistance) * (a - avgDistance);
 		});
-		if (var > 225)
+		if (var > runeSetting.OneVariance)
 		{
 			oneConfirmed = true;
 			targetX = digit_rects.at(oneIndex - 1).center.x + avgDistance;

@@ -60,6 +60,7 @@ void ImgCP::ImageProducer()
 		cap.setVideoFormat(640, 480, 1);
 		cap.setExposureTime(0, settings->cameraSetting.ExposureTime);//settings->exposure_time);
 		cap.startStream();
+
 		cap.info();
 		while(1)
 		{
@@ -67,6 +68,7 @@ void ImgCP::ImageProducer()
 			cap >> data[pIdx % BUFFER_SIZE].img;
 			data[pIdx % BUFFER_SIZE].frame = cap.getFrameCount();
 			++pIdx;
+			cap.setExposureTime(0, settings->cameraSetting.ExposureTime);//settings->exposure_time);
 		}
 	}
 }
@@ -185,8 +187,7 @@ void ImgCP::ImageConsumer()
 #ifndef NO_COMMUNICATION
 	//GPIO init
 	//manifoldGPIO::gpioExport(runeToggleButton);
-	gpioExport(runeToggleButton);
-	manifoldGPIO::gpioSetDirection(runeToggleButton, manifoldGPIO::input);
+	//manifoldGPIO::gpioSetDirection(runeToggleButton, manifoldGPIO::input);
 	manifoldGPIO::gpioGetValue(runeToggleButton, &runeGPIO);
 	//UART init
 	serialSetup();
@@ -242,7 +243,9 @@ void ImgCP::ImageConsumer()
 #endif
 
 		try {
-			RuneDetector::RuneType runeType = RuneDetector::RUNE_B;
+			manifoldGPIO::gpioGetValue(runeToggleButton, &runeGPIO);
+			cout << "GPIO: " << runeGPIO << endl;
+			RuneDetector::RuneType runeType = (runeGPIO == manifoldGPIO::low)? RuneDetector::RUNE_S : RuneDetector::RUNE_B;
 			int targetIdx = runeDetector.getTarget(original_img, runeType).second;
 			if (targetIdx == -1)
 			{
