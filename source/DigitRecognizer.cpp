@@ -3,7 +3,6 @@
 #include <stdexcept> 
 #include "DigitRecognizer.h"
 #include "RuneDetector.hpp"
-#include "Cluster.hpp"
 
 void binaryMat2points(const Mat & img, vector<Point> & pts)
 {
@@ -273,72 +272,44 @@ Mat DigitRecognizer::preprocess(const Mat& img)
 
 Mat DigitRecognizer::kmeanPreprocess(const Mat& img)
 {
-	ClusterPixels cluster(img, 3);
-	Mat colorResults = cluster.clusterColorImageByKmeans();
-	Mat alt1, alt2;
-	Mat alts[2];
+	int rows = img.rows;
+	int cols = img.cols;
 	int channels = img.channels();
-	img.copyTo(alts[0]);
-	img.copyTo(alts[1]);
-	int blackClass = colorResults.at<int>(img.rows * img.cols + 1)
-	int sum = 0 + 1 + 2; //little trick
-	for (int c = 0, altClass = 0; c < 2; c++)
+	Mat labels;
+	Mat pixels(rows * cols + 1, 1, CV_32FC3); //extra one for red
+	pixels.setTo(Scalar::all(0));
+
+	float *pdata = pixels.ptr<float>(0);
+	for (int i = 0; i < rows; ++i)
 	{
-		if (c == blackClass) continue;
-		int currentClass = sum - c - blackClass;
-		float *pdata = alts.ptr<float>(0);
-		for (int i = 0; i < img.rows; i++)
+		const uchar *idata = img.ptr<uchar>(i);
+		for (int j = 0; j < cols * channels; ++j)
 		{
-			for (int j = 0; j < img.cols * channels; j += channels)
+			pdata[i * cols * channels + j] = saturate_cast<float>(idata[j]);
+		}
+	}
+	pdata[rows * cols * channels] = 255;
+	pdata[rows * cols * channels + 1] = 255;
+	pdata[rows * cols * channels + 2] = 255;
+	kmeans(pixels, 3, labels, TermCriteria(CV_TERMCRIT_EPS + CV_TERMCRIT_ITER, 5, 0), 5, KMEANS_PP_CENTERS);
+	Mat redImg;
+	img.copyTo(redImg);
+	int redClass = labels.at<int>(rows * cols);
+	pdata = redImg.ptr<float>(0);
+	for (int i = 0; i < rows; i++)
+	{
+		for (int j = 0; j < cols; j++)
+		{
+			if (labels.at<int>(i * cols + j) != redClass)
 			{
-				if (colorResults.at<int>(i * (j / channels)) != currentClass)
-				{
-					alts[altClass] 
-					pdata[i * cols * ]
-				}
+				redImg.at<Vec3b>(i, j) = Vec3b(0, 0, 0);
 			}
 		}
-		altClass++;
 	}
-/*
-	hconcat(img, colorResults, colorResults);  
-	imshow("clusterImage", colorResults);
-	*/
+	imshow("test", redImg);
 	waitKey(0);
-
-/*
-	// Mat img;
-	// cvtColor(inputImg, img, )
-	Mat2f samples(img.rows * img.cols, 1, CV_32FC2);
-	// Mat2i result(img.rows, 1, CV_32FC2);
-	Mat2i result;
-	int k = 0;
-	for (int i = 0; i < img.rows; i++)
-	{
-		for (int j = 0; j < img.cols; j++)
-		{
-			Vec3b c = img.at<Vec3b>(j, i);
-			// samples.at<Vec3b>(k++, 0) = c;
-			samples.at<float>(k, 0) = c.val[0];
-			samples.at<float>(k, 1) = c.val[1];
-			samples.at<float>(k++, 2) = c.val[2];
-			samples.at<float>(j, i * j).val[0] = 
-			s[0] = img.at<float>(j, i)[0];
-			s[0] = img.at<float>(j, i)[0];
-			s[0] = img.at<float>(j, i)[0];
-			s.val[0] = (float)cvGet2D(img, j, i).val[0];
-			s.val[1] = (float)cvGet2D(img, j, i).val[1];
-			s.val[2] = (float)cvGet2D(img, j, i).val[2];
-			// cvSet2D(samples, k++, 0, s);
-		}
-	}
-	cout<<"HII"<<endl;
-	kmeans(samples, 3, result, TermCriteria(CV_TERMCRIT_EPS + CV_TERMCRIT_ITER, 10, 0), 2, KMEANS_RANDOM_CENTERS);
-	while(1);
-	cout << result;
-	while(1);
-	*/
-
+	cvtColor(redImg, redImg, CV_BGR2GRAY);
+	return redImg;
 }
 int DigitRecognizer::process(const Mat& img)
 {
@@ -352,10 +323,9 @@ int DigitRecognizer::process(const Mat& img)
 
 vector<pair<double, int> > DigitRecognizer::process_primary(const Mat& img)
 {
-	cout<< "hi"<<endl;
-	kmeanPreprocess(img);
+	// kmeanPreprocess(img);
 	Mat digitImg;
-	if (fitDigit(preprocess(img), digitImg))
+	if (fitDigit(kmeanPreprocess(img), digitImg))
 	{
 		return similarityRecognize_primary(digitImg);
 	}
