@@ -41,7 +41,7 @@ DigitRecognizer::DigitRecognizer(Settings::LightSetting lightSetting): horizonta
 		{123, 9}
 	};
 
-	areaThreshold = 0.6;
+	areaThreshold = 0.5;
 
 	float hXLen, hYLen, vXLen, vYLen;
 	float hXLenRatio = 1.0 / 2.0;
@@ -90,17 +90,24 @@ DigitRecognizer::DigitRecognizer(Settings::LightSetting lightSetting): horizonta
 		Rect(Point(5, 53), Point(30, 58)) // 6
 		*/
 	};
+	detector = SurfFeatureDetector(400);
 
+	digitTemplateImgs.resize(10);
+	descriptors.resize(10);
+	keyPoints.resize(10);
 	for (int i = 0; i < digitTemplateImgs.size(); ++i)
 	{
 		const char digit = '0' + i;
-		digitTemplateImgs.at(i) = imread( "template_digit/" + i + ".png", IMREAD_GRAY);
+		digitTemplateImgs.at(i) = imread(string( "template_digit/") + to_string(i) + string(".png"), IMREAD_GRAYSCALE);
+		resize(digitTemplateImgs.at(i), digitTemplateImgs.at(i), Size(40, 60));
+		cout << "Image" << i << "success" << endl;
 	}
 
 	for (int i = 0; i < digitTemplateImgs.size(); ++i)
 	{
 		detector.detect(digitTemplateImgs.at(i), keyPoints.at(i));
-		extractor.compute(digitTemplateImgs.at(i), keyPoints.at(i), descriptor.at(i));
+		extractor.compute(digitTemplateImgs.at(i), keyPoints.at(i), descriptors.at(i));
+		cout << "Image" << i << "processed" << endl;
 	}
 
 }
@@ -122,6 +129,7 @@ void DigitRecognizer::predict(const Mat& inputImg, const Rect2f & sudokuPanel)
 #ifdef SHOW_IMAGE
 	imshow("Canny", grayImg);
 #endif
+
 
 
 	vector<vector<Point> > digitContours;
@@ -319,6 +327,10 @@ Mat DigitRecognizer::kmeanPreprocess(const Mat& img)
 		}
 	}
 	cvtColor(redImg, redImg, CV_BGR2GRAY);
+	Mat resizedImg;
+	redImg.copyTo(resizedImg);
+	resize(resizedImg, resizedImg, Size(40, 60));
+	knearestRecognize(resizedImg);
 	imshow("before", redImg);
 	//imshow("after", redImg);
 	waitKey(0);
@@ -373,6 +385,7 @@ bool DigitRecognizer::fitDigit(const Mat& inputImg, Mat& resImg)
 	float data[] = {1, 0.1, 0,  0, 1, 0};
 	Mat affine(2, 3, CV_32FC1, data);
 	warpAffine( inputCopy, inputCopy, affine, inputCopy.size());
+	/*
 	findContours( inputCopy, contours, hierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE, Point(0, 0) );
 	if (!contours.size()) return false;
 	sort(contours.begin(), contours.end(), [](const vector<Point> & a, const vector<Point> & b) {return a.size() > b.size();});
@@ -387,6 +400,7 @@ bool DigitRecognizer::fitDigit(const Mat& inputImg, Mat& resImg)
 		inputCopy = inputImg(boundingRect(curContoursPoly));
 		resize(inputCopy, inputCopy, Size(40, 60));
 	}
+	*/
 	//dilate(inputCopy, inputCopy, getStructuringElement(MORPH_RECT,Size(3,3)), Point(-1, -1), 3);
 #ifdef SHOW_IMAGE
 	imshow("inputImg", inputCopy);
@@ -399,30 +413,31 @@ int DigitRecognizer::featureProcess(const Mat& inputImg)
 {
 	Mat inputCopy;
 	inputImg.copyTo(inputCopy);
-	vecotr<KeyPoints> curKeyPoints;
-	detect.detect(inputCopy, curKeyPoints);
+	vector<KeyPoint> curKeyPoints;
+	detector.detect(inputCopy, curKeyPoints);
 	Mat curDescriptors;
 	extractor.compute( inputCopy, curKeyPoints, curDescriptors);
 	FlannBasedMatcher matcher;
-	vector<vector <DMatch> > matches;
+	vector<vector <DMatch> > matches(10);
 	vector<pair<int, int> > scores(10); // <num, score>
 	for (int i = 0; i < digitTemplateImgs.size(); ++i)
 	{
-		scores.at(i) = 0;
+		scores.at(i).first = i;
+		scores.at(i).second = 0;
 		static double maxDist = 0.0;
 		static double minDist = 100.0;
-		matcher.match(curDescriptors, descriptor.at(i), matches.at(i));
+		matcher.match(curDescriptors, descriptors.at(i), matches.at(i));
 		for ( int j = 0; j < curDescriptors.rows; j++ )
 		{
 			double dist = matches.at(i).at(j).distance;
-			if ( dist < min_dist ) min_dist = dist;
-			if ( dist > max_dist ) max_dist = dist;
+			if ( dist < minDist ) minDist = dist;
+			if ( dist > maxDist ) maxDist = dist;
 		}
 		vector< DMatch > good_matches;
 
 		for ( int j = 0; j < curDescriptors.rows; j++ )
 		{
-			if ( matches.at(i).at(j).distance <= max(2 * min_dist, 0.02) )
+			if ( matches.at(i).at(j).distance <= max(5 * minDist, 0.02) )
 			{
 				good_matches.push_back( matches.at(i).at(j));
 				scores.at(i).second++;
@@ -439,7 +454,7 @@ int DigitRecognizer::featureProcess(const Mat& inputImg)
 		waitKey(0);
 	}
 	sort(scores.begin(), scores.end(), [] (const pair<int, int>& a, const pair<int, int>& b) { return a.second > b.second;});
-	return scores.at(i).first;
+	return scores.at(0).first;
 
 }
 /*
@@ -454,7 +469,6 @@ int DigitRecognizer::fitDigitAndRecognize(const Mat& hsvImg)
 	hsvImg.copyTo(hsvCopy);
 	morphologyEx(hsvCopy, hsvCopy, MORPH_CLOSE, getStructuringElement(MORPH_RECT,Size(3,3)));
 	vector<vector<Point> > contours;
-	vector<Vec4i> hierarchy;
 	findContours( hsvCopy, contours, hierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE, Point(0, 0) );
 	if (!contours.size()) return -1;
 	sort(contours.begin(), contours.end(), [](const vector<Point> & a, const vector<Point> & b) {return a.size()>b.size();});
@@ -569,6 +583,44 @@ int DigitRecognizer::recognize(const Mat& img)
 		return -1;
 	}
 	return ret;
+}
+
+int DigitRecognizer::knearestRecognize(const Mat& img)
+{
+	//vector<Mat> digitTemplateImgs;
+	//
+	Mat digitTemplate(10, digitTemplateImgs.at(0).cols * digitTemplateImgs.at(0).rows, CV_32FC1);
+	Mat digitRes(10, 1, CV_32FC1);
+	int c = 0;
+	for(auto &img : digitTemplateImgs)
+	{
+		for (int i = 0; i < img.rows; i++)
+		{
+			for (int j = 0; j < img.cols; j++)
+			{
+				digitTemplate.at<float>(c, i * img.cols + j) = saturate_cast<float>(img.at<unsigned char>(j, i));
+			}
+		}
+		c++;
+	}
+	for (int i = 0; i < 10; i++)
+	{
+		digitRes.at<float>(i, 0) = i;
+	}
+	CvKNearest classifer(digitTemplate, digitRes);
+	Mat newImg, sample(1, 40 * 60, CV_32FC1);
+	Mat result(1, 1, CV_32FC1);
+	resize(img, newImg, Size(40, 60));
+	for (int i = 0; i < newImg.rows; i++)
+	{
+		for (int j = 0; j < newImg.cols; j++)
+		{
+			sample.at<float>(0, i * newImg.cols + j) = newImg.at<float>(j, i);
+		}
+	}
+	classifer.find_nearest(sample, 8, &result);
+	cout << result << endl;
+	waitKey(0);
 }
 
 int DigitRecognizer::adaptiveRecognize(const Mat& img)
