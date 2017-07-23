@@ -330,7 +330,6 @@ Mat DigitRecognizer::kmeanPreprocess(const Mat& img)
 	Mat resizedImg;
 	redImg.copyTo(resizedImg);
 	resize(resizedImg, resizedImg, Size(40, 60));
-	knearestRecognize(resizedImg);
 	imshow("before", redImg);
 	//imshow("after", redImg);
 	waitKey(0);
@@ -385,23 +384,7 @@ bool DigitRecognizer::fitDigit(const Mat& inputImg, Mat& resImg)
 	float data[] = {1, 0.1, 0,  0, 1, 0};
 	Mat affine(2, 3, CV_32FC1, data);
 	warpAffine( inputCopy, inputCopy, affine, inputCopy.size());
-	/*
-	findContours( inputCopy, contours, hierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE, Point(0, 0) );
-	if (!contours.size()) return false;
-	sort(contours.begin(), contours.end(), [](const vector<Point> & a, const vector<Point> & b) {return a.size() > b.size();});
-	approxPolyDP(contours.at(0), curContoursPoly, 3, true);
-	curBoundingRect = boundingRect(curContoursPoly);
-	ratio = (float)curBoundingRect.width / (float)curBoundingRect.height;
-	if (ratio < 0.5)
-	{
-		resize(inputCopy, inputCopy, Size(40, 60));
-	}
-	else {
-		inputCopy = inputImg(boundingRect(curContoursPoly));
-		resize(inputCopy, inputCopy, Size(40, 60));
-	}
-	*/
-	//dilate(inputCopy, inputCopy, getStructuringElement(MORPH_RECT,Size(3,3)), Point(-1, -1), 3);
+	dilate(inputCopy, inputCopy, getStructuringElement(MORPH_RECT,Size(3,3)), Point(-1, -1), 3);
 #ifdef SHOW_IMAGE
 	imshow("inputImg", inputCopy);
 #endif
@@ -615,10 +598,10 @@ int DigitRecognizer::knearestRecognize(const Mat& img)
 	{
 		for (int j = 0; j < newImg.cols; j++)
 		{
-			sample.at<float>(0, i * newImg.cols + j) = newImg.at<float>(j, i);
+			sample.at<float>(0, i * newImg.cols + j) = saturate_cast<float>(newImg.at<unsigned char>(j, i));
 		}
 	}
-	classifer.find_nearest(sample, 8, &result);
+	classifer.find_nearest(sample, 3, &result);
 	cout << result << endl;
 	waitKey(0);
 }
