@@ -245,7 +245,8 @@ void ImgCP::ImageConsumer()
 #endif
 
 		try {
-			RuneDetector::RuneType runeType = RuneDetector::RUNE_B;
+			manifoldGPIO::gpioGetValue(runeToggleButton, &runeGPIO);
+			RuneDetector::RuneType runeType = (runeGPIO == manifoldGPIO::low)? RuneDetector::RUNE_S : RuneDetector::RUNE_B;
 			int targetIdx = runeDetector.getTarget(original_img, runeType).second;
 			if (targetIdx == -1)
 			{
