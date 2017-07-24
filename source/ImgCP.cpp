@@ -68,7 +68,6 @@ void ImgCP::ImageProducer()
 			cap >> data[pIdx % BUFFER_SIZE].img;
 			data[pIdx % BUFFER_SIZE].frame = cap.getFrameCount();
 			++pIdx;
-			cap.setExposureTime(0, settings->cameraSetting.ExposureTime);//settings->exposure_time);
 		}
 	}
 }
@@ -209,6 +208,9 @@ void ImgCP::ImageConsumer()
 	pdata.settings = &settings;
 #endif
 
+	setGimbalAngle(-1, 0, 0);
+	cout << "sending... " << endl;
+	sendGimbalAngle();
 	while(1)
 	{
 		while (pIdx - cIdx == 0);
@@ -246,6 +248,7 @@ void ImgCP::ImageConsumer()
 			manifoldGPIO::gpioGetValue(runeToggleButton, &runeGPIO);
 			cout << "GPIO: " << runeGPIO << endl;
 			RuneDetector::RuneType runeType = (runeGPIO == manifoldGPIO::low)? RuneDetector::RUNE_S : RuneDetector::RUNE_B;
+			runeType = RuneDetector::RUNE_B;
 			int targetIdx = runeDetector.getTarget(original_img, runeType).second;
 			if (targetIdx == -1)
 			{

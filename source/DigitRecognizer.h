@@ -32,6 +32,7 @@ private:
 	int similarityRecognize(const Mat& img);
 	int featureProcess(const Mat& img);
 	int knearestRecognize(const Mat& img);
+	int knnRecognize(const Mat& img);
 	vector<pair<double, int> > similarityRecognize_primary(const Mat& img);
 	void clear();
 #ifdef ADJUST_HSV
@@ -52,5 +53,6 @@ private:
 	vector<vector<KeyPoint>> keyPoints;
 	SurfFeatureDetector detector;
 	SurfDescriptorExtractor extractor;
+	CvKNearest knnClassifier;
 
 };

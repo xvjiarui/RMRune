@@ -99,16 +99,31 @@ DigitRecognizer::DigitRecognizer(Settings::LightSetting lightSetting): horizonta
 	{
 		const char digit = '0' + i;
 		digitTemplateImgs.at(i) = imread(string( "template_digit/") + to_string(i) + string(".png"), IMREAD_GRAYSCALE);
+		float data[] = {1, 0.1, 0,  0, 1, 0};
+		Mat affine(2, 3, CV_32FC1, data);
+		warpAffine( digitTemplateImgs.at(i), digitTemplateImgs.at(i), affine, digitTemplateImgs.at(i).size());
 		resize(digitTemplateImgs.at(i), digitTemplateImgs.at(i), Size(40, 60));
 		cout << "Image" << i << "success" << endl;
 	}
-
+/*
 	for (int i = 0; i < digitTemplateImgs.size(); ++i)
 	{
 		detector.detect(digitTemplateImgs.at(i), keyPoints.at(i));
 		extractor.compute(digitTemplateImgs.at(i), keyPoints.at(i), descriptors.at(i));
 		cout << "Image" << i << "processed" << endl;
 	}
+*/
+	Mat trainData, trainLabel, temp;
+	for(int i = 0; i< digitTemplateImgs.size(); i++)
+	{
+		digitTemplateImgs.at(i).copyTo(temp);
+		trainData.push_back(temp.reshape(0, 1));
+		trainLabel.push_back(i);
+	}
+	trainLabel.convertTo(trainLabel, CV_32FC1);
+	trainData.convertTo(trainData, CV_32FC1, 1/255.0);
+
+	 knnClassifier = CvKNearest(trainData, trainLabel);
 
 }
 
@@ -280,7 +295,7 @@ Mat DigitRecognizer::preprocess(const Mat& img)
 	namedWindow("AdjustHsvImg", WINDOW_NORMAL);
 	createTrackbar("Adjust Hsv", "AdjustHsvImg", &V, 255, AdjustHSVImg, (void*)&data);
 	AdjustHSVImg(lowerBound[2], (void*)&data);
-	waitKey(0);
+	//waitKey(0);
 #endif
 	inRange(hsvImg, lowerBound, upperBound, hsvImg);
 #ifdef BACK_PROJECTION
@@ -330,8 +345,10 @@ Mat DigitRecognizer::kmeanPreprocess(const Mat& img)
 	Mat resizedImg;
 	redImg.copyTo(resizedImg);
 	resize(resizedImg, resizedImg, Size(40, 60));
-	imshow("before", redImg);
+#ifdef SHOW_IMAGE
+	imshow("redImg", redImg);
 	//imshow("after", redImg);
+#endif
 	waitKey(0);
 	return redImg;
 }
@@ -340,6 +357,10 @@ int DigitRecognizer::process(const Mat& img)
 	Mat digitImg;
 	if (fitDigit(preprocess(img), digitImg))
 	{
+#ifdef KNN_RECOGNIZE
+		cout << "knn" << endl;
+		return knnRecognize(digitImg);
+#endif
 		return similarityRecognize(digitImg);
 	}
 	return -1;
@@ -434,7 +455,7 @@ int DigitRecognizer::featureProcess(const Mat& inputImg)
 		             vector<char>(), DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS );
 
 		imshow( "Good Matches", img_matches );
-		waitKey(0);
+		//waitKey(0);
 	}
 	sort(scores.begin(), scores.end(), [] (const pair<int, int>& a, const pair<int, int>& b) { return a.second > b.second;});
 	return scores.at(0).first;
@@ -606,6 +627,17 @@ int DigitRecognizer::knearestRecognize(const Mat& img)
 	waitKey(0);
 }
 
+int DigitRecognizer::knnRecognize(const Mat& img)
+{
+	//
+	Mat newImg, sample(1, 40 * 60, CV_32FC1);
+	Mat result(1, 1, CV_32FC1);
+	resize(img, newImg, Size(40, 60));
+	Mat tube = newImg.reshape(0, 1);
+	tube.convertTo(tube, CV_32FC1, 1/255.0);
+	knnClassifier.find_nearest(tube, 1, &result);
+	return (int)result.at<float>(0, 0);
+}
 int DigitRecognizer::adaptiveRecognize(const Mat& img)
 {
 	int ret = 0;
