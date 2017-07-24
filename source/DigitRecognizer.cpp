@@ -27,6 +27,7 @@ DigitRecognizer::DigitRecognizer(Settings::LightSetting lightSetting): horizonta
 
 	lowerBound = lightSetting.hsvLowerBound;
 	upperBound = lightSetting.hsvUpperBound;
+	DigitRecognizer::lightSetting = lightSetting;
 
 	segmentTable = {
 		{119, 0},
@@ -92,6 +93,9 @@ DigitRecognizer::DigitRecognizer(Settings::LightSetting lightSetting): horizonta
 	};
 	// detector = SurfFeatureDetector(400);
 
+	float data[] = {1, 0.1, 0,  0, 1, 0};
+	Mat affine(2, 3, CV_32FC1, data);
+
 	digitTemplateImgs.resize(10);
 	descriptors.resize(10);
 	keyPoints.resize(10);
@@ -100,16 +104,20 @@ DigitRecognizer::DigitRecognizer(Settings::LightSetting lightSetting): horizonta
 		const char digit = '0' + i;
 		digitTemplateImgs.at(i) = imread(string( "template_digit/") + to_string(i) + string(".png"), IMREAD_GRAYSCALE);
 		resize(digitTemplateImgs.at(i), digitTemplateImgs.at(i), Size(40, 60));
+		warpAffine(digitTemplateImgs.at(i), digitTemplateImgs.at(i), affine, digitTemplateImgs.at(i).size());
 		cout << "Image" << i << "success" << endl;
 	}
 
-	for (int i = 0; i < digitTemplateImgs.size(); ++i)
-	{
-		detector.detect(digitTemplateImgs.at(i), keyPoints.at(i));
-		extractor.compute(digitTemplateImgs.at(i), keyPoints.at(i), descriptors.at(i));
-		cout << "Image" << i << "processed" << endl;
-	}
 
+	Mat temp;
+	for(int i = 0; i< digitTemplateImgs.size(); i++)
+	{
+		digitTemplateImgs.at(i).copyTo(temp);
+		trainData.push_back(temp.reshape(0, 1));
+		trainLabel.push_back(i);
+	}
+	trainLabel.convertTo(trainLabel, CV_32FC1);
+	trainData.convertTo(trainData, CV_32FC1, 1/255.0);
 }
 
 void DigitRecognizer::predict(const Mat& inputImg, const Rect2f & sudokuPanel)
@@ -310,7 +318,7 @@ Mat DigitRecognizer::kmeanPreprocess(const Mat& img)
 	pdata[rows * cols * channels] = 255;
 	pdata[rows * cols * channels + 1] = 255;
 	pdata[rows * cols * channels + 2] = 255;
-	kmeans(pixels, 2, labels, TermCriteria(CV_TERMCRIT_EPS + CV_TERMCRIT_ITER, 5, 0), 5, KMEANS_PP_CENTERS);
+	kmeans(pixels, lightSetting.kmeansClasses, labels, TermCriteria(CV_TERMCRIT_EPS + CV_TERMCRIT_ITER, lightSetting.kmeansItrTimes, 0), 5, KMEANS_PP_CENTERS);
 	Mat redImg;
 	img.copyTo(redImg);
 	int redClass = labels.at<int>(rows * cols);
@@ -330,9 +338,11 @@ Mat DigitRecognizer::kmeanPreprocess(const Mat& img)
 	Mat resizedImg;
 	redImg.copyTo(resizedImg);
 	resize(resizedImg, resizedImg, Size(40, 60));
+	/*
 	imshow("before", redImg);
 	//imshow("after", redImg);
 	waitKey(0);
+	*/
 	return redImg;
 }
 int DigitRecognizer::process(const Mat& img)
@@ -351,6 +361,10 @@ vector<pair<double, int> > DigitRecognizer::process_primary(const Mat& img)
 	Mat digitImg;
 	if (fitDigit(kmeanPreprocess(img), digitImg))
 	{
+		/*
+		knnRecognize_primary(digitImg);
+		*/
+		//return knnRecognize_primary(digitImg);
 		return similarityRecognize_primary(digitImg);
 	}
 	return vector<pair<double, int> >();
@@ -573,7 +587,7 @@ int DigitRecognizer::recognize(const Mat& img)
 
 int DigitRecognizer::knnRecognize(const Mat& img)
 {
-	//
+	CvKNearest knnClassifier(trainData, trainLabel);
 	Mat newImg, sample(1, 40 * 60, CV_32FC1);
 	Mat result(1, 1, CV_32FC1);
 	resize(img, newImg, Size(40, 60));
@@ -585,15 +599,18 @@ int DigitRecognizer::knnRecognize(const Mat& img)
 
 vector<pair<double, int> > DigitRecognizer::knnRecognize_primary(const Mat& img)
 {
+	CvKNearest knnClassifier(trainData, trainLabel);
 	const int k = 1;
-	Mat newImg, sample(1, 40 * 60, CV_32FC1);
+	Mat newImg;
 	Mat result(1, 1, CV_32FC1);
 	resize(img, newImg, Size(40, 60));
 	Mat tube = newImg.reshape(0, 1);
 	tube.convertTo(tube, CV_32FC1, 1/255.0);
 	Mat result_score(10, k, CV_32FC1);
+	Mat a(10, k, CV_32FC1);
 	vector<pair<double, int> > vec_result_score;
-	knnClassifier.find_nearest(tube, k, &result, 0, 0, &result_score);
+	knnClassifier.find_nearest(tube, (const int)k, &result, 0, 0, &result_score);
+	cout << "prediction: " << result.at<float>(0, 0) << endl;
 	for (int i = 0; i < 10; i++)
 	{
 		float overallDist = 0;
@@ -601,11 +618,13 @@ vector<pair<double, int> > DigitRecognizer::knnRecognize_primary(const Mat& img)
 		{
 			overallDist += result_score.at<float>(j, i);
 		}
-		overallDist /= (const float)k;
 		vec_result_score.push_back(make_pair<double, int>((double)overallDist, (int)i));
 	}
+	sort(vec_result_score.begin(), vec_result_score.end(), [](const pair<double, int>& a, const pair<double, int>& b){ return a.first < b.first; });
+	for_each(vec_result_score.begin(), vec_result_score.end(), [](const pair<double, int>& a){cout << a.first << ' ' << a.second << endl;});
 	return vec_result_score;
 }
+
 int DigitRecognizer::adaptiveRecognize(const Mat& img)
 {
 	int ret = 0;

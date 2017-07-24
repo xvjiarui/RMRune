@@ -48,6 +48,8 @@ void Settings::load() {
     fin["GimbalZ"] >> Settings::gimbalSetting.GimbalZ;
 	fin["CameraTheta"] >> Settings::gimbalSetting.CameraTheta;
 	fin["ShootingSpeed"] >> Settings::gimbalSetting.ShootingSpeed;
+	fin["KmeansClasses"] >> Settings::lightSetting.kmeansClasses;
+	fin["KmeansItrTimes"] >> Settings::lightSetting.kmeansItrTimes;
     fin.release();
     camFin.release();
 }
@@ -83,6 +85,8 @@ void Settings::save() {
     fout << "GimbalZ" << Settings::gimbalSetting.GimbalZ;
 	fout << "CameraTheta" << Settings::gimbalSetting.CameraTheta;
 	fout << "ShootingSpeed" << Settings::gimbalSetting.ShootingSpeed;
+	fout << "KmeansClasses" << Settings::lightSetting.kmeansClasses;
+	fout << "KmeansItrTimes" << Settings::lightSetting.kmeansItrTimes;
 }
 
 bool Settings::fileExist(const string& filename)

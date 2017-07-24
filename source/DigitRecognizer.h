@@ -3,8 +3,7 @@
 #include "define.hpp"
 #include <opencv2/opencv.hpp>
 #include <opencv2/features2d/features2d.hpp>
-#include <opencv2/core.hpp>
-#include <opencv2/highgui.hpp>
+//#include <opencv2/highgui.hpp>
 #include <opencv2/ml/ml.hpp>
 // #include <ml.hpp>
 // #include <opencv2/nonfree/features2d.hpp>
@@ -57,10 +56,10 @@ private:
 	vector<Mat> digitTemplateImgs;
 	vector<Mat> descriptors;
 	vector<vector<KeyPoint>> keyPoints;
+	Settings::LightSetting lightSetting;
 	/*
 	SurfFeatureDetector detector;
 	SurfDescriptorExtractor extractor;
 	*/
-	CvKNearest knnClassifier;
-
+	Mat trainData, trainLabel;
 };

@@ -35,6 +35,8 @@ class Settings {
         {
             cv::Scalar hsvLowerBound;
             cv::Scalar hsvUpperBound;
+			int kmeansClasses;
+			int kmeansItrTimes;
         } lightSetting;
 
         struct VoteSetting
