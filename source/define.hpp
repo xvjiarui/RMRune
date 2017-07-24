@@ -5,7 +5,7 @@
 //for debug
 ////////////////////////////////////////
 
-//#define SHOW_IMAGE
+#define SHOW_IMAGE
 //#define SHOW_DEBUG_DETAILS
 //#define NoORB
 //#define NO_COMMUNICATION
@@ -15,7 +15,7 @@
 // #define BACK_PROJECTION
 //#define ADJUST_HSV
 // #define FINDRATIO
-// #define ADJUST_THRESHOLD
+ #define ADJUST_THRESHOLD
 //#define ADJUST_COORDINATE
 
 ////////////////////////////////////////

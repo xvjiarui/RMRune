@@ -185,8 +185,8 @@ void ImgCP::ImageConsumer()
 #ifndef NO_COMMUNICATION
 	//GPIO init
 	//manifoldGPIO::gpioExport(runeToggleButton);
-	gpioExport(runeToggleButton);
-	manifoldGPIO::gpioSetDirection(runeToggleButton, manifoldGPIO::input);
+	//gpioExport(runeToggleButton);
+	//manifoldGPIO::gpioSetDirection(runeToggleButton, manifoldGPIO::input);
 	manifoldGPIO::gpioGetValue(runeToggleButton, &runeGPIO);
 	//UART init
 	serialSetup();
@@ -279,7 +279,7 @@ void ImgCP::ImageConsumer()
 		cout << endl;
 	}
 	// close GPIO and UART
-	manifoldGPIO::gpioUnexport(runeToggleButton);
+	//manifoldGPIO::gpioUnexport(runeToggleButton);
 	UART0_Close(fd);
 }
 		
