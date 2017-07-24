@@ -90,7 +90,7 @@ DigitRecognizer::DigitRecognizer(Settings::LightSetting lightSetting): horizonta
 		Rect(Point(5, 53), Point(30, 58)) // 6
 		*/
 	};
-	detector = SurfFeatureDetector(400);
+	// detector = SurfFeatureDetector(400);
 
 	digitTemplateImgs.resize(10);
 	descriptors.resize(10);
@@ -392,6 +392,7 @@ bool DigitRecognizer::fitDigit(const Mat& inputImg, Mat& resImg)
 	return true;
 }
 
+/*
 int DigitRecognizer::featureProcess(const Mat& inputImg)
 {
 	Mat inputCopy;
@@ -440,6 +441,7 @@ int DigitRecognizer::featureProcess(const Mat& inputImg)
 	return scores.at(0).first;
 
 }
+*/
 /*
 vector<pair<double, int> > DigitRecognizer::fitDigitAndRecognize_primary(const Mat& hsvImg)
 {
@@ -568,44 +570,42 @@ int DigitRecognizer::recognize(const Mat& img)
 	return ret;
 }
 
-int DigitRecognizer::knearestRecognize(const Mat& img)
+
+int DigitRecognizer::knnRecognize(const Mat& img)
 {
-	//vector<Mat> digitTemplateImgs;
 	//
-	Mat digitTemplate(10, digitTemplateImgs.at(0).cols * digitTemplateImgs.at(0).rows, CV_32FC1);
-	Mat digitRes(10, 1, CV_32FC1);
-	int c = 0;
-	for(auto &img : digitTemplateImgs)
-	{
-		for (int i = 0; i < img.rows; i++)
-		{
-			for (int j = 0; j < img.cols; j++)
-			{
-				digitTemplate.at<float>(c, i * img.cols + j) = saturate_cast<float>(img.at<unsigned char>(j, i));
-			}
-		}
-		c++;
-	}
-	for (int i = 0; i < 10; i++)
-	{
-		digitRes.at<float>(i, 0) = i;
-	}
-	CvKNearest classifer(digitTemplate, digitRes);
 	Mat newImg, sample(1, 40 * 60, CV_32FC1);
 	Mat result(1, 1, CV_32FC1);
 	resize(img, newImg, Size(40, 60));
-	for (int i = 0; i < newImg.rows; i++)
-	{
-		for (int j = 0; j < newImg.cols; j++)
-		{
-			sample.at<float>(0, i * newImg.cols + j) = saturate_cast<float>(newImg.at<unsigned char>(j, i));
-		}
-	}
-	classifer.find_nearest(sample, 3, &result);
-	cout << result << endl;
-	waitKey(0);
+	Mat tube = newImg.reshape(0, 1);
+	tube.convertTo(tube, CV_32FC1, 1/255.0);
+	knnClassifier.find_nearest(tube, 1, &result);
+	return (int)result.at<float>(0, 0);
 }
 
+vector<pair<double, int> > DigitRecognizer::knnRecognize_primary(const Mat& img)
+{
+	const int k = 1;
+	Mat newImg, sample(1, 40 * 60, CV_32FC1);
+	Mat result(1, 1, CV_32FC1);
+	resize(img, newImg, Size(40, 60));
+	Mat tube = newImg.reshape(0, 1);
+	tube.convertTo(tube, CV_32FC1, 1/255.0);
+	Mat result_score(10, k, CV_32FC1);
+	vector<pair<double, int> > vec_result_score;
+	knnClassifier.find_nearest(tube, k, &result, 0, 0, &result_score);
+	for (int i = 0; i < 10; i++)
+	{
+		float overallDist = 0;
+		for (int j = 0; j < k; j++)
+		{
+			overallDist += result_score.at<float>(j, i);
+		}
+		overallDist /= (const float)k;
+		vec_result_score.push_back(make_pair<double, int>((double)overallDist, (int)i));
+	}
+	return vec_result_score;
+}
 int DigitRecognizer::adaptiveRecognize(const Mat& img)
 {
 	int ret = 0;

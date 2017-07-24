@@ -3,7 +3,8 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include <highgui.h>
+// #include <highgui.h>
+// #include <opencv2/highgui.h>
 #include <sys/time.h>
 #include <thread>
 

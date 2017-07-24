@@ -3,7 +3,11 @@
 #include "define.hpp"
 #include <opencv2/opencv.hpp>
 #include <opencv2/features2d/features2d.hpp>
-#include <opencv2/nonfree/features2d.hpp>
+#include <opencv2/core.hpp>
+#include <opencv2/highgui.hpp>
+#include <opencv2/ml/ml.hpp>
+// #include <ml.hpp>
+// #include <opencv2/nonfree/features2d.hpp>
 #include <unordered_map>
 #include "Settings.hpp"
 
@@ -32,7 +36,10 @@ private:
 	int similarityRecognize(const Mat& img);
 	int featureProcess(const Mat& img);
 	int knearestRecognize(const Mat& img);
+	// int featureProcess(const Mat& img);
+	int knnRecognize(const Mat& img);
 	vector<pair<double, int> > similarityRecognize_primary(const Mat& img);
+	vector<pair<double, int> > knnRecognize_primary(const Mat& img);
 	void clear();
 #ifdef ADJUST_HSV
 	friend void AdjustHSVImg(int, void*);
@@ -50,7 +57,10 @@ private:
 	vector<Mat> digitTemplateImgs;
 	vector<Mat> descriptors;
 	vector<vector<KeyPoint>> keyPoints;
+	/*
 	SurfFeatureDetector detector;
 	SurfDescriptorExtractor extractor;
+	*/
+	CvKNearest knnClassifier;
 
 };

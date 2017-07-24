@@ -2,7 +2,7 @@
 #include "RuneDetector.hpp"
 #include "RMVideoCapture.hpp"
 #include "Voter.hpp"
-#include <highgui.h>
+// #include <highgui.h>
 #include "manifoldGPIO.h"
 #include <string>
 
