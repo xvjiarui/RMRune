@@ -39,6 +39,7 @@ private:
 	int knnRecognize(const Mat& img);
 	vector<pair<double, int> > similarityRecognize_primary(const Mat& img);
 	vector<pair<double, int> > knnRecognize_primary(const Mat& img);
+	vector<pair<double, int> > cannyRecognize_primary(const Mat& img);
 	void clear();
 #ifdef ADJUST_HSV
 	friend void AdjustHSVImg(int, void*);
