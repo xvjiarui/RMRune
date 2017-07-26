@@ -1136,7 +1136,7 @@ pair<int, int> RuneDetector::chooseTargetPerspective(const Mat &image, const vec
 		{
 			size_t idx = i * 3 + j;
 			Rect cell_roi(width_start[j] + offset_x, height_start[i] + offset_y, cell_width, cell_height);
-			cout << cell_roi << endl;
+			//cout << cell_roi << endl;
 			image_persp(cell_roi).copyTo(cell[idx]);
 		}
 	}

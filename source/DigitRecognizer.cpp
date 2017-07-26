@@ -335,9 +335,6 @@ Mat DigitRecognizer::kmeanPreprocess(const Mat& img)
 		}
 	}
 	cvtColor(redImg, redImg, CV_BGR2GRAY);
-	Mat resizedImg;
-	redImg.copyTo(resizedImg);
-	resize(resizedImg, resizedImg, Size(40, 60));
 	/*
 	imshow("before", redImg);
 	//imshow("after", redImg);
@@ -359,13 +356,17 @@ vector<pair<double, int> > DigitRecognizer::process_primary(const Mat& img)
 {
 	// kmeanPreprocess(img);
 	Mat digitImg;
-	if (fitDigit(kmeanPreprocess(img), digitImg))
+	Mat kmeanImg;
+	kmeanPreprocess(img).copyTo(kmeanImg);
+	//preprocess(img).copyTo(kmeanImg);
+	if (fitDigit(kmeanImg, digitImg))
 	{
 		/*
 		knnRecognize_primary(digitImg);
 		*/
 		//return knnRecognize_primary(digitImg);
-		return similarityRecognize_primary(digitImg);
+		return cannyRecognize_primary(digitImg);
+		//return similarityRecognize_primary(digitImg);
 	}
 	return vector<pair<double, int> >();
 }
@@ -376,6 +377,7 @@ bool DigitRecognizer::fitDigit(const Mat& inputImg, Mat& resImg)
 {
 	Mat inputCopy;
 	inputImg.copyTo(inputCopy);
+	dilate(inputCopy, inputCopy, getStructuringElement(MORPH_RECT,Size(3,3)), Point(-1, -1), 3);
 	//morphologyEx(inputCopy, inputCopy, MORPH_CLOSE, getStructuringElement(MORPH_RECT,Size(3,3)));
 	//adaptiveThreshold(redImg, redImg, 255, ADAPTIVE_THRESH_GAUSSIAN_C, THRESH_BINARY, 3, 0);
 	vector<vector<Point> > contours;
@@ -623,6 +625,123 @@ vector<pair<double, int> > DigitRecognizer::knnRecognize_primary(const Mat& img)
 	sort(vec_result_score.begin(), vec_result_score.end(), [](const pair<double, int>& a, const pair<double, int>& b){ return a.first < b.first; });
 	for_each(vec_result_score.begin(), vec_result_score.end(), [](const pair<double, int>& a){cout << a.first << ' ' << a.second << endl;});
 	return vec_result_score;
+}
+
+vector<pair<double, int> > DigitRecognizer::cannyRecognize_primary(const Mat& inputImg)
+{
+	cout << "fuck" << endl;
+	Mat img;
+	resize(inputImg, img, Size(40, 60));
+	morphologyEx(img, img, MORPH_CLOSE, getStructuringElement(MORPH_RECT,Size(3,3)));
+	//Canny(img, img, 1, 2);
+	//vertical
+	const int midCol = 19;
+	int col = midCol;
+	int row;
+	bool isConnected = false;
+	int threshold = 100;
+	vector<Point> vPoints, hPointsUpperLeft, hPointsLowerLeft, hPointsUpperRight, hPointsLowerRight;
+	for (row = 0; row < 60; row++)
+	{
+		if (img.at<unsigned char>(Point(col, row)) > threshold)
+		{
+			if (!isConnected)
+			{
+				isConnected = true;
+				vPoints.push_back(Point(col, row));
+			}
+		}
+		else
+		{
+			isConnected = false;
+		}
+	}
+	isConnected = false;
+	row = 19;
+	for (col = 0; col < 40; col++)
+	{
+		if (img.at<unsigned char>(Point(col, row)) > threshold)
+		{
+			if (!isConnected)
+			{
+				isConnected = true;
+				if (col < midCol)
+				{
+					hPointsUpperLeft.push_back(Point(col, row));
+				}
+				else
+				{
+					hPointsUpperRight.push_back(Point(col, row));
+				}
+			}
+		}
+		else
+		{
+			isConnected = false;
+		}
+	}
+	isConnected = false;
+	row = 39;
+	for (col = 0; col < 40; col++)
+	{
+		if (img.at<unsigned char>(Point(col, row)) > threshold)
+		{
+			if (!isConnected)
+			{
+				isConnected = true;
+				if (col < midCol)
+				{
+					hPointsLowerLeft.push_back(Point(col, row));
+				}
+				else
+				{
+					hPointsLowerRight.push_back(Point(col, row));
+				}
+			}
+		}
+		else
+		{
+			isConnected = false;
+		}
+	}
+	int digitLines[5];
+	digitLines[0] = vPoints.size();
+	digitLines[1] = hPointsUpperLeft.size();
+	digitLines[2] = hPointsUpperRight.size();
+	digitLines[3] = hPointsLowerLeft.size();
+	digitLines[4] = hPointsLowerRight.size();
+	static int templatePointsCount[10][5] = {
+		{2, 1, 1, 1, 1},
+		{0, 0, 1, 0, 1},
+		{3, 0, 1, 1, 0},
+		{3, 0, 1, 0, 1},
+		{1, 1, 1, 0, 1},
+		{3, 1, 0, 0, 1},
+		{3, 1, 0, 1, 1},
+		{1, 0, 1, 0, 1},
+		{3, 1, 1, 1, 1},
+		{3, 1, 1, 0, 1}
+	};
+	vector<pair<double, int> > resVector;
+	for (int i = 0; i < 10; i++)
+	{
+		int score = 0;
+		for (int j = 0; j < 5; j++)
+		{
+			score += (digitLines[j] - templatePointsCount[i][j]) * (digitLines[j] - templatePointsCount[i][j]);
+		}
+		resVector.push_back(make_pair<double, int>((double)score, (int)i));
+	}
+	sort(resVector.begin(), resVector.end(), [](const pair<double, int>& a, const pair<double, int>& b){ return a.first < b.first; });
+	/*
+	for (auto &a : resVector)
+	{
+		cout << a.first << ' ' << a.second << endl;
+	}
+	cout << "------------------------------------" << endl;
+	*/
+	cout << "fuck" << endl;
+	return resVector;
 }
 
 int DigitRecognizer::adaptiveRecognize(const Mat& img)
