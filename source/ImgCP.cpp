@@ -248,9 +248,11 @@ void ImgCP::ImageConsumer()
 #endif
 
 		try {
+#ifndef NO_COMMUNICATION
 			manifoldGPIO::gpioGetValue(runeToggleButton, &runeGPIO);
+#endif
 			//RuneDetector::RuneType runeType = (runeGPIO == manifoldGPIO::low)? RuneDetector::RUNE_S : RuneDetector::RUNE_B;
-			RuneDetector::RuneType runeType = (runeGPIO == manifoldGPIO::low)? RuneDetector::RUNE_S : RuneDetector::RUNE_S;
+			RuneDetector::RuneType runeType = (runeGPIO == manifoldGPIO::low)? RuneDetector::RUNE_B : RuneDetector::RUNE_B;
 			int targetIdx = runeDetector.getTarget(original_img, runeType).second;
 			if (targetIdx == -1)
 			{

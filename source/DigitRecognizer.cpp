@@ -365,6 +365,7 @@ vector<pair<double, int> > DigitRecognizer::process_primary(const Mat& img)
 		knnRecognize_primary(digitImg);
 		*/
 		//return knnRecognize_primary(digitImg);
+		imshow("f", digitImg);
 		return cannyRecognize_primary(digitImg);
 		//return similarityRecognize_primary(digitImg);
 	}
@@ -386,12 +387,16 @@ bool DigitRecognizer::fitDigit(const Mat& inputImg, Mat& resImg)
 	if (!contours.size()) return false;
 	sort(contours.begin(), contours.end(), [](const vector<Point> & a, const vector<Point> & b) {return a.size() > b.size();});
 	vector<Point> curContoursPoly;
-	approxPolyDP(contours.at(0), curContoursPoly, 3, true);
+	approxPolyDP(contours.at(0), curContoursPoly, 1, true);
 	Rect curBoundingRect = boundingRect(curContoursPoly);
 	float ratio = (float)curBoundingRect.width / (float)curBoundingRect.height;
 	if (ratio < 0.5)
 	{
-		resize(inputImg, inputCopy, Size(40, 60));
+		Mat tempImg = inputImg(boundingRect(curContoursPoly));
+		Mat zeroImg = Mat::zeros(tempImg.rows, tempImg.rows / 60.0 * 40.0 - tempImg.cols, CV_8UC1);
+		// inputCopy = Mat(40, 60, CV_8UC1);
+		hconcat(zeroImg, tempImg, inputCopy);
+		resize(inputCopy, inputCopy, Size(40, 60));
 	}
 	else {
 		inputCopy = inputImg(boundingRect(curContoursPoly));
@@ -400,7 +405,21 @@ bool DigitRecognizer::fitDigit(const Mat& inputImg, Mat& resImg)
 	float data[] = {1, 0.1, 0,  0, 1, 0};
 	Mat affine(2, 3, CV_32FC1, data);
 	warpAffine( inputCopy, inputCopy, affine, inputCopy.size());
-	dilate(inputCopy, inputCopy, getStructuringElement(MORPH_RECT,Size(3,3)), Point(-1, -1), 3);
+	dilate(inputCopy, inputCopy, getStructuringElement(MORPH_RECT,Size(1,1)), Point(-1, -1), 3);
+	int col;
+	for (col = 39; col > -1; col--)
+	{
+		if (countNonZero(inputCopy.col(col)))
+			break;
+	}
+	if (col != 39)
+	{
+		Rect cutRect(Point(0, 0), Point(col, inputCopy.rows)); 
+		inputCopy(cutRect).copyTo(inputCopy);
+		imshow("fuck", inputCopy);
+		waitKey(0);
+		hconcat(Mat::zeros(inputCopy.rows, 39 - col, CV_8UC1), inputCopy, inputCopy);
+	}
 #ifdef SHOW_IMAGE
 	imshow("inputImg", inputCopy);
 #endif
@@ -629,10 +648,11 @@ vector<pair<double, int> > DigitRecognizer::knnRecognize_primary(const Mat& img)
 
 vector<pair<double, int> > DigitRecognizer::cannyRecognize_primary(const Mat& inputImg)
 {
-	cout << "fuck" << endl;
 	Mat img;
 	resize(inputImg, img, Size(40, 60));
 	morphologyEx(img, img, MORPH_CLOSE, getStructuringElement(MORPH_RECT,Size(3,3)));
+	imshow("fufufu",img);
+	waitKey(0);
 	//Canny(img, img, 1, 2);
 	//vertical
 	const int midCol = 19;
@@ -740,7 +760,6 @@ vector<pair<double, int> > DigitRecognizer::cannyRecognize_primary(const Mat& in
 	}
 	cout << "------------------------------------" << endl;
 	*/
-	cout << "fuck" << endl;
 	return resVector;
 }
 
