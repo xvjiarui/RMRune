@@ -77,7 +77,7 @@ vector<pair<double, int> > MnistRecognizer::recognize_primary(const Mat& img)
 	vector<pair<double, int>> scores;
 
 	// sort & print
-	for (int i = 0; i < 10; i++)
+	for (int i = 1; i < 10; i++)
 	{
 		scores.emplace_back(rescale<tanh_layer>(res[i]), i);
 	}

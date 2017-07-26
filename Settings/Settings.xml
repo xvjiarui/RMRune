@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <opencv_storage>
-<MnistThreshold>68</MnistThreshold>
+<MnistThreshold>33</MnistThreshold>
 <RuneSType>2</RuneSType>
 <!--<CellRatio>0.67</CellRatio>-->
 <CellRatio>0.5</CellRatio>

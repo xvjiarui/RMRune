@@ -365,7 +365,6 @@ vector<pair<double, int> > DigitRecognizer::process_primary(const Mat& img)
 		knnRecognize_primary(digitImg);
 		*/
 		//return knnRecognize_primary(digitImg);
-		imshow("f", digitImg);
 		return cannyRecognize_primary(digitImg);
 		//return similarityRecognize_primary(digitImg);
 	}
@@ -416,8 +415,6 @@ bool DigitRecognizer::fitDigit(const Mat& inputImg, Mat& resImg)
 	{
 		Rect cutRect(Point(0, 0), Point(col, inputCopy.rows)); 
 		inputCopy(cutRect).copyTo(inputCopy);
-		imshow("fuck", inputCopy);
-		waitKey(0);
 		hconcat(Mat::zeros(inputCopy.rows, 39 - col, CV_8UC1), inputCopy, inputCopy);
 	}
 #ifdef SHOW_IMAGE
@@ -651,8 +648,6 @@ vector<pair<double, int> > DigitRecognizer::cannyRecognize_primary(const Mat& in
 	Mat img;
 	resize(inputImg, img, Size(40, 60));
 	morphologyEx(img, img, MORPH_CLOSE, getStructuringElement(MORPH_RECT,Size(3,3)));
-	imshow("fufufu",img);
-	waitKey(0);
 	//Canny(img, img, 1, 2);
 	//vertical
 	const int midCol = 19;
@@ -730,8 +725,7 @@ vector<pair<double, int> > DigitRecognizer::cannyRecognize_primary(const Mat& in
 	digitLines[2] = hPointsUpperRight.size();
 	digitLines[3] = hPointsLowerLeft.size();
 	digitLines[4] = hPointsLowerRight.size();
-	static int templatePointsCount[10][5] = {
-		{2, 1, 1, 1, 1},
+	static int templatePointsCount[9][5] = {
 		{0, 0, 1, 0, 1},
 		{3, 0, 1, 1, 0},
 		{3, 0, 1, 0, 1},
@@ -743,14 +737,14 @@ vector<pair<double, int> > DigitRecognizer::cannyRecognize_primary(const Mat& in
 		{3, 1, 1, 0, 1}
 	};
 	vector<pair<double, int> > resVector;
-	for (int i = 0; i < 10; i++)
+	for (int i = 0; i < 9; i++)
 	{
 		int score = 0;
 		for (int j = 0; j < 5; j++)
 		{
 			score += (digitLines[j] - templatePointsCount[i][j]) * (digitLines[j] - templatePointsCount[i][j]);
 		}
-		resVector.push_back(make_pair<double, int>((double)score, (int)i));
+		resVector.push_back(make_pair<double, int>((double)score, (int)(i + 1)));
 	}
 	sort(resVector.begin(), resVector.end(), [](const pair<double, int>& a, const pair<double, int>& b){ return a.first < b.first; });
 	/*
