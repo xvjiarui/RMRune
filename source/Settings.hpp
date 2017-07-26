@@ -42,6 +42,7 @@ class Settings {
         struct VoteSetting
         {
             int saveTime;
+            int SRSaveTime;
         } voteSetting;
 
         struct GimbalSetting

@@ -40,6 +40,7 @@ void Settings::load() {
     fin["HsvLowerBound"] >> Settings::lightSetting.hsvLowerBound;
 	fin["HsvUpperBound"] >> Settings::lightSetting.hsvUpperBound;
     fin["VoterSaveTime"] >> Settings::voteSetting.saveTime;
+	fin["SRVoterSaveTime"] >> Settings::voteSetting.SRSaveTime;
     fin["ScaleX"] >> Settings::gimbalSetting.ScaleX;
     fin["ScaleY"] >> Settings::gimbalSetting.ScaleY;
     fin["ScaleZ"] >> Settings::gimbalSetting.ScaleZ;
@@ -71,6 +72,7 @@ void Settings::save() {
 	fout << "MaxDistance" << Settings::runeSetting.MaxDistance;
 	fout << "ContourThreshold" << Settings::runeSetting.ContourThreshold;
     fout << "VoterSaveTime" << Settings::voteSetting.saveTime;
+    fout << "SRVoterSaveTime" << Settings::voteSetting.SRSaveTime;
     // fout.writeComment(string("Camera-related settings\n"));
     fout << "ExposureTime" << Settings::cameraSetting.ExposureTime;
     fout << "HsvLowerBound" << Settings::lightSetting.hsvLowerBound;

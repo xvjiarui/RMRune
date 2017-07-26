@@ -759,7 +759,7 @@ pair<int, int> RuneDetector::chooseMnistTarget(const Mat &inputImg, const vector
 	cout << ' ';
 #endif
 
-	static Voter<vector<int>> digitVoter(voteSetting);
+	static Voter<vector<int>> digitVoter(voteSetting.saveTime);
 	static vector<int> lastDigitResult;
 	static int curShootIdx = 0;
 
@@ -867,7 +867,7 @@ pair<int, int> RuneDetector::chooseMnistTarget(const Mat &inputImg, const vector
 	for_each(mnistResult.begin(), mnistResult.end(), [](const int& a) { cout << a;});
 	cout << ")" << endl;
 
-	static Voter<vector<int>> mnistVoter(voteSetting);
+	static Voter<vector<int>> mnistVoter(voteSetting.saveTime);
 	static vector<int> lastMnistResult;
 
 	mnistVoter.PushElement(mnistResult);
@@ -1155,7 +1155,7 @@ pair<int, int> RuneDetector::chooseTargetPerspective(const Mat &image, const vec
 
 	//int idxx = findTargetCanny(cell);
 	//cout << "Canny: " << idxx << "\tEDGE: " << idx << endl;
-	static Voter<int> indexVoter(voteSetting);	
+	static Voter<int> indexVoter(voteSetting.SRSaveTime);	
 	static int lastIndexResult = -1;
 	indexVoter.PushElement(idx);
 	if (indexVoter.GetBestElement(idx))
@@ -1228,7 +1228,7 @@ pair<int, int> RuneDetector::chooseTarget(const Mat &image, const vector<Rotated
 
 	//int idxx = findTargetCanny(cell);
 	//cout << "Canny: " << idxx << "\tEDGE: " << idx << endl;
-	static Voter<int> indexVoter(voteSetting);	
+	static Voter<int> indexVoter(voteSetting.SRSaveTime);	
 	static int lastIndexResult = -1;
 	indexVoter.PushElement(idx);
 	if (indexVoter.GetBestElement(idx))

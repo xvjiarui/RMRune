@@ -14,6 +14,7 @@
 <MaxDistance>800.0</MaxDistance>
 <ContourThreshold>100</ContourThreshold>
 <VoterSaveTime>5</VoterSaveTime>
+<SRVoterSaveTime>15</SRVoterSaveTime>
 <ExposureTime>60</ExposureTime>
 <HsvLowerBound>
 	0. 0. 139. 0.</HsvLowerBound>

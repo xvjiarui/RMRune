@@ -11,10 +11,10 @@ template <class T>
 class Voter
 {
     public:
-        Voter(const Settings::VoteSetting& vs)
+        Voter(const int& st)
         {
-            Voter::voteSetting = vs;
-            voteTime = vs.saveTime / 2;
+            saveTime = st;
+            voteTime = st / 2;
         }
         ~Voter(){}
         void PushElement(const T& element);
@@ -22,11 +22,10 @@ class Voter
         bool RemoveOldElements(int num = -1);
     
     private:
-        Settings::VoteSetting voteSetting;
         map<T, int> count;
         list<T> data;
         int voteTime;
-
+        int saveTime;
 };
 
 template <class T>
@@ -42,16 +41,16 @@ void Voter<T>::PushElement(const T& element)
     {
         search->second++;
     }
-    if (data.size() > voteSetting.saveTime)
+    if (data.size() > saveTime)
     {
-        RemoveOldElements(data.size() - voteSetting.saveTime);
+        RemoveOldElements(data.size() - saveTime);
     }
 }
 
 template <class T>
 bool Voter<T>::GetBestElement(T& element)
 {
-    if (data.size() < voteSetting.saveTime)
+    if (data.size() < saveTime)
     {
         return false;
     }
