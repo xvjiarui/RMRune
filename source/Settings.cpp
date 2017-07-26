@@ -33,6 +33,7 @@ void Settings::load() {
 	fin["OneHeight"] >> Settings::runeSetting.OneHeight;
 	fin["MinDistance"] >> Settings::runeSetting.MinDistance;
 	fin["MaxDistance"] >> Settings::runeSetting.MaxDistance;
+	fin["ForceRuneType"] >> Settings::runeSetting.forceRuneType;
 	fin["ContourThreshold"]  >> Settings::runeSetting.ContourThreshold;
     fin["ExposureTime"] >> Settings::cameraSetting.ExposureTime;
 	camFin["Camera_Matrix"] >> Settings::cameraSetting.CameraMatrix;
@@ -70,6 +71,7 @@ void Settings::save() {
 	fout << "OneHeight" << Settings::runeSetting.OneHeight;
 	fout << "MinDistance" << Settings::runeSetting.MinDistance;
 	fout << "MaxDistance" << Settings::runeSetting.MaxDistance;
+	fout << "ForceRuneType" << Settings::runeSetting.forceRuneType;
 	fout << "ContourThreshold" << Settings::runeSetting.ContourThreshold;
     fout << "VoterSaveTime" << Settings::voteSetting.saveTime;
     fout << "SRVoterSaveTime" << Settings::voteSetting.SRSaveTime;

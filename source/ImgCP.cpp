@@ -106,7 +106,7 @@ void CalAngle(void* d)
     angleSolver.setRelationPoseCameraPTZ(r_camera_ptz, t_camera_ptz, barrel_ptz_offset_y);
 	angleSolverFactory.setSolver(&angleSolver);
 	double angle_x, angle_y;
-	cout << ptz_camera_x << ' ' << ptz_camera_y << ' ' << ptz_camera_z;
+	// cout << ptz_camera_x << ' ' << ptz_camera_y << ' ' << ptz_camera_z;
 	for (int i = 0; i < 9; i++)
 	{
 		if (!(i % 3))
@@ -216,14 +216,24 @@ void ImgCP::ImageConsumer()
 		while (pIdx - cIdx == 0);
 		Mat original_img; 
 		data[cIdx % BUFFER_SIZE].img.copyTo(original_img);
-		imshow("fuckt", original_img);
-		waitKey(0);
 		if (!countTime)
 			startTime = getTickCount();
 		unsigned int frameNum = data[cIdx % BUFFER_SIZE].frame;
 		++cIdx;
 #ifdef ADJUST_COORDINATE
-		RuneDetector::RuneType runeType = RuneDetector::RUNE_B;
+		RuneDetector::RuneType runeType;
+		switch(settings.runeSetting.forceRuneType)
+		{
+			case 1:
+				runeType = RuneDetector::RUNE_S;
+				break;
+			case 2:
+				runeType = RuneDetector::RUNE_B;
+				break;
+			case 0:
+			default:
+				runeType = (runeGPIO == manifoldGPIO::low)? RuneDetector::RUNE_S : RuneDetector::RUNE_B;
+		}
 		int targetIdx = runeDetector.getTarget(original_img, runeType).second;
 		if (targetIdx == -1)
 		{
@@ -251,8 +261,19 @@ void ImgCP::ImageConsumer()
 #ifndef NO_COMMUNICATION
 			manifoldGPIO::gpioGetValue(runeToggleButton, &runeGPIO);
 #endif
-			//RuneDetector::RuneType runeType = (runeGPIO == manifoldGPIO::low)? RuneDetector::RUNE_S : RuneDetector::RUNE_B;
-			RuneDetector::RuneType runeType = (runeGPIO == manifoldGPIO::low)? RuneDetector::RUNE_B : RuneDetector::RUNE_B;
+			RuneDetector::RuneType runeType;
+			switch (settings.runeSetting.forceRuneType)
+			{
+				case 1:
+					runeType = RuneDetector::RUNE_S;
+					break;
+				case 2:
+					runeType = RuneDetector::RUNE_B;
+					break;
+				case 0:
+				default:
+					runeType = (runeGPIO == manifoldGPIO::low) ? RuneDetector::RUNE_S : RuneDetector::RUNE_B;
+			}
 			int targetIdx = runeDetector.getTarget(original_img, runeType).second;
 			if (targetIdx == -1)
 			{

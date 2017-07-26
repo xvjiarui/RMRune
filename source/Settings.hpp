@@ -24,6 +24,7 @@ class Settings {
 			float MinDistance;
 			float MaxDistance;
 			int ContourThreshold;
+            int forceRuneType;
         } runeSetting;
         struct CameraSetting
         {

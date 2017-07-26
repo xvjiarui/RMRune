@@ -12,6 +12,7 @@
 <OneHeight>6</OneHeight>
 <MinDistance>10.0</MinDistance>
 <MaxDistance>800.0</MaxDistance>
+<ForceRuneType>2</ForceRuneType>
 <ContourThreshold>100</ContourThreshold>
 <VoterSaveTime>5</VoterSaveTime>
 <SRVoterSaveTime>15</SRVoterSaveTime>
