@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <opencv_storage>
-<MnistThreshold>33</MnistThreshold>
+<MnistThreshold>60</MnistThreshold>
 <RuneSType>2</RuneSType>
 <!--<CellRatio>0.67</CellRatio>-->
 <CellRatio>0.5</CellRatio>
@@ -14,7 +14,7 @@
 <MaxDistance>800.0</MaxDistance>
 <ForceRuneType>2</ForceRuneType>
 <ContourThreshold>100</ContourThreshold>
-<VoterSaveTime>5</VoterSaveTime>
+<VoterSaveTime>4</VoterSaveTime>
 <SRVoterSaveTime>15</SRVoterSaveTime>
 <ExposureTime>60</ExposureTime>
 <HsvLowerBound>

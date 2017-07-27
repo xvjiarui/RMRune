@@ -24,6 +24,7 @@ private:
 	network<sequential> nn;
 	map<int, Point> mnistCenters; //<Label, Center>
 	map<int, int> mnistLabels; // <Index, Label>
+	Mat kmeanPreprocess(const Mat& inputImg);
 
 	RNG rng; // random number generator
 	string Model_Path;

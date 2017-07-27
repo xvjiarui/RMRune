@@ -672,7 +672,8 @@ pair<int, int> RuneDetector::chooseMnistTarget(const Mat &inputImg, const vector
 
 	Mat perspective_mat = getPerspectiveTransform(src_p, dst_p);
 	Mat image_persp;
-	warpPerspective(image, image_persp, perspective_mat, Size(_width, _height));
+	//!!!!!!!!!!!!!!!
+	warpPerspective(inputImg, image_persp, perspective_mat, Size(_width, _height));
 #ifdef SHOW_IMAGE
 	imshow("image_persp", image_persp);
 #endif
@@ -832,7 +833,7 @@ pair<int, int> RuneDetector::chooseMnistTarget(const Mat &inputImg, const vector
 				}
 			}
 #endif
-			threshold(temp, temp, mnist_threshold, 255, THRESH_BINARY);
+			//threshold(temp, temp, mnist_threshold, 255, THRESH_BINARY);
 			resize(temp, temp, Size(28, 28));
 			sudoku_imgs.push_back(temp);
 		}

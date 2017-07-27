@@ -67,9 +67,11 @@ int MnistRecognizer::recognize(const Mat& img)
 {
 	return recognize_primary(img).at(0).second;
 }
-vector<pair<double, int> > MnistRecognizer::recognize_primary(const Mat& img)
+vector<pair<double, int> > MnistRecognizer::recognize_primary(const Mat& inputImg)
 {
 	vec_t data;
+	Mat img;
+	kmeanPreprocess(inputImg).copyTo(img);
 	convert_image(img, -1.0, 1.0, 32, 32, data);
 
 	// recognize
@@ -85,5 +87,51 @@ vector<pair<double, int> > MnistRecognizer::recognize_primary(const Mat& img)
 	// sort(scores.begin(), scores.end(), [](const pair<double, int>& a,const pair<double, int>& b){return a.first > b.first;});
 	sort(scores.begin(), scores.end(), greater<pair<double, int> >());
 	return scores;
+}
+
+Mat MnistRecognizer::kmeanPreprocess(const Mat& img)
+{
+	int rows = img.rows;
+	int cols = img.cols;
+	int channels = img.channels();
+	Mat labels;
+	Mat pixels(rows * cols + 1, 1, CV_32FC3); //extra one for red
+	pixels.setTo(Scalar::all(0));
+
+	float *pdata = pixels.ptr<float>(0);
+	for (int i = 0; i < rows; ++i)
+	{
+		const uchar *idata = img.ptr<uchar>(i);
+		for (int j = 0; j < cols * channels; ++j)
+		{
+			pdata[i * cols * channels + j] = saturate_cast<float>(idata[j]);
+		}
+	}
+	pdata[rows * cols * channels] = 255;
+	pdata[rows * cols * channels + 1] = 255;
+	pdata[rows * cols * channels + 2] = 255;
+	kmeans(pixels, 2, labels, TermCriteria(CV_TERMCRIT_EPS + CV_TERMCRIT_ITER, 5, 0), 5, KMEANS_PP_CENTERS);
+	Mat redImg;
+	img.copyTo(redImg);
+	int redClass = labels.at<int>(rows * cols);
+	pdata = redImg.ptr<float>(0);
+	for (int i = 0; i < rows; i++)
+	{
+		for (int j = 0; j < cols; j++)
+		{
+			if (labels.at<int>(i * cols + j) == redClass)
+			{
+				redImg.at<Vec3b>(i, j) = Vec3b(0, 0, 0);
+			}
+			else redImg.at<Vec3b>(i, j) = Vec3b(255, 255, 255);
+		}
+	}
+	cvtColor(redImg, redImg, CV_BGR2GRAY);
+	/*
+	imshow("before", redImg);
+	//imshow("after", redImg);
+	waitKey(0);
+	*/
+	return redImg;
 }
 
