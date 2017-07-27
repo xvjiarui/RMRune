@@ -8,7 +8,7 @@
 //#define SHOW_IMAGE
 //#define SHOW_DEBUG_DETAILS
 //#define NoORB
-//#define NO_COMMUNICATION
+#define NO_COMMUNICATION
 //#define NO_VOTING
 #define OPTIMIZE_VOTING
 // #define ADAPTIVE_THRESHOLD_IN_DIGIT

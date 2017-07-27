@@ -11,4283 +11,666 @@ Image8success
 Image9success
 [
 23674
-comparing2 3
-comparing2 6
-comparing2 7
-comparing2 4
-comparing3 2
-comparing3 6
-comparing3 7
-comparing3 4
-comparing6 2
-comparing6 3
-comparing6 7
-comparing6 4
-comparing7 2
-comparing7 3
-comparing7 6
-comparing7 4
-comparing4 2
-comparing4 3
-comparing4 6
-comparing4 7
-23674] comparing7 9
-comparing7 5
-comparing7 5
-comparing7 2
-comparing7 3
-comparing7 1
-comparing7 6
-comparing7 4
-comparing9 7
-comparing9 5
-comparing9 5
-comparing9 2
-comparing9 3
-comparing9 1
-comparing9 6
-comparing9 4
-comparing5 7
-comparing5 9
-comparing5 5
-fuck1
-fuck2
-ck
-0
-1
-2
-2
-3
-4
-5
-6
-7
-8
-ck---
-comparing5 7
-comparing5 9
-comparing5 9
-comparing5 2
-comparing5 3
-comparing5 1
-comparing5 6
-comparing5 4
-comparing2 7
-comparing2 9
-comparing2 9
-comparing2 5
-comparing2 3
-comparing2 1
-comparing2 6
-comparing2 4
-comparing3 7
-comparing3 9
-comparing3 9
-comparing3 5
-comparing3 2
-comparing3 1
-comparing3 6
-comparing3 4
-comparing1 7
-comparing1 9
-comparing1 9
-comparing1 5
-comparing1 2
-comparing1 3
-comparing1 6
-comparing1 4
-comparing6 7
-comparing6 9
-comparing6 9
-comparing6 5
-comparing6 2
-comparing6 3
-comparing6 1
-comparing6 4
-comparing4 7
-comparing4 9
-comparing4 9
-comparing4 5
-comparing4 2
-comparing4 3
-comparing4 1
-comparing4 6
-(799523164)
+23674] (798523164)
 [
 23674
-comparing2 3
-comparing2 6
-comparing2 7
-comparing2 4
-comparing3 2
-comparing3 6
-comparing3 7
-comparing3 4
-comparing6 2
-comparing6 3
-comparing6 7
-comparing6 4
-comparing7 2
-comparing7 3
-comparing7 6
-comparing7 4
-comparing4 2
-comparing4 3
-comparing4 6
-comparing4 7
-23674] comparing7 9
-comparing7 5
-comparing7 5
-comparing7 2
-comparing7 3
-comparing7 1
-comparing7 6
-comparing7 4
-comparing9 7
-comparing9 5
-comparing9 5
-comparing9 2
-comparing9 3
-comparing9 1
-comparing9 6
-comparing9 4
-comparing5 7
-comparing5 9
-comparing5 5
-fuck1
-fuck2
-ck
-0
-1
-2
-2
-3
-4
-5
-6
-7
-8
-ck---
-comparing5 7
-comparing5 9
-comparing5 9
-comparing5 2
-comparing5 3
-comparing5 1
-comparing5 6
-comparing5 4
-comparing2 7
-comparing2 9
-comparing2 9
-comparing2 5
-comparing2 3
-comparing2 1
-comparing2 6
-comparing2 4
-comparing3 7
-comparing3 9
-comparing3 9
-comparing3 5
-comparing3 2
-comparing3 1
-comparing3 6
-comparing3 4
-comparing1 7
-comparing1 9
-comparing1 9
-comparing1 5
-comparing1 2
-comparing1 3
-comparing1 6
-comparing1 4
-comparing6 7
-comparing6 9
-comparing6 9
-comparing6 5
-comparing6 2
-comparing6 3
-comparing6 1
-comparing6 4
-comparing4 7
-comparing4 9
-comparing4 9
-comparing4 5
-comparing4 2
-comparing4 3
-comparing4 1
-comparing4 6
-(799523164)
+23674] (798523164)
 [
 23674
-comparing2 3
-comparing2 6
-comparing2 7
-comparing2 4
-comparing3 2
-comparing3 6
-comparing3 7
-comparing3 4
-comparing6 2
-comparing6 3
-comparing6 7
-comparing6 4
-comparing7 2
-comparing7 3
-comparing7 6
-comparing7 4
-comparing4 2
-comparing4 3
-comparing4 6
-comparing4 7
-23674] comparing7 9
-comparing7 5
-comparing7 5
-comparing7 2
-comparing7 3
-comparing7 1
-comparing7 6
-comparing7 4
-comparing9 7
-comparing9 5
-comparing9 5
-comparing9 2
-comparing9 3
-comparing9 1
-comparing9 6
-comparing9 4
-comparing5 7
-comparing5 9
-comparing5 5
-fuck1
-fuck2
-ck
-0
-1
-2
-2
-3
-4
-5
-6
-7
-8
-ck---
-comparing5 7
-comparing5 9
-comparing5 9
-comparing5 2
-comparing5 3
-comparing5 1
-comparing5 6
-comparing5 4
-comparing2 7
-comparing2 9
-comparing2 9
-comparing2 5
-comparing2 3
-comparing2 1
-comparing2 6
-comparing2 4
-comparing3 7
-comparing3 9
-comparing3 9
-comparing3 5
-comparing3 2
-comparing3 1
-comparing3 6
-comparing3 4
-comparing1 7
-comparing1 9
-comparing1 9
-comparing1 5
-comparing1 2
-comparing1 3
-comparing1 6
-comparing1 4
-comparing6 7
-comparing6 9
-comparing6 9
-comparing6 5
-comparing6 2
-comparing6 3
-comparing6 1
-comparing6 4
-comparing4 7
-comparing4 9
-comparing4 9
-comparing4 5
-comparing4 2
-comparing4 3
-comparing4 1
-comparing4 6
-(799523164)
+23674] (798523164)
 [
 23674
-comparing2 3
-comparing2 6
-comparing2 7
-comparing2 4
-comparing3 2
-comparing3 6
-comparing3 7
-comparing3 4
-comparing6 2
-comparing6 3
-comparing6 7
-comparing6 4
-comparing7 2
-comparing7 3
-comparing7 6
-comparing7 4
-comparing4 2
-comparing4 3
-comparing4 6
-comparing4 7
-23674] comparing7 9
-comparing7 5
-comparing7 5
-comparing7 2
-comparing7 3
-comparing7 1
-comparing7 6
-comparing7 4
-comparing9 7
-comparing9 5
-comparing9 5
-comparing9 2
-comparing9 3
-comparing9 1
-comparing9 6
-comparing9 4
-comparing5 7
-comparing5 9
-comparing5 5
-fuck1
-fuck2
-ck
-0
-1
-2
-2
-3
-4
-5
-6
-7
-8
-ck---
-comparing5 7
-comparing5 9
-comparing5 9
-comparing5 2
-comparing5 3
-comparing5 1
-comparing5 6
-comparing5 4
-comparing2 7
-comparing2 9
-comparing2 9
-comparing2 5
-comparing2 3
-comparing2 1
-comparing2 6
-comparing2 4
-comparing3 7
-comparing3 9
-comparing3 9
-comparing3 5
-comparing3 2
-comparing3 1
-comparing3 6
-comparing3 4
-comparing1 7
-comparing1 9
-comparing1 9
-comparing1 5
-comparing1 2
-comparing1 3
-comparing1 6
-comparing1 4
-comparing6 7
-comparing6 9
-comparing6 9
-comparing6 5
-comparing6 2
-comparing6 3
-comparing6 1
-comparing6 4
-comparing4 7
-comparing4 9
-comparing4 9
-comparing4 5
-comparing4 2
-comparing4 3
-comparing4 1
-comparing4 6
-(799523164)
-[
-23674
-comparing2 3
-comparing2 6
-comparing2 7
-comparing2 4
-comparing3 2
-comparing3 6
-comparing3 7
-comparing3 4
-comparing6 2
-comparing6 3
-comparing6 7
-comparing6 4
-comparing7 2
-comparing7 3
-comparing7 6
-comparing7 4
-comparing4 2
-comparing4 3
-comparing4 6
-comparing4 7
-23674] comparing7 9
-comparing7 5
-comparing7 5
-comparing7 2
-comparing7 3
-comparing7 1
-comparing7 6
-comparing7 4
-comparing9 7
-comparing9 5
-comparing9 5
-comparing9 2
-comparing9 3
-comparing9 1
-comparing9 6
-comparing9 4
-comparing5 7
-comparing5 9
-comparing5 5
-fuck1
-fuck2
-ck
-0
-1
-2
-2
-3
-4
-5
-6
-7
-8
-ck---
-comparing5 7
-comparing5 9
-comparing5 9
-comparing5 2
-comparing5 3
-comparing5 1
-comparing5 6
-comparing5 4
-comparing2 7
-comparing2 9
-comparing2 9
-comparing2 5
-comparing2 3
-comparing2 1
-comparing2 6
-comparing2 4
-comparing3 7
-comparing3 9
-comparing3 9
-comparing3 5
-comparing3 2
-comparing3 1
-comparing3 6
-comparing3 4
-comparing1 7
-comparing1 9
-comparing1 9
-comparing1 5
-comparing1 2
-comparing1 3
-comparing1 6
-comparing1 4
-comparing6 7
-comparing6 9
-comparing6 9
-comparing6 5
-comparing6 2
-comparing6 3
-comparing6 1
-comparing6 4
-comparing4 7
-comparing4 9
-comparing4 9
-comparing4 5
-comparing4 2
-comparing4 3
-comparing4 1
-comparing4 6
-(799523164)
-"799523164"
+23674] (798523164)
+"798523164"
 {45708}
 ----------------------------
 0 2 4
 ----------------------------
 4 [361.662, 231.245]
 Yaw: -0.709847Pitch: 8.25526
-Frame time: 164.433
+Frame time: 136.555
 current angle:-0.709847 8.25526 4
 
 [
 23674
-comparing2 3
-comparing2 6
-comparing2 7
-comparing2 4
-comparing3 2
-comparing3 6
-comparing3 7
-comparing3 4
-comparing6 2
-comparing6 3
-comparing6 7
-comparing6 4
-comparing7 2
-comparing7 3
-comparing7 6
-comparing7 4
-comparing4 2
-comparing4 3
-comparing4 6
-comparing4 7
-23674] comparing7 9
-comparing7 5
-comparing7 5
-comparing7 2
-comparing7 3
-comparing7 1
-comparing7 6
-comparing7 4
-comparing9 7
-comparing9 5
-comparing9 5
-comparing9 2
-comparing9 3
-comparing9 1
-comparing9 6
-comparing9 4
-comparing5 7
-comparing5 9
-comparing5 5
-fuck1
-fuck2
-ck
-0
-1
-2
-2
-3
-4
-5
-6
-7
-8
-ck---
-comparing5 7
-comparing5 9
-comparing5 9
-comparing5 2
-comparing5 3
-comparing5 1
-comparing5 6
-comparing5 4
-comparing2 7
-comparing2 9
-comparing2 9
-comparing2 5
-comparing2 3
-comparing2 1
-comparing2 6
-comparing2 4
-comparing3 7
-comparing3 9
-comparing3 9
-comparing3 5
-comparing3 2
-comparing3 1
-comparing3 6
-comparing3 4
-comparing1 7
-comparing1 9
-comparing1 9
-comparing1 5
-comparing1 2
-comparing1 3
-comparing1 6
-comparing1 4
-comparing6 7
-comparing6 9
-comparing6 9
-comparing6 5
-comparing6 2
-comparing6 3
-comparing6 1
-comparing6 4
-comparing4 7
-comparing4 9
-comparing4 9
-comparing4 5
-comparing4 2
-comparing4 3
-comparing4 1
-comparing4 6
-(799523164)
+23674] (798523164)
 [
 23674
-comparing2 3
-comparing2 6
-comparing2 7
-comparing2 4
-comparing3 2
-comparing3 6
-comparing3 7
-comparing3 4
-comparing6 2
-comparing6 3
-comparing6 7
-comparing6 4
-comparing7 2
-comparing7 3
-comparing7 6
-comparing7 4
-comparing4 2
-comparing4 3
-comparing4 6
-comparing4 7
-23674] comparing7 9
-comparing7 5
-comparing7 5
-comparing7 2
-comparing7 3
-comparing7 1
-comparing7 6
-comparing7 4
-comparing9 7
-comparing9 5
-comparing9 5
-comparing9 2
-comparing9 3
-comparing9 1
-comparing9 6
-comparing9 4
-comparing5 7
-comparing5 9
-comparing5 5
-fuck1
-fuck2
-ck
-0
-1
-2
-2
-3
-4
-5
-6
-7
-8
-ck---
-comparing5 7
-comparing5 9
-comparing5 9
-comparing5 2
-comparing5 3
-comparing5 1
-comparing5 6
-comparing5 4
-comparing2 7
-comparing2 9
-comparing2 9
-comparing2 5
-comparing2 3
-comparing2 1
-comparing2 6
-comparing2 4
-comparing3 7
-comparing3 9
-comparing3 9
-comparing3 5
-comparing3 2
-comparing3 1
-comparing3 6
-comparing3 4
-comparing1 7
-comparing1 9
-comparing1 9
-comparing1 5
-comparing1 2
-comparing1 3
-comparing1 6
-comparing1 4
-comparing6 7
-comparing6 9
-comparing6 9
-comparing6 5
-comparing6 2
-comparing6 3
-comparing6 1
-comparing6 4
-comparing4 7
-comparing4 9
-comparing4 9
-comparing4 5
-comparing4 2
-comparing4 3
-comparing4 1
-comparing4 6
-(799523164)
+23674] (798523164)
 pass
 [
 23674
-comparing2 3
-comparing2 6
-comparing2 7
-comparing2 4
-comparing3 2
-comparing3 6
-comparing3 7
-comparing3 4
-comparing6 2
-comparing6 3
-comparing6 7
-comparing6 4
-comparing7 2
-comparing7 3
-comparing7 6
-comparing7 4
-comparing4 2
-comparing4 3
-comparing4 6
-comparing4 7
-23674] comparing7 9
-comparing7 5
-comparing7 5
-comparing7 2
-comparing7 3
-comparing7 1
-comparing7 6
-comparing7 4
-comparing9 7
-comparing9 5
-comparing9 5
-comparing9 2
-comparing9 3
-comparing9 1
-comparing9 6
-comparing9 4
-comparing5 7
-comparing5 9
-comparing5 5
-fuck1
-fuck2
-ck
-0
-1
-2
-2
-3
-4
-5
-6
-7
-8
-ck---
-comparing5 7
-comparing5 9
-comparing5 9
-comparing5 2
-comparing5 3
-comparing5 1
-comparing5 6
-comparing5 4
-comparing2 7
-comparing2 9
-comparing2 9
-comparing2 5
-comparing2 3
-comparing2 1
-comparing2 6
-comparing2 4
-comparing3 7
-comparing3 9
-comparing3 9
-comparing3 5
-comparing3 2
-comparing3 1
-comparing3 6
-comparing3 4
-comparing1 7
-comparing1 9
-comparing1 9
-comparing1 5
-comparing1 2
-comparing1 3
-comparing1 6
-comparing1 4
-comparing6 7
-comparing6 9
-comparing6 9
-comparing6 5
-comparing6 2
-comparing6 3
-comparing6 1
-comparing6 4
-comparing4 7
-comparing4 9
-comparing4 9
-comparing4 5
-comparing4 2
-comparing4 3
-comparing4 1
-comparing4 6
-(799523164)
+23674] (798523164)
 pass
 [
 23674
-comparing2 3
-comparing2 6
-comparing2 7
-comparing2 4
-comparing3 2
-comparing3 6
-comparing3 7
-comparing3 4
-comparing6 2
-comparing6 3
-comparing6 7
-comparing6 4
-comparing7 2
-comparing7 3
-comparing7 6
-comparing7 4
-comparing4 2
-comparing4 3
-comparing4 6
-comparing4 7
-23674] comparing7 9
-comparing7 5
-comparing7 5
-comparing7 2
-comparing7 3
-comparing7 1
-comparing7 6
-comparing7 4
-comparing9 7
-comparing9 5
-comparing9 5
-comparing9 2
-comparing9 3
-comparing9 1
-comparing9 6
-comparing9 4
-comparing5 7
-comparing5 9
-comparing5 5
-fuck1
-comparing8 2
-comparing8 3
-comparing8 1
-comparing8 6
-comparing8 4
-comparing8 7
-comparing8 9
-comparing8 5
-comparing8 2
-comparing8 3
-comparing8 1
-comparing8 6
-comparing8 4
-comparing2 7
-comparing2 9
-comparing2 5
-comparing2 8
-comparing2 3
-comparing2 1
-comparing2 6
-comparing2 4
-comparing3 7
-comparing3 9
-comparing3 5
-comparing3 8
-comparing3 2
-comparing3 1
-comparing3 6
-comparing3 4
-comparing1 7
-comparing1 9
-comparing1 5
-comparing1 8
-comparing1 2
-comparing1 3
-comparing1 6
-comparing1 4
-comparing6 7
-comparing6 9
-comparing6 5
-comparing6 8
-comparing6 2
-comparing6 3
-comparing6 1
-comparing6 4
-comparing4 7
-comparing4 9
-comparing4 5
-comparing4 8
-comparing4 2
-comparing4 3
-comparing4 1
-comparing4 6
-(795823164)
+23674] (798523164)
 pass
 [
 23674
-comparing2 3
-comparing2 6
-comparing2 7
-comparing2 4
-comparing3 2
-comparing3 6
-comparing3 7
-comparing3 4
-comparing6 2
-comparing6 3
-comparing6 7
-comparing6 4
-comparing7 2
-comparing7 3
-comparing7 6
-comparing7 4
-comparing4 2
-comparing4 3
-comparing4 6
-comparing4 7
-23674] comparing7 9
-comparing7 5
-comparing7 5
-comparing7 2
-comparing7 3
-comparing7 1
-comparing7 6
-comparing7 4
-comparing9 7
-comparing9 5
-comparing9 5
-comparing9 2
-comparing9 3
-comparing9 1
-comparing9 6
-comparing9 4
-comparing5 7
-comparing5 9
-comparing5 5
-fuck1
-fuck2
-ck
-0
-1
-2
-2
-3
-4
-5
-6
-7
-8
-ck---
-comparing5 7
-comparing5 9
-comparing5 9
-comparing5 2
-comparing5 3
-comparing5 1
-comparing5 6
-comparing5 4
-comparing2 7
-comparing2 9
-comparing2 9
-comparing2 5
-comparing2 3
-comparing2 1
-comparing2 6
-comparing2 4
-comparing3 7
-comparing3 9
-comparing3 9
-comparing3 5
-comparing3 2
-comparing3 1
-comparing3 6
-comparing3 4
-comparing1 7
-comparing1 9
-comparing1 9
-comparing1 5
-comparing1 2
-comparing1 3
-comparing1 6
-comparing1 4
-comparing6 7
-comparing6 9
-comparing6 9
-comparing6 5
-comparing6 2
-comparing6 3
-comparing6 1
-comparing6 4
-comparing4 7
-comparing4 9
-comparing4 9
-comparing4 5
-comparing4 2
-comparing4 3
-comparing4 1
-comparing4 6
-(799523164)
+23674] (798523164)
 pass
 [
 23674
-comparing2 3
-comparing2 6
-comparing2 7
-comparing2 4
-comparing3 2
-comparing3 6
-comparing3 7
-comparing3 4
-comparing6 2
-comparing6 3
-comparing6 7
-comparing6 4
-comparing7 2
-comparing7 3
-comparing7 6
-comparing7 4
-comparing4 2
-comparing4 3
-comparing4 6
-comparing4 7
-23674] comparing7 9
-comparing7 5
-comparing7 5
-comparing7 2
-comparing7 3
-comparing7 1
-comparing7 6
-comparing7 4
-comparing9 7
-comparing9 5
-comparing9 5
-comparing9 2
-comparing9 3
-comparing9 1
-comparing9 6
-comparing9 4
-comparing5 7
-comparing5 9
-comparing5 5
-fuck1
-fuck2
-ck
-0
-1
-2
-2
-3
-4
-5
-6
-7
-8
-ck---
-comparing5 7
-comparing5 9
-comparing5 9
-comparing5 2
-comparing5 3
-comparing5 1
-comparing5 6
-comparing5 4
-comparing2 7
-comparing2 9
-comparing2 9
-comparing2 5
-comparing2 3
-comparing2 1
-comparing2 6
-comparing2 4
-comparing3 7
-comparing3 9
-comparing3 9
-comparing3 5
-comparing3 2
-comparing3 1
-comparing3 6
-comparing3 4
-comparing1 7
-comparing1 9
-comparing1 9
-comparing1 5
-comparing1 2
-comparing1 3
-comparing1 6
-comparing1 4
-comparing6 7
-comparing6 9
-comparing6 9
-comparing6 5
-comparing6 2
-comparing6 3
-comparing6 1
-comparing6 4
-comparing4 7
-comparing4 9
-comparing4 9
-comparing4 5
-comparing4 2
-comparing4 3
-comparing4 1
-comparing4 6
-(799523164)
+23674] (798523164)
 pass
 [
 23674
-comparing2 3
-comparing2 6
-comparing2 7
-comparing2 4
-comparing3 2
-comparing3 6
-comparing3 7
-comparing3 4
-comparing6 2
-comparing6 3
-comparing6 7
-comparing6 4
-comparing7 2
-comparing7 3
-comparing7 6
-comparing7 4
-comparing4 2
-comparing4 3
-comparing4 6
-comparing4 7
-23674] comparing7 9
-comparing7 5
-comparing7 5
-comparing7 2
-comparing7 3
-comparing7 1
-comparing7 6
-comparing7 4
-comparing9 7
-comparing9 5
-comparing9 5
-comparing9 2
-comparing9 3
-comparing9 1
-comparing9 6
-comparing9 4
-comparing5 7
-comparing5 9
-comparing5 5
-fuck1
-comparing8 2
-comparing8 3
-comparing8 1
-comparing8 6
-comparing8 4
-comparing8 7
-comparing8 9
-comparing8 5
-comparing8 2
-comparing8 3
-comparing8 1
-comparing8 6
-comparing8 4
-comparing2 7
-comparing2 9
-comparing2 5
-comparing2 8
-comparing2 3
-comparing2 1
-comparing2 6
-comparing2 4
-comparing3 7
-comparing3 9
-comparing3 5
-comparing3 8
-comparing3 2
-comparing3 1
-comparing3 6
-comparing3 4
-comparing1 7
-comparing1 9
-comparing1 5
-comparing1 8
-comparing1 2
-comparing1 3
-comparing1 6
-comparing1 4
-comparing6 7
-comparing6 9
-comparing6 5
-comparing6 8
-comparing6 2
-comparing6 3
-comparing6 1
-comparing6 4
-comparing4 7
-comparing4 9
-comparing4 5
-comparing4 8
-comparing4 2
-comparing4 3
-comparing4 1
-comparing4 6
-(795823164)
+23674] (798523164)
 pass
 [
 23674
-comparing2 3
-comparing2 6
-comparing2 7
-comparing2 4
-comparing3 2
-comparing3 6
-comparing3 7
-comparing3 4
-comparing6 2
-comparing6 3
-comparing6 7
-comparing6 4
-comparing7 2
-comparing7 3
-comparing7 6
-comparing7 4
-comparing4 2
-comparing4 3
-comparing4 6
-comparing4 7
-23674] comparing7 9
-comparing7 5
-comparing7 5
-comparing7 2
-comparing7 3
-comparing7 1
-comparing7 6
-comparing7 4
-comparing9 7
-comparing9 5
-comparing9 5
-comparing9 2
-comparing9 3
-comparing9 1
-comparing9 6
-comparing9 4
-comparing5 7
-comparing5 9
-comparing5 5
-fuck1
-fuck2
-ck
-0
-1
-2
-2
-3
-4
-5
-6
-7
-8
-ck---
-comparing5 7
-comparing5 9
-comparing5 9
-comparing5 2
-comparing5 3
-comparing5 1
-comparing5 6
-comparing5 4
-comparing2 7
-comparing2 9
-comparing2 9
-comparing2 5
-comparing2 3
-comparing2 1
-comparing2 6
-comparing2 4
-comparing3 7
-comparing3 9
-comparing3 9
-comparing3 5
-comparing3 2
-comparing3 1
-comparing3 6
-comparing3 4
-comparing1 7
-comparing1 9
-comparing1 9
-comparing1 5
-comparing1 2
-comparing1 3
-comparing1 6
-comparing1 4
-comparing6 7
-comparing6 9
-comparing6 9
-comparing6 5
-comparing6 2
-comparing6 3
-comparing6 1
-comparing6 4
-comparing4 7
-comparing4 9
-comparing4 9
-comparing4 5
-comparing4 2
-comparing4 3
-comparing4 1
-comparing4 6
-(799523164)
+23674] (795823164)
 pass
 [
 23674
-comparing2 3
-comparing2 6
-comparing2 7
-comparing2 4
-comparing3 2
-comparing3 6
-comparing3 7
-comparing3 4
-comparing6 2
-comparing6 3
-comparing6 7
-comparing6 4
-comparing7 2
-comparing7 3
-comparing7 6
-comparing7 4
-comparing4 2
-comparing4 3
-comparing4 6
-comparing4 7
-23674] comparing7 9
-comparing7 5
-comparing7 5
-comparing7 2
-comparing7 3
-comparing7 1
-comparing7 6
-comparing7 4
-comparing9 7
-comparing9 5
-comparing9 5
-comparing9 2
-comparing9 3
-comparing9 1
-comparing9 6
-comparing9 4
-comparing5 7
-comparing5 9
-comparing5 5
-fuck1
-fuck2
-ck
-0
-1
-2
-2
-3
-4
-5
-6
-7
-8
-ck---
-comparing5 7
-comparing5 9
-comparing5 9
-comparing5 2
-comparing5 3
-comparing5 1
-comparing5 6
-comparing5 4
-comparing2 7
-comparing2 9
-comparing2 9
-comparing2 5
-comparing2 3
-comparing2 1
-comparing2 6
-comparing2 4
-comparing3 7
-comparing3 9
-comparing3 9
-comparing3 5
-comparing3 2
-comparing3 1
-comparing3 6
-comparing3 4
-comparing1 7
-comparing1 9
-comparing1 9
-comparing1 5
-comparing1 2
-comparing1 3
-comparing1 6
-comparing1 4
-comparing6 7
-comparing6 9
-comparing6 9
-comparing6 5
-comparing6 2
-comparing6 3
-comparing6 1
-comparing6 4
-comparing4 7
-comparing4 9
-comparing4 9
-comparing4 5
-comparing4 2
-comparing4 3
-comparing4 1
-comparing4 6
-(799523164)
+23674] (798523164)
 pass
 [
 23674
-comparing2 3
-comparing2 6
-comparing2 7
-comparing2 4
-comparing3 2
-comparing3 6
-comparing3 7
-comparing3 4
-comparing6 2
-comparing6 3
-comparing6 7
-comparing6 4
-comparing7 2
-comparing7 3
-comparing7 6
-comparing7 4
-comparing4 2
-comparing4 3
-comparing4 6
-comparing4 7
-23674] comparing2 2
-fuck1
-comparing1 2
-comparing1 2
-comparing1 1
-fuck1
-fuck2
-ck
-0
-1
-1
-1
-2
-3
-4
-5
-6
-7
-8
-ck---
-comparing5 2
-comparing5 2
-comparing5 2
-comparing5 1
-comparing5 2
-comparing5 2
-comparing5 1
-comparing5 5
-fuck1
-fuck2
-ck
-0
-1
-1
-1
-1
-2
-3
-4
-5
-6
-7
-8
-ck---
-comparing2 2
-fuck1
-comparing2 7
-comparing2 2
-fuck1
-comparing2 1
-comparing2 2
-fuck1
-comparing5 2
-comparing5 1
-comparing5 5
-fuck1
-fuck2
-ck
-0
-1
-1
-1
-1
-2
-5
-5
-3
-0
-3
-4
-5
-6
-7
-8
-ck---
-comparing1 1
-fuck1
-comparing1 7
-comparing1 2
-comparing1 5
-comparing1 1
-fuck1
-fuck2
-ck
-0
-1
-1
-1
-1
-2
-5
-5
-5
-0
-3
-0
-3
-4
-5
-6
-7
-8
-ck---
-comparing7 5
-comparing7 7
-fuck1
-fuck2
-ck
-0
-1
-1
-1
-1
-2
-5
-5
-5
-5
-0
-3
-0
-3
-4
-5
-6
-7
-8
-ck---
-comparing6 5
-comparing6 7
-comparing6 2
-comparing6 5
-comparing6 1
-comparing6 2
-comparing6 1
-comparing6 5
-comparing5 7
-comparing5 2
-comparing5 5
-fuck1
-fuck2
-ck
-0
-1
-1
-1
-1
-2
-5
-5
-5
-5
-0
-0
-3
-0
-3
-4
-5
-6
-7
-8
-ck---
-comparing7 7
-fuck1
-comparing7 2
-comparing7 5
-comparing7 1
-comparing7 6
-comparing7 2
-comparing7 1
-comparing7 5
-comparing6 7
-comparing6 2
-comparing6 5
-comparing6 1
-comparing6 6
-fuck1
-comparing6 2
-comparing6 1
-comparing6 5
-comparing8 7
-comparing8 6
-comparing8 2
-comparing8 5
-comparing8 1
-comparing8 2
-comparing8 1
-comparing8 5
-comparing5 7
-comparing5 6
-comparing5 2
-comparing5 1
-comparing5 8
-comparing5 2
-comparing5 1
-comparing5 5
-fuck1
-fuck2
-ck
-0
-1
-1
-1
-1
-2
-5
-5
-5
-5
-0
-0
-1
-5
-3
-3
-0
-3
-4
-5
-6
-7
-8
-ck---
-comparing1 7
-comparing1 6
-comparing1 2
-comparing1 1
-fuck1
-fuck2
-ck
-0
-1
-1
-1
-1
-2
-5
-5
-5
-5
-0
-0
-1
-5
-3
-3
-3
-0
-3
-4
-5
-6
-7
-8
-ck---
-comparing7 7
-fuck1
-fuck2
-ck
-0
-1
-1
-1
-1
-2
-5
-5
-5
-5
-0
-0
-1
-5
-3
-3
-3
-3
-0
-3
-4
-5
-6
-7
-8
-ck---
-comparing6 7
-comparing6 6
-fuck1
-comparing6 2
-comparing6 1
-comparing6 8
-comparing6 2
-comparing6 1
-comparing6 5
-comparing8 7
-comparing8 2
-comparing8 6
-comparing8 1
-comparing8 8
-fuck1
-comparing8 2
-comparing8 1
-comparing8 5
-comparing4 7
-comparing4 8
-comparing4 2
-comparing4 6
-comparing4 1
-comparing4 2
-comparing4 1
-comparing4 5
-comparing7 8
-comparing7 2
-comparing7 6
-comparing7 1
-comparing7 4
-comparing7 2
-comparing7 1
-comparing7 5
-comparing6 7
-comparing6 8
-comparing6 2
-comparing6 1
-comparing6 4
-comparing6 2
-comparing6 1
-comparing6 5
-comparing1 7
-comparing1 8
-comparing1 2
-comparing1 6
-comparing1 4
-comparing1 2
-comparing1 1
-fuck1
-fuck2
-ck
-0
-1
-1
-1
-1
-2
-5
-5
-5
-5
-0
-0
-1
-5
-3
-3
-3
-3
-1
-5
-0
-3
-4
-4
-5
-6
-7
-8
-ck---
-comparing2 7
-comparing2 8
-comparing2 2
-fuck1
-fuck2
-ck
-0
-1
-1
-1
-1
-2
-5
-5
-5
-5
-0
-0
-1
-5
-3
-3
-3
-3
-1
-5
-0
-3
-4
-4
-4
-5
-6
-7
-8
-ck---
-comparing5 7
-comparing5 8
-comparing5 2
-comparing5 6
-comparing5 4
-comparing5 2
-comparing5 1
-comparing5 5
-fuck1
-fuck2
-ck
-0
-1
-1
-1
-1
-2
-5
-5
-5
-5
-0
-0
-1
-5
-3
-3
-3
-3
-1
-5
-0
-3
-4
-4
-4
-4
-5
-6
-7
-8
-ck---
-comparing7 7
-fuck1
-fuck2
-ck
-0
-1
-1
-1
-1
-2
-5
-5
-5
-5
-0
-0
-1
-5
-3
-3
-3
-3
-1
-5
-0
-3
-4
-4
-4
-4
-4
-5
-6
-7
-8
-ck---
-comparing6 7
-comparing6 8
-comparing6 2
-comparing6 6
-fuck1
-comparing6 4
-comparing6 2
-comparing6 1
-comparing6 5
-comparing8 7
-comparing8 8
-fuck1
-comparing8 2
-comparing8 6
-comparing8 4
-comparing8 2
-comparing8 1
-comparing8 5
-comparing4 7
-comparing4 2
-comparing4 8
-comparing4 6
-comparing4 4
-fuck1
-fuck2
-ck
-0
-1
-1
-1
-1
-2
-5
-5
-5
-5
-0
-0
-1
-5
-3
-3
-3
-3
-1
-5
-0
-3
-4
-4
-4
-4
-4
-3
-1
-1
-5
-6
-7
-8
-ck---
-comparing9 7
-comparing9 2
-comparing9 8
-comparing9 6
-comparing9 4
-comparing9 2
-comparing9 1
-comparing9 5
-comparing4 7
-comparing4 9
-comparing4 2
-comparing4 8
-comparing4 6
-comparing4 2
-comparing4 1
-comparing4 5
-comparing2 7
-comparing2 9
-comparing2 2
-fuck1
-fuck2
-ck
-0
-1
-1
-1
-1
-2
-5
-5
-5
-5
-0
-0
-1
-5
-3
-3
-3
-3
-1
-5
-0
-3
-4
-4
-4
-4
-4
-3
-1
-1
-5
-6
-6
-7
-8
-ck---
-comparing1 7
-comparing1 9
-comparing1 2
-comparing1 8
-comparing1 6
-comparing1 4
-comparing1 1
-fuck1
-comparing1 5
-comparing5 7
-comparing5 9
-comparing5 2
-comparing5 8
-comparing5 6
-comparing5 4
-comparing5 1
-comparing5 5
-fuck1
-fuck2
-ck
-0
-1
-1
-1
-1
-2
-5
-5
-5
-5
-0
-0
-1
-5
-3
-3
-3
-3
-1
-5
-0
-3
-4
-4
-4
-4
-4
-3
-1
-1
-5
-6
-6
-7
-7
-7
-8
-ck---
-comparing2 7
-comparing2 9
-comparing2 2
-fuck1
-fuck2
-ck
-0
-1
-1
-1
-1
-2
-5
-5
-5
-5
-0
-0
-1
-5
-3
-3
-3
-3
-1
-5
-0
-3
-4
-4
-4
-4
-4
-3
-1
-1
-5
-6
-6
-7
-7
-7
-7
-8
-ck---
-comparing7 7
-fuck1
-fuck2
-ck
-0
-1
-1
-1
-1
-2
-5
-5
-5
-5
-0
-0
-1
-5
-3
-3
-3
-3
-1
-5
-0
-3
-4
-4
-4
-4
-4
-3
-1
-1
-5
-6
-6
-7
-7
-7
-7
-7
-8
-ck---
-comparing6 7
-comparing6 9
-comparing6 2
-comparing6 8
-comparing6 6
-fuck1
-fuck2
-ck
-0
-1
-1
-1
-1
-2
-5
-5
-5
-5
-0
-0
-1
-5
-3
-3
-3
-3
-1
-5
-0
-3
-4
-4
-4
-4
-4
-3
-1
-1
-5
-6
-6
-7
-7
-7
-7
-7
-7
-8
-ck---
-comparing8 7
-comparing8 9
-comparing8 2
-comparing8 8
-fuck1
-comparing8 6
-comparing8 4
-comparing8 1
-comparing8 5
-comparing4 7
-comparing4 9
-comparing4 2
-comparing4 6
-comparing4 4
-fuck1
-fuck2
-ck
-0
-1
-1
-1
-1
-2
-5
-5
-5
-5
-0
-0
-1
-5
-3
-3
-3
-3
-1
-5
-0
-3
-4
-4
-4
-4
-4
-3
-1
-1
-5
-6
-6
-7
-7
-7
-7
-7
-3
-3
-7
-8
-ck---
-comparing9 7
-comparing9 9
-fuck1
-comparing9 2
-comparing9 6
-comparing9 4
-comparing9 1
-comparing9 8
-comparing9 5
-comparing3 7
-comparing3 2
-comparing3 9
-comparing3 6
-comparing3 4
-comparing3 1
-comparing3 8
-comparing3 5
-comparing8 7
-comparing8 3
-comparing8 2
-comparing8 9
-comparing8 6
-comparing8 4
-comparing8 1
-comparing8 5
-comparing5 7
-comparing5 3
-comparing5 2
-comparing5 9
-comparing5 6
-comparing5 4
-comparing5 1
-comparing5 8
-(732964185)
+23674] (798523164)
+pass
+[
+23674
+23674] (762349185)
+[
+28174
+28174] (792348561)
+[
+28174
+28174] (792438561)
+[
+28174
+28174] (416289753)
+[
+28174
+28174] (416289753)
+[
+28174
+28174] (216489753)
+[
+28174
+28174] (416289753)
+"416289753"
+{34160}
+----------------------------
+0 2 3
+----------------------------
+3 [289.548, 226.642]
+Yaw: 8.43435Pitch: 8.72955
+Frame time: 551.439
+current angle:8.43435 8.72955 3
+
+[
+28174
+28174] (416289753)
+[
+28174
+28174] (216489753)
+[
+28174
+28174] (416289753)
 pass
 [
 28174
-comparing2 8
-comparing2 1
-comparing2 7
-comparing2 4
-comparing8 2
-comparing8 1
-comparing8 7
-comparing8 4
-comparing1 2
-comparing1 8
-comparing1 7
-comparing1 4
-comparing7 2
-comparing7 8
-comparing7 1
-comparing7 4
-comparing4 2
-comparing4 8
-comparing4 1
-comparing4 7
-28174] comparing2 2
-fuck1
-comparing5 2
-comparing5 2
-comparing5 1
-comparing5 2
-comparing5 1
-comparing5 1
-comparing5 5
-fuck1
-fuck2
-ck
-0
-1
-1
-1
-2
-3
-4
-5
-6
-7
-8
-ck---
-comparing1 2
-comparing1 2
-comparing1 2
-comparing1 1
-fuck1
-fuck2
-ck
-0
-1
-1
-1
-1
-2
-3
-4
-5
-6
-7
-8
-ck---
-comparing2 2
-fuck1
-comparing2 7
-comparing2 2
-fuck1
-comparing2 1
-comparing2 2
-fuck1
-comparing5 1
-comparing5 1
-comparing5 5
-fuck1
-fuck2
-ck
-0
-1
-1
-1
-1
-2
-5
-5
-3
-0
-3
-4
-5
-6
-7
-8
-ck---
-comparing1 5
-comparing1 7
-comparing1 2
-comparing1 5
-comparing1 1
-fuck1
-fuck2
-ck
-0
-1
-1
-1
-1
-2
-5
-5
-5
-3
-0
-3
-4
-5
-6
-7
-8
-ck---
-comparing7 5
-comparing7 7
-fuck1
-fuck2
-ck
-0
-1
-1
-1
-1
-2
-5
-5
-5
-5
-3
-0
-3
-4
-5
-6
-7
-8
-ck---
-comparing6 5
-comparing6 7
-comparing6 2
-comparing6 5
-comparing6 1
-comparing6 1
-comparing6 1
-comparing6 5
-comparing5 5
-fuck1
-fuck2
-ck
-0
-1
-1
-1
-1
-2
-5
-5
-5
-5
-3
-3
-0
-3
-4
-5
-6
-7
-8
-ck---
-comparing1 5
-comparing1 7
-comparing1 2
-comparing1 1
-fuck1
-fuck2
-ck
-0
-1
-1
-1
-1
-2
-5
-5
-5
-5
-3
-3
-3
-0
-3
-4
-5
-6
-7
-8
-ck---
-comparing7 5
-comparing7 7
-fuck1
-fuck2
-ck
-0
-1
-1
-1
-1
-2
-5
-5
-5
-5
-3
-3
-3
-3
-0
-3
-4
-5
-6
-7
-8
-ck---
-comparing6 5
-comparing6 7
-comparing6 2
-comparing6 1
-comparing6 6
-fuck1
-comparing6 1
-comparing6 1
-comparing6 5
-comparing8 5
-comparing8 7
-comparing8 2
-comparing8 6
-comparing8 1
-comparing8 1
-comparing8 1
-comparing8 5
-comparing5 7
-comparing5 2
-comparing5 6
-comparing5 1
-comparing5 8
-comparing5 1
-comparing5 1
-comparing5 5
-fuck1
-fuck2
-ck
-0
-1
-1
-1
-1
-2
-5
-5
-5
-5
-3
-3
-3
-3
-5
-0
-0
-3
-4
-5
-6
-7
-8
-ck---
-comparing1 7
-comparing1 2
-comparing1 6
-comparing1 1
-fuck1
-fuck2
-ck
-0
-1
-1
-1
-1
-2
-5
-5
-5
-5
-3
-3
-3
-3
-5
-0
-0
-0
-3
-4
-5
-6
-7
-8
-ck---
-comparing7 7
-fuck1
-fuck2
-ck
-0
-1
-1
-1
-1
-2
-5
-5
-5
-5
-3
-3
-3
-3
-5
-0
-0
-0
-0
-3
-4
-5
-6
-7
-8
-ck---
-comparing6 7
-comparing6 2
-comparing6 6
-fuck1
-fuck2
-ck
-0
-1
-1
-1
-1
-2
-5
-5
-5
-5
-3
-3
-3
-3
-5
-0
-0
-0
-0
-0
-3
-4
-5
-6
-7
-8
-ck---
-comparing8 7
-comparing8 2
-comparing8 6
-comparing8 1
-comparing8 8
-fuck1
-fuck2
-ck
-0
-1
-1
-1
-1
-2
-5
-5
-5
-5
-3
-3
-3
-3
-5
-0
-0
-0
-0
-0
-0
-3
-4
-5
-6
-7
-8
-ck---
-comparing4 7
-comparing4 2
-comparing4 6
-comparing4 1
-comparing4 8
-comparing4 1
-comparing4 1
-comparing4 5
-comparing6 4
-comparing6 7
-comparing6 2
-comparing6 1
-comparing6 8
-comparing6 1
-comparing6 1
-comparing6 5
-comparing1 4
-comparing1 7
-comparing1 2
-comparing1 6
-comparing1 8
-comparing1 1
-fuck1
-fuck2
-ck
-0
-1
-1
-1
-1
-2
-5
-5
-5
-5
-3
-3
-3
-3
-5
-0
-0
-0
-0
-0
-0
-3
-4
-4
-5
-6
-7
-8
-ck---
-comparing2 4
-comparing2 7
-comparing2 2
-fuck1
-fuck2
-ck
-0
-1
-1
-1
-1
-2
-5
-5
-5
-5
-3
-3
-3
-3
-5
-0
-0
-0
-0
-0
-0
-3
-4
-4
-4
-5
-6
-7
-8
-ck---
-comparing5 4
-comparing5 7
-comparing5 2
-comparing5 6
-comparing5 8
-comparing5 1
-comparing5 1
-comparing5 5
-fuck1
-fuck2
-ck
-0
-1
-1
-1
-1
-2
-5
-5
-5
-5
-3
-3
-3
-3
-5
-0
-0
-0
-0
-0
-0
-3
-4
-4
-4
-4
-5
-6
-7
-8
-ck---
-comparing7 4
-comparing7 7
-fuck1
-fuck2
-ck
-0
-1
-1
-1
-1
-2
-5
-5
-5
-5
-3
-3
-3
-3
-5
-0
-0
-0
-0
-0
-0
-3
-4
-4
-4
-4
-4
-5
-6
-7
-8
-ck---
-comparing6 4
-comparing6 7
-comparing6 2
-comparing6 6
-fuck1
-comparing6 8
-comparing6 1
-comparing6 1
-comparing6 5
-comparing8 4
-comparing8 7
-comparing8 2
-comparing8 6
-comparing8 8
-fuck1
-comparing8 1
-comparing8 1
-comparing8 5
-comparing4 4
-fuck1
-comparing4 7
-comparing4 2
-comparing4 8
-comparing4 6
-comparing4 1
-comparing4 1
-comparing4 5
-comparing9 7
-comparing9 2
-comparing9 8
-comparing9 6
-comparing9 4
-comparing9 1
-comparing9 1
-comparing9 5
-comparing4 9
-comparing4 7
-comparing4 2
-comparing4 8
-comparing4 6
-comparing4 1
-comparing4 1
-comparing4 5
-comparing1 9
-comparing1 7
-comparing1 2
-comparing1 8
-comparing1 6
-comparing1 4
-comparing1 1
-fuck1
-comparing1 5
-comparing2 9
-comparing2 7
-comparing2 2
-fuck1
-fuck2
-ck
-0
-1
-1
-1
-1
-2
-5
-5
-5
-5
-3
-3
-3
-3
-5
-0
-0
-0
-0
-0
-0
-3
-4
-4
-4
-4
-4
-3
-5
-0
-5
-6
-7
-7
-7
-8
-ck---
-comparing5 9
-comparing5 7
-comparing5 2
-comparing5 8
-comparing5 6
-comparing5 4
-comparing5 1
-comparing5 5
-fuck1
-fuck2
-ck
-0
-1
-1
-1
-1
-2
-5
-5
-5
-5
-3
-3
-3
-3
-5
-0
-0
-0
-0
-0
-0
-3
-4
-4
-4
-4
-4
-3
-5
-0
-5
-6
-7
-7
-7
-7
-8
-ck---
-comparing7 9
-comparing7 7
-fuck1
-fuck2
-ck
-0
-1
-1
-1
-1
-2
-5
-5
-5
-5
-3
-3
-3
-3
-5
-0
-0
-0
-0
-0
-0
-3
-4
-4
-4
-4
-4
-3
-5
-0
-5
-6
-7
-7
-7
-7
-7
-8
-ck---
-comparing6 9
-comparing6 7
-comparing6 2
-comparing6 8
-comparing6 6
-fuck1
-fuck2
-ck
-0
-1
-1
-1
-1
-2
-5
-5
-5
-5
-3
-3
-3
-3
-5
-0
-0
-0
-0
-0
-0
-3
-4
-4
-4
-4
-4
-3
-5
-0
-5
-6
-7
-7
-7
-7
-7
-7
-8
-ck---
-comparing8 9
-comparing8 7
-comparing8 2
-comparing8 8
-fuck1
-fuck2
-ck
-0
-1
-1
-1
-1
-2
-5
-5
-5
-5
-3
-3
-3
-3
-5
-0
-0
-0
-0
-0
-0
-3
-4
-4
-4
-4
-4
-3
-5
-0
-5
-6
-7
-7
-7
-7
-7
-7
-7
-8
-ck---
-comparing4 9
-comparing4 7
-comparing4 2
-comparing4 8
-comparing4 6
-comparing4 4
-fuck1
-fuck2
-ck
-0
-1
-1
-1
-1
-2
-5
-5
-5
-5
-3
-3
-3
-3
-5
-0
-0
-0
-0
-0
-0
-3
-4
-4
-4
-4
-4
-3
-5
-0
-5
-6
-7
-7
-7
-7
-7
-7
-7
-7
-8
-ck---
-comparing9 9
-fuck1
-comparing9 7
-comparing9 2
-comparing9 8
-comparing9 6
-comparing9 4
-comparing9 1
-comparing9 5
-comparing3 7
-comparing3 2
-comparing3 8
-comparing3 6
-comparing3 4
-comparing3 1
-comparing3 9
-comparing3 5
-comparing9 3
-comparing9 7
-comparing9 2
-comparing9 8
-comparing9 6
-comparing9 4
-comparing9 1
-comparing9 5
-comparing5 3
-comparing5 7
-comparing5 2
-comparing5 8
-comparing5 6
-comparing5 4
-comparing5 1
-comparing5 9
-(372864195)
+28174] (216489753)
 [
 28174
-comparing2 8
-comparing2 1
-comparing2 7
-comparing2 4
-comparing8 2
-comparing8 1
-comparing8 7
-comparing8 4
-comparing1 2
-comparing1 8
-comparing1 7
-comparing1 4
-comparing7 2
-comparing7 8
-comparing7 1
-comparing7 4
-comparing4 2
-comparing4 8
-comparing4 1
-comparing4 7
-28174] comparing2 2
-fuck1
-comparing5 2
-comparing5 2
-comparing5 2
-comparing5 2
-comparing5 1
-comparing5 1
-comparing5 5
-fuck1
-fuck2
-ck
-0
-1
-1
-1
-2
-3
-4
-5
-6
-7
-8
-ck---
-comparing1 2
-comparing1 2
-comparing1 2
-comparing1 2
-comparing1 2
-comparing1 1
-fuck1
-fuck2
-ck
-0
-1
-1
-1
-1
-2
-3
-4
-5
-6
-7
-8
-ck---
-comparing2 2
-fuck1
-fuck2
-ck
-0
-1
-1
-1
-1
-2
-2
-3
-4
-5
-6
-7
-8
-ck---
-comparing5 2
-comparing5 7
-comparing5 2
-comparing5 2
-comparing5 2
-comparing5 1
-comparing5 1
-comparing5 5
-fuck1
-comparing1 2
-comparing1 7
-comparing1 5
-comparing1 2
-comparing1 2
-comparing1 2
-comparing1 1
-fuck1
-fuck2
-ck
-0
-1
-1
-1
-1
-2
-2
-8
-8
-3
-4
-5
-6
-7
-8
-ck---
-comparing2 2
-fuck1
-fuck2
-ck
-0
-1
-1
-1
-1
-2
-2
-8
-8
-8
-3
-4
-5
-6
-7
-8
-ck---
-comparing7 2
-comparing7 7
-fuck1
-fuck2
-ck
-0
-1
-1
-1
-1
-2
-2
-8
-8
-8
-8
-3
-4
-5
-6
-7
-8
-ck---
-comparing6 2
-comparing6 7
-comparing6 5
-comparing6 2
-comparing6 2
-comparing6 2
-comparing6 1
-comparing6 1
-comparing2 2
-fuck1
-fuck2
-ck
-0
-1
-1
-1
-1
-2
-2
-8
-8
-8
-8
-3
-3
-4
-5
-6
-7
-8
-ck---
-comparing5 2
-comparing5 7
-comparing5 5
-fuck1
-fuck2
-ck
-0
-1
-1
-1
-1
-2
-2
-8
-8
-8
-8
-3
-3
-3
-4
-5
-6
-7
-8
-ck---
-comparing1 2
-comparing1 7
-comparing1 5
-comparing1 2
-comparing1 2
-comparing1 1
-fuck1
-fuck2
-ck
-0
-1
-1
-1
-1
-2
-2
-8
-8
-8
-8
-3
-3
-3
-3
-4
-5
-6
-7
-8
-ck---
-comparing7 2
-comparing7 7
-fuck1
-fuck2
-ck
-0
-1
-1
-1
-1
-2
-2
-8
-8
-8
-8
-3
-3
-3
-3
-3
-4
-5
-6
-7
-8
-ck---
-comparing6 2
-comparing6 7
-comparing6 5
-comparing6 2
-comparing6 2
-comparing6 1
-comparing6 1
-comparing6 6
-fuck1
-comparing8 2
-comparing8 7
-comparing8 5
-comparing8 6
-comparing8 2
-comparing8 2
-comparing8 1
-comparing8 1
-comparing2 2
-fuck1
-fuck2
-ck
-0
-1
-1
-1
-1
-2
-2
-8
-8
-8
-8
-3
-3
-3
-3
-3
-8
-4
-4
-5
-6
-7
-8
-ck---
-comparing1 2
-comparing1 7
-comparing1 5
-comparing1 6
-comparing1 2
-comparing1 1
-fuck1
-fuck2
-ck
-0
-1
-1
-1
-1
-2
-2
-8
-8
-8
-8
-3
-3
-3
-3
-3
-8
-4
-4
-4
-5
-6
-7
-8
-ck---
-comparing5 2
-comparing5 7
-comparing5 5
-fuck1
-fuck2
-ck
-0
-1
-1
-1
-1
-2
-2
-8
-8
-8
-8
-3
-3
-3
-3
-3
-8
-4
-4
-4
-4
-5
-6
-7
-8
-ck---
-comparing7 2
-comparing7 7
-fuck1
-fuck2
-ck
-0
-1
-1
-1
-1
-2
-2
-8
-8
-8
-8
-3
-3
-3
-3
-3
-8
-4
-4
-4
-4
-4
-5
-6
-7
-8
-ck---
-comparing6 2
-comparing6 7
-comparing6 5
-comparing6 6
-fuck1
-comparing6 2
-comparing6 1
-comparing6 1
-comparing6 8
-comparing8 2
-comparing8 7
-comparing8 5
-comparing8 6
-comparing8 2
-comparing8 1
-comparing8 1
-comparing8 8
-fuck1
-comparing4 2
-comparing4 7
-comparing4 5
-comparing4 8
-comparing4 6
-comparing4 2
-comparing4 1
-comparing4 1
-comparing2 2
-fuck1
-fuck2
-ck
-0
-1
-1
-1
-1
-2
-2
-8
-8
-8
-8
-3
-3
-3
-3
-3
-8
-4
-4
-4
-4
-4
-3
-8
-5
-5
-6
-7
-8
-ck---
-comparing5 2
-comparing5 7
-comparing5 5
-fuck1
-comparing5 8
-comparing5 6
-comparing5 1
-comparing5 1
-comparing5 4
-comparing1 2
-comparing1 7
-comparing1 8
-comparing1 6
-comparing1 5
-comparing1 1
-fuck1
-fuck2
-ck
-0
-1
-1
-1
-1
-2
-2
-8
-8
-8
-8
-3
-3
-3
-3
-3
-8
-4
-4
-4
-4
-4
-3
-8
-5
-5
-2
-2
-6
-7
-8
-ck---
-comparing7 2
-comparing7 7
-fuck1
-fuck2
-ck
-0
-1
-1
-1
-1
-2
-2
-8
-8
-8
-8
-3
-3
-3
-3
-3
-8
-4
-4
-4
-4
-4
-3
-8
-5
-5
-2
-2
-2
-6
-7
-8
-ck---
-comparing6 2
-comparing6 7
-comparing6 8
-comparing6 6
-fuck1
-fuck2
-ck
-0
-1
-1
-1
-1
-2
-2
-8
-8
-8
-8
-3
-3
-3
-3
-3
-8
-4
-4
-4
-4
-4
-3
-8
-5
-5
-2
-2
-2
-2
-6
-7
-8
-ck---
-comparing8 2
-comparing8 7
-comparing8 8
-fuck1
-fuck2
-ck
-0
-1
-1
-1
-1
-2
-2
-8
-8
-8
-8
-3
-3
-3
-3
-3
-8
-4
-4
-4
-4
-4
-3
-8
-5
-5
-2
-2
-2
-2
-2
-6
-7
-8
-ck---
-comparing4 2
-comparing4 7
-comparing4 8
-comparing4 6
-comparing4 5
-comparing4 1
-comparing4 1
-comparing4 4
-fuck1
-fuck2
-ck
-0
-1
-1
-1
-1
-2
-2
-8
-8
-8
-8
-3
-3
-3
-3
-3
-8
-4
-4
-4
-4
-4
-3
-8
-5
-5
-2
-2
-2
-2
-2
-2
-6
-7
-8
-ck---
-comparing9 2
-comparing9 7
-comparing9 8
-comparing9 6
-comparing9 5
-comparing9 1
-comparing9 1
-comparing9 4
-comparing1 2
-comparing1 7
-comparing1 9
-comparing1 8
-comparing1 6
-comparing1 5
-comparing1 1
-fuck1
-comparing1 4
-comparing2 2
-fuck1
-fuck2
-ck
-0
-1
-1
-1
-1
-2
-2
-8
-8
-8
-8
-3
-3
-3
-3
-3
-8
-4
-4
-4
-4
-4
-3
-8
-5
-5
-2
-2
-2
-2
-2
-2
-6
-7
-7
-7
-8
-ck---
-comparing5 2
-comparing5 7
-comparing5 9
-comparing5 8
-comparing5 6
-comparing5 5
-fuck1
-fuck2
-ck
-0
-1
-1
-1
-1
-2
-2
-8
-8
-8
-8
-3
-3
-3
-3
-3
-8
-4
-4
-4
-4
-4
-3
-8
-5
-5
-2
-2
-2
-2
-2
-2
-6
-7
-7
-7
-7
-8
-ck---
-comparing7 2
-comparing7 7
-fuck1
-fuck2
-ck
-0
-1
-1
-1
-1
-2
-2
-8
-8
-8
-8
-3
-3
-3
-3
-3
-8
-4
-4
-4
-4
-4
-3
-8
-5
-5
-2
-2
-2
-2
-2
-2
-6
-7
-7
-7
-7
-7
-8
-ck---
-comparing6 2
-comparing6 7
-comparing6 9
-comparing6 8
-comparing6 6
-fuck1
-comparing6 5
-comparing6 1
-comparing6 4
-comparing8 2
-comparing8 7
-comparing8 9
-comparing8 8
-fuck1
-comparing8 5
-comparing8 1
-comparing8 6
-comparing8 4
-comparing4 2
-comparing4 7
-comparing4 9
-comparing4 8
-comparing4 5
-comparing4 1
-comparing4 6
-comparing4 4
-fuck1
-fuck2
-ck
-0
-1
-1
-1
-1
-2
-2
-8
-8
-8
-8
-3
-3
-3
-3
-3
-8
-4
-4
-4
-4
-4
-3
-8
-5
-5
-2
-2
-2
-2
-2
-2
-6
-7
-7
-7
-7
-4
-3
-3
-7
-8
-ck---
-comparing9 2
-comparing9 7
-comparing9 9
-fuck1
-comparing9 8
-comparing9 5
-comparing9 1
-comparing9 6
-comparing9 4
-comparing3 2
-comparing3 7
-comparing3 9
-comparing3 8
-comparing3 5
-comparing3 1
-comparing3 6
-comparing3 4
-comparing6 2
-comparing6 7
-comparing6 3
-comparing6 9
-comparing6 8
-comparing6 5
-comparing6 1
-comparing6 4
-comparing4 2
-comparing4 7
-comparing4 3
-comparing4 9
-comparing4 8
-comparing4 5
-comparing4 1
-comparing4 6
+28174] (216489753)
+"216489753"
+{04163}
+----------------------------
+1 8 4
+----------------------------
+4 [361.726, 231.389]
+Yaw: -0.722818Pitch: 8.22435
+Frame time: 167.493
+current angle:-0.722818 8.22435 4
+
+[
+28174
+28174] (416289753)
+[
+28174
+28174] (416289753)
+[
+28174
+28174] (216489753)
+[
+28174
+28174] (216489753)
+[
+28174
+28174] (216489753)
+pass
+[
+28174
+28174] (216489753)
+pass
+[
+28174
+28174] (416289753)
+pass
+[
+28174
+28174] (792463185)
+[
+52397
+52397] (742389165)
+[
+52397
+52397] (732915468)
+[
+52397
+52397] (178295463)
+[
+52397
+52397] (178295463)
+[
+52397
+52397] (178295463)
+"178295463"
+{53841}
+----------------------------
+0 5 5
+----------------------------
+5 [433.461, 235.735]
+Yaw: -10.0294Pitch: 7.31832
+Frame time: 431.07
+current angle:-10.0294 7.31832 5
+
+[
+52397
+52397] (178295463)
+[
+52397
+52397] (178295463)
+pass
+[
+52397
+52397] (178295463)
+pass
+[
+52397
+52397] (178295463)
+pass
+[
+52397
+52397] (178295463)
+pass
+[
+52397
+52397] (178295463)
+pass
+[
+52397
+52397] (178295463)
+pass
+[
+52397
+52397] (178295463)
+pass
+[
+52397
+52397] (178295463)
+pass
+[
+52397
+52397] (178295463)
+pass
+[
+52397
+52397] (178295463)
+pass
+[
+52397
+52397] (178295463)
+pass
+[
+52397
+52397] (178295463)
+pass
+[
+52397
+52397] (178295463)
+pass
+[
+52397
+52397] (178295463)
+pass
+[
+52397
+52397] (178295463)
+pass
+[
+52397
+52397] (492387165)
+pass
+[
+17482
+17482] (792348165)
+[
+17482
+17482] (792438561)
+[
+17482
+17482] (235478196)
+[
+17482
+17482] (245738196)
+[
+17482
+17482] (235478196)
+[
+17482
+17482] (265478193)
+[
+17482
+17482] (265378194)
+[
+17482
+17482] (265378194)
+[
+17482
+17482] (265378194)
+"265378194"
+{64850}
+----------------------------
+0 1 6
+----------------------------
+6 [285.497, 269.559]
+Yaw: 9.25201Pitch: 3.84447
+Frame time: 842.399
+current angle:9.25201 3.84447 6
+
+[
+17482
+17482] (265378194)
+[
+17482
+17482] (235478196)
+pass
+[
+17482
+17482] (235478196)
+[
+17482
+17482] (265738194)
+[
+17482
+17482] (265478193)
+[
+17482
+17482] (265738194)
+[
+17482
+17482] (245738196)
+[
+17482
+17482] (265478193)
+[
+17482
+17482] (235478196)
+[
+17482
+17482] (265738194)
+[
+17482
+17482] (265378194)
+[
+77482
+71482] (235478196)
+[
+17482
+17482] (712943568)
+[
+
+[
+74927
+74921] (782439165)
+[
+74927
+74921] (385961427)
+[
+74927
+74921] (385961427)
+[
+74927
+74921] (385961427)
+"385961427"
+{86375}
+----------------------------
+0 7 8
+----------------------------
+8 [433.457, 278.168]
+Yaw: -10.011Pitch: 2.58154
+Frame time: 591.312
+current angle:-10.011 2.58154 8
+
+[
+34927
+34927] (385961427)
+[
+49217
+49217] (385961427)
+[
+49217
+49217] (385961427)
+[
+14927
+14927] (385961427)
+[
+49217
+49217] (385961427)
+pass
+[
+49217
+49217] (385961427)
+pass
+[
+74927
+74921] (385961427)
+[
+49217
+49217] (385961427)
+pass
+[
+49217
+49217] (385961427)
+pass
+[
+49217
+49217] (385961427)
+pass
+[
+49217
+49217] (385961427)
+pass
+[
+49217
+49217] (385961427)
+pass
+[
+49217
+49217] (385961427)
+pass
+[
+49217
+49217] (792438516)
+pass
+[
+15237
+15237] (512967483)
+[
+15237
+15237] (742389165)
+[
+15237
+15237] (548763912)
+[
+15237
+15237] (548763912)
+[
+15237
+15237] (548763912)
+"548763912"
+{70853}
+----------------------------
+0 1 7
+----------------------------
+7 [359.336, 273.785]
+Yaw: -0.341234Pitch: 3.20179
+Frame time: 642.615
+current angle:-0.341234 3.20179 7
+
+[
+15237
+15237] (548763912)
+[
+15237
+15237] (548763912)
+pass
+[
+15237
+15237] (548763912)
+pass
+[
+15237
+15237] (548763912)
+pass
+[
+15237
+15237] (548763912)
+pass
+[
+15237
+15237] (548763912)
+pass
+[
+15237
+15237] (548763912)
+pass
+[
+15237
+15237] (548763912)
+pass
+[
+15237
+15237] (548763912)
+pass
+[
+15237
+15237] (548763912)
+pass
+[
+15237
+15237] (548763912)
+pass
+[
+15237
+15237] (548763912)
+pass
+[
+15237
+15237] (548763912)
+pass
+[
+
+[
+59187
+59187] (792435168)
+pass
+[
+59187
+59187] (792453816)
+[
+59187
+59187] (315982746)
+[
+59187
+59187] (315982746)
+[
+59187
+59187] (315982746)
+"315982746"
+{23146}
+----------------------------
+0 5 2
+----------------------------
+2 [433.453, 195.186]
+Yaw: -9.99712Pitch: 11.771
+Frame time: 605.507
+current angle:-9.99712 11.771 2
+
+[
+
+[
+59187
+59187] (315982746)
+[
+59187
+59187] (315982746)
+pass
+[
+59187
+59187] (315982746)
+pass
+[
+15987
+15987] (315982746)
+pass
+[
+59187
+59187] (315982746)
+pass
+[
+59187
+59187] (315982746)
+pass
+[
+59187
+59187] (315982746)
+pass
+[
+59187
+59187] (315982746)
+pass
+[
+59187
+59187] (315982746)
+pass
+[
+59187
+59187] (315892746)
+pass
+[
+59187
+59187] (315982746)
+pass
+[
+59187
+59187] (315982746)
+pass
+[
+59187
+59187] (315982746)
+pass
+[
+59187
+59187] (315982746)
+pass
+[
+59187
+59187] (315982746)
+pass
+[
+59187
+59187] (792438615)
+pass
+[
+59187
+59187] (792431568)
+[
+85264
+85264] (792438561)
+[
+85264
+85264] (491286537)
+[
+85264
+85264] (451892763)
+[
+85264
+85264] (451892763)
+[
+85264
+85264] (451892763)
+"451892763"
+{31570}
+----------------------------
+0 8 3
+----------------------------
+3 [289.56, 226.519]
+Yaw: 8.42551Pitch: 8.71796
+Frame time: 707.796
+current angle:8.42551 8.71796 3
+
+[
+85264
+85264] (451893762)
+[
+85264
+85264] (451892763)
+pass
+[
+85264
+85264] (451893762)
+[
+85264
+85264] (451893762)
+"451893762"
+{31870}
+----------------------------
+1 5 1
+----------------------------
+1 [363.565, 190.886]
+Yaw: -1.09992Pitch: 12.5657
+Frame time: 126.462
+current angle:-1.09992 12.5657 1
+
+[
+85264
+85264] (451892763)
+[
+85264
+85264] (451893762)
+pass
+[
+85264
+85264] (451892763)
+[
+85264
+85264] (451892763)
+"451892763"
+{31570}
+----------------------------
+2 2 5
+----------------------------
+5 [433.462, 235.564]
+Yaw: -9.9896Pitch: 7.42944
+Frame time: 129.635
+current angle:-9.9896 7.42944 5
+
+[
+85264
+85264] (451892763)
+[
+85264
+85264] (451892763)
+pass
+[
+85264
+85264] (451893762)
+pass
+[
+85264
+85264] (451892763)
+pass
+[
+85264
+85264] (451892763)
+pass
+[
+85264
+85264] (451892763)
+pass
+[
+85264
+85264] (451892763)
+pass
+[
+85264
+85264] (451892763)
+pass
+[
+85264

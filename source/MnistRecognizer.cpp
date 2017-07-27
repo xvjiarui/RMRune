@@ -121,9 +121,9 @@ Mat MnistRecognizer::kmeanPreprocess(const Mat& img)
 		{
 			if (labels.at<int>(i * cols + j) == redClass)
 			{
-				redImg.at<Vec3b>(i, j) = Vec3b(0, 0, 0);
+				redImg.at<Vec3b>(i, j) = Vec3b(255, 255, 255);
 			}
-			else redImg.at<Vec3b>(i, j) = Vec3b(255, 255, 255);
+			else redImg.at<Vec3b>(i, j) = Vec3b(0, 0, 0);
 		}
 	}
 	cvtColor(redImg, redImg, CV_BGR2GRAY);

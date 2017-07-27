@@ -821,12 +821,15 @@ pair<int, int> RuneDetector::chooseMnistTarget(const Mat &inputImg, const vector
 #ifdef ADJUST_THRESHOLD
 			if (!goToNextFrame)
 			{
+				/*
 				ThresholdStruct data;
 				data.data = &temp;
 				data.mnistRecognizer = &mnistRecognizer[0];
 				namedWindow("AdjustThreshold", WINDOW_NORMAL);
 				createTrackbar("Adjust Threshold", "AdjustThreshold", &mnist_threshold, 255, AdjustThreshold, (void*)&data);
 				AdjustThreshold(mnist_threshold,(void*)&data);
+				*/
+				mnistRecognizer[0].recognize_primary(temp);
 				if (waitKey(0) == 'n'){
 					cout << "Next frame" << endl;
 					goToNextFrame = true;
@@ -939,28 +942,30 @@ void RuneDetector::getUniqueResult(vector<vector<pair<double, int> > >& results,
 		check_index.push_back(i);
 	}
 
-	for (auto idxitr1 = check_index.begin(); idxitr1 != check_index.end(); idxitr1++)
+	for (int k = 0; k < check_index.size(); k++)
 	{
 		for (int j = 0; j < results.size(); j++)
 		{
-			if (*idxitr1 == j)
+			if (check_index.at(k) == j)
 				continue;
-			int i = *idxitr1;
-			cout << "comparing" << FinalResults.at(i)->second << " " << FinalResults.at(j)->second << endl;
+			int i = check_index.at(k);
+			// cout << "comparing" << FinalResults.at(i)->second << " " << FinalResults.at(j)->second << endl;
 			if (FinalResults.at(i)->second == FinalResults.at(j)->second)
 			{
-				cout << "fuck1"<<endl;
+				// cout << "fuck1"<<endl;
 				if (FinalResults.at(i) + 1 != results.at(i).end() && FinalResults.at(i)->first < FinalResults.at(j)->first)
 				{
-					cout << "fuck2"<<endl;
+					// cout << "fuck2"<<endl;
 					(FinalResults.at(i))++;
-					check_index.insert(idxitr1 + 1, i);
+					check_index.insert(check_index.begin() + k + 1, i);
+					/*
 					cout << "ck" << endl;
 					for (auto &b : check_index)
 					{
 						cout << b << endl;
 					}
 					cout << "ck---" << endl;
+					*/
 					break; //recompare from beginning
 				}
 				else
@@ -968,11 +973,11 @@ void RuneDetector::getUniqueResult(vector<vector<pair<double, int> > >& results,
 					if (FinalResults.at(j) + 1 == results.at(j).end())
 					{
 						(FinalResults.at(i))++;
-						check_index.insert(idxitr1 + 1, i);
+						check_index.insert(check_index.begin() + k + 1, i);
 						break; //recompare from beginning
 					}
 					(FinalResults.at(j))++;
-					check_index.insert(idxitr1 + 1, j);
+					check_index.insert(check_index.begin() + k + 1, j);
 				}
 			}
 		}
