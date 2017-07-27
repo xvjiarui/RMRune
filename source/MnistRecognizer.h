@@ -20,9 +20,9 @@ public:
 	int recognize(const Mat& img);
 	vector<pair<double, int> > recognize_primary(const Mat& img);
 	Mat kmeanPreprocess(const Mat& inputImg);
+	bool fitMnist(const Mat& inputImg, Mat& resImg);
 private:
 	void clear();
-	bool fitMnist(const Mat& inputImg, Mat& resImg);
 	network<sequential> nn;
 	map<int, Point> mnistCenters; //<Label, Center>
 	map<int, int> mnistLabels; // <Index, Label>

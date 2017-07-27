@@ -67,12 +67,14 @@ int MnistRecognizer::recognize(const Mat& img)
 {
 	return recognize_primary(img).at(0).second;
 }
-vector<pair<double, int> > MnistRecognizer::recognize_primary(const Mat& inputImg)
+vector<pair<double, int> > MnistRecognizer::recognize_primary(const Mat& img)
 {
 	vec_t data;
+	/*
 	Mat kmeanImg, img;
 	kmeanPreprocess(inputImg).copyTo(kmeanImg);
 	fitMnist(kmeanImg, img);
+	*/
 	convert_image(img, -1.0, 1.0, 32, 32, data);
 
 	// recognize

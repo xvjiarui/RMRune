@@ -773,7 +773,6 @@ pair<int, int> RuneDetector::chooseMnistTarget(const Mat &inputImg, const vector
 			}
 			if (left)
 			{
-				cout << "fuckfuck" << endl;
 				digit_scores.front().clear();
 				digit_scores.front().push_back(make_pair<double, int>(100, 1));
 				writeI++;
@@ -793,7 +792,7 @@ pair<int, int> RuneDetector::chooseMnistTarget(const Mat &inputImg, const vector
 			}
 			else
 			{
-				digit_results.at(writeI) = 1;
+				digit_results.at(writeI) = 2;
 			}
 			*/
 			writeI++;
@@ -900,9 +899,19 @@ pair<int, int> RuneDetector::chooseMnistTarget(const Mat &inputImg, const vector
 			sudoku_imgs.push_back(temp);
 		}
 	}
+	for (int i = 0; i < sudoku_imgs.size(); i++)
+	{
+		Mat kmeanImg, img;
+		mnistRecognizer[i].kmeanPreprocess(sudoku_imgs.at(i)).copyTo(kmeanImg);
+		mnistRecognizer[i].fitMnist(kmeanImg, img);
+		if ((float)countNonZero(img) / (float)(img.cols * img.rows) >0.98)
+		{
+			return make_pair(-1, -1);
+		}
+		img.copyTo(sudoku_imgs.at(i));
+	}
 	for (size_t i = 0; i < sudoku_imgs.size(); i++)
 	{
-
 		mnistThreads.push_back(thread([&, i]() {
 			results.at(i) = mnistRecognizer[i].recognize_primary(sudoku_imgs.at(i));
 		}));
