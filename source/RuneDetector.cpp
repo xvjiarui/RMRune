@@ -328,6 +328,9 @@ bool RuneDetector::checkSudoku(const vector<vector<Point2i>> &contours, vector<R
 	sort(sudoku_rects.begin() + 6, sudoku_rects.begin() + 9, [](const RotatedRect& r1, const RotatedRect& r2) { return r1.center.x < r2.center.x;});
 	if (digit_rects.size() > 5 && !(oneIndex != -1 && digit_rects.size() == 6))
 	{
+		vector<RotatedRect> digit_rects_temp(5);
+		cout << "size: " << digit_rects.size() << endl;
+		cout << "sorting" << endl;
 		float **dist_map = new float *[digit_rects.size()];
 		for (int i = 0; i < digit_rects.size(); i++)
 		{
@@ -337,6 +340,40 @@ bool RuneDetector::checkSudoku(const vector<vector<Point2i>> &contours, vector<R
 				dist_map[i][j] = 0;
 			}
 		}
+		int lineCount; 
+		for (int i = 0; i < digit_rects.size(); i++)
+		{
+			lineCount = 0;
+			for (int j = 0; j < digit_rects.size(); j++)
+			{
+				double vDist = abs(digit_rects.at(i).center.y - digit_rects.at(j).center.y);
+				if (vDist < 10)
+				{
+					digit_rects_temp.at(lineCount++) = digit_rects.at(j);
+				}
+			}
+			if (lineCount == 5)
+			{
+				break;
+			}
+		}
+		if (lineCount != 5)
+		{
+			cout << "sort gg." << endl;
+			return false;
+		}
+		digit_rects_temp.swap(digit_rects);
+		/*
+		for (int i = 0; i < digit_rects.size(); i++)
+		{
+			lineCount = 0;
+			for (int j = 0; j < digit_rects.size(); j++)
+			{
+				if (dist_map[i])
+			}
+		}
+		*/
+		/*
 		// calculate distance of each cell center
 		for (int i = 0; i < digit_rects.size(); ++i)
 		{
@@ -388,6 +425,7 @@ bool RuneDetector::checkSudoku(const vector<vector<Point2i>> &contours, vector<R
 			digit_rects_temp.push_back(digit_rects[dist_center[i].second]);
 		}
 		digit_rects_temp.swap(digit_rects);
+		*/
 	}
 	if (rune_type == RUNE_B && (digit_rects.size() != 5 && digit_rects.size() != 6))
 	{
@@ -708,6 +746,7 @@ pair<int, int> RuneDetector::chooseMnistTarget(const Mat &inputImg, const vector
 	vector<Mat> digit_images;
 	vector<vector<pair<double, int> > > digit_scores(5);
 	cout << "[" << endl;
+	cout << digit_rects.size() << endl;
 	for (int i  = 0; i < digit_rects.size(); i++)
 	{
 		Point2f pts[4];
