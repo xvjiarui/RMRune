@@ -849,7 +849,6 @@ pair<int, int> RuneDetector::chooseMnistTarget(const Mat &inputImg, const vector
 	{
 		t.join();
 	}
-
 /*
 
 	cout << "(";
@@ -946,12 +945,21 @@ void RuneDetector::getUniqueResult(vector<vector<pair<double, int> > >& results,
 			if (*idxitr1 == j)
 				continue;
 			int i = *idxitr1;
+			cout << "comparing" << FinalResults.at(i)->second << " " << FinalResults.at(j)->second << endl;
 			if (FinalResults.at(i)->second == FinalResults.at(j)->second)
 			{
-				if ((FinalResults.at(i)) + 1 != results.at(i).end() && (*(FinalResults.at(i))).first < (*(FinalResults.at(j))).first)
+				cout << "fuck1"<<endl;
+				if (FinalResults.at(i) + 1 != results.at(i).end() && FinalResults.at(i)->first < FinalResults.at(j)->first)
 				{
+					cout << "fuck2"<<endl;
 					(FinalResults.at(i))++;
-					check_index.insert(idxitr1 + 1, *idxitr1);
+					check_index.insert(idxitr1 + 1, i);
+					cout << "ck" << endl;
+					for (auto &b : check_index)
+					{
+						cout << b << endl;
+					}
+					cout << "ck---" << endl;
 					break; //recompare from beginning
 				}
 				else
@@ -959,7 +967,7 @@ void RuneDetector::getUniqueResult(vector<vector<pair<double, int> > >& results,
 					if (FinalResults.at(j) + 1 == results.at(j).end())
 					{
 						(FinalResults.at(i))++;
-						check_index.insert(idxitr1 + 1, *idxitr1);
+						check_index.insert(idxitr1 + 1, i);
 						break; //recompare from beginning
 					}
 					(FinalResults.at(j))++;
