@@ -19,12 +19,13 @@ public:
 	vector<Mat> mnistImgs;
 	int recognize(const Mat& img);
 	vector<pair<double, int> > recognize_primary(const Mat& img);
+	Mat kmeanPreprocess(const Mat& inputImg);
 private:
 	void clear();
+	bool fitMnist(const Mat& inputImg, Mat& resImg);
 	network<sequential> nn;
 	map<int, Point> mnistCenters; //<Label, Center>
 	map<int, int> mnistLabels; // <Index, Label>
-	Mat kmeanPreprocess(const Mat& inputImg);
 
 	RNG rng; // random number generator
 	string Model_Path;

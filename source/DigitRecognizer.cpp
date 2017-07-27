@@ -354,23 +354,27 @@ int DigitRecognizer::process(const Mat& img)
 
 vector<pair<double, int> > DigitRecognizer::process_primary(const Mat& img)
 {
-	// kmeanPreprocess(img);
 	Mat digitImg;
 	Mat kmeanImg;
 	kmeanPreprocess(img).copyTo(kmeanImg);
-	//preprocess(img).copyTo(kmeanImg);
 	if (fitDigit(kmeanImg, digitImg))
 	{
-		/*
-		knnRecognize_primary(digitImg);
-		*/
-		//return knnRecognize_primary(digitImg);
 		return cannyRecognize_primary(digitImg);
-		//return similarityRecognize_primary(digitImg);
 	}
 	return vector<pair<double, int> >();
 }
 
+vector<pair<double, int> > DigitRecognizer::process_primary_similarity(const Mat& img)
+{
+	Mat digitImg;
+	Mat kmeanImg;
+	kmeanPreprocess(img).copyTo(kmeanImg);
+	if (fitDigit(kmeanImg, digitImg))
+	{
+		return similarityRecognize_primary(digitImg);
+	}
+	return vector<pair<double, int> >();
+}
 
 
 bool DigitRecognizer::fitDigit(const Mat& inputImg, Mat& resImg)

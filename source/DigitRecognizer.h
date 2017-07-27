@@ -22,6 +22,7 @@ public:
 	void predict(const Mat& original_img, const Rect2f & sudoku_panel);
 	int process(const Mat& img);
 	vector<pair<double, int> > process_primary(const Mat& img);
+	vector<pair<double, int> > process_primary_similarity(const Mat& img);
 	~DigitRecognizer();	
 	vector<Mat> digitImgs;
 	vector<int> digitLabels;

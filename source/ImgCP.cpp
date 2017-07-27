@@ -280,6 +280,8 @@ void ImgCP::ImageConsumer()
 				countTime = true;
 				continue;
 			}
+			for (int s = 0; s < 18; s++)
+				cout << "target: " << targetIdx << endl;
 			RotatedRect targetRect = runeDetector.getRotateRect(targetIdx);
 			double angle_x, angle_y;
 			if(angleSolverFactory.getAngle(targetRect, AngleSolverFactory::TARGET_RUNE, angle_x, angle_y, settings.gimbalSetting.ShootingSpeed, 0))

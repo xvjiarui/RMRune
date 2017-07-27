@@ -70,8 +70,9 @@ int MnistRecognizer::recognize(const Mat& img)
 vector<pair<double, int> > MnistRecognizer::recognize_primary(const Mat& inputImg)
 {
 	vec_t data;
-	Mat img;
-	kmeanPreprocess(inputImg).copyTo(img);
+	Mat kmeanImg, img;
+	kmeanPreprocess(inputImg).copyTo(kmeanImg);
+	fitMnist(kmeanImg, img);
 	convert_image(img, -1.0, 1.0, 32, 32, data);
 
 	// recognize
@@ -135,3 +136,27 @@ Mat MnistRecognizer::kmeanPreprocess(const Mat& img)
 	return redImg;
 }
 
+bool MnistRecognizer::fitMnist(const Mat& inputImg, Mat& resImg)
+{
+	Mat inputCopy;
+	inputImg.copyTo(inputCopy);
+	// dilate(inputCopy, inputCopy, getStructuringElement(MORPH_RECT,Size(3,3)), Point(-1, -1), 3);
+	//morphologyEx(inputCopy, inputCopy, MORPH_CLOSE, getStructuringElement(MORPH_RECT,Size(3,3)));
+	//adaptiveThreshold(redImg, redImg, 255, ADAPTIVE_THRESH_GAUSSIAN_C, THRESH_BINARY, 3, 0);
+	vector<vector<Point> > contours;
+	vector<Vec4i> hierarchy;
+	findContours( inputCopy, contours, hierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE, Point(0, 0) );
+	if (!contours.size()) return false;
+	sort(contours.begin(), contours.end(), [](const vector<Point> & a, const vector<Point> & b) {return a.size() > b.size();});
+	vector<Point> curContoursPoly;
+	approxPolyDP(contours.at(0), curContoursPoly, 1, true);
+	Mat white;
+	Mat ones = Mat::ones(inputImg.rows, inputImg.cols, CV_8UC1) * 255;
+	ones.copyTo(white);
+	Rect curBoundingRect = boundingRect(curContoursPoly);
+	Mat mnistCore;
+	inputImg(curBoundingRect).copyTo(mnistCore);
+	mnistCore.copyTo(white(curBoundingRect));
+	white.copyTo(resImg);
+	return true;
+}

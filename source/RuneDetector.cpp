@@ -198,7 +198,7 @@ bool RuneDetector::checkSudoku(const vector<vector<Point2i>> &contours, vector<R
 	{
 		digit_avg_width /= digit_rects.size();
 		sort(digit_rects.begin(), digit_rects.end(), [](const RotatedRect& a, const RotatedRect& b) { return a.center.x < b.center.x;});
-		float targetX = 0;
+		float targetXL = 0, targetXR = 0 ;
 		RotatedRect curRotatedRect;
 		float avgDistance = 0;
 		int maxDistance = -1;
@@ -222,16 +222,23 @@ bool RuneDetector::checkSudoku(const vector<vector<Point2i>> &contours, vector<R
 		if (var > 150)
 		{
 			oneConfirmed = true;
-			targetX = digit_rects.at(oneIndex - 1).center.x + avgDistance;
+			targetXL = digit_rects.at(oneIndex - 1).center.x + avgDistance;
 		}
 		else
 		{
 			oneIndex = 0;
-			targetX = digit_rects.at(0).center.x - avgDistance;
+			targetXL = digit_rects.at(0).center.x - avgDistance;
+			targetXR = digit_rects.at(3).center.x + avgDistance;
 		}
 		curRotatedRect = digit_rects.at(0);
-		curRotatedRect.center.x  = targetX;
+		curRotatedRect.center.x  = targetXL;
 		digit_rects.push_back(curRotatedRect);
+		if (!oneConfirmed)
+		{
+			curRotatedRect = digit_rects.at(3);
+			curRotatedRect.center.x = targetXR;
+			digit_rects.push_back(curRotatedRect);
+		}
 	}
 #ifdef SHOW_DEBUG_DETAILS
 	cout << sudoku << ' ' << digit_rects.size() << ' ' << one_digit_rects.size() << endl;
@@ -319,7 +326,7 @@ bool RuneDetector::checkSudoku(const vector<vector<Point2i>> &contours, vector<R
 	sort(sudoku_rects.begin() + 0, sudoku_rects.begin() + 3, [](const RotatedRect& r1, const RotatedRect& r2) { return r1.center.x < r2.center.x;});
 	sort(sudoku_rects.begin() + 3, sudoku_rects.begin() + 6, [](const RotatedRect& r1, const RotatedRect& r2) { return r1.center.x < r2.center.x;});
 	sort(sudoku_rects.begin() + 6, sudoku_rects.begin() + 9, [](const RotatedRect& r1, const RotatedRect& r2) { return r1.center.x < r2.center.x;});
-	if (digit_rects.size() > 5)
+	if (digit_rects.size() > 5 && !(oneIndex != -1 && digit_rects.size() == 6))
 	{
 		float **dist_map = new float *[digit_rects.size()];
 		for (int i = 0; i < digit_rects.size(); i++)
@@ -382,7 +389,7 @@ bool RuneDetector::checkSudoku(const vector<vector<Point2i>> &contours, vector<R
 		}
 		digit_rects_temp.swap(digit_rects);
 	}
-	if (rune_type == RUNE_B && digit_rects.size() != 5)
+	if (rune_type == RUNE_B && (digit_rects.size() != 5 && digit_rects.size() != 6))
 	{
 		cout << "Digit gg." << endl;
 		return false;
@@ -701,7 +708,7 @@ pair<int, int> RuneDetector::chooseMnistTarget(const Mat &inputImg, const vector
 	vector<Mat> digit_images;
 	vector<vector<pair<double, int> > > digit_scores(5);
 	cout << "[" << endl;
-	for (int i = 0, writeI = 0; i < digit_rects.size(); i++)
+	for (int i  = 0; i < digit_rects.size(); i++)
 	{
 		Point2f pts[4];
 		vector<Point2f> vpts, t;
@@ -709,6 +716,9 @@ pair<int, int> RuneDetector::chooseMnistTarget(const Mat &inputImg, const vector
 		for_each(pts, (pts + 4), [&](const Point2f &a) { vpts.push_back(a); });
 		perspectiveTransform(vpts, t, perspective_mat);
 		digit_images.push_back(perspective_image(boundingRect(t)));
+	}
+	for (int i = 0, writeI = 0; i < 5; i++)
+	{
 #ifdef SHOW_IMAGE
 		imshow("showtime", digit_images.at(i));
 #endif
@@ -719,12 +729,60 @@ pair<int, int> RuneDetector::chooseMnistTarget(const Mat &inputImg, const vector
 		}
 		else
 		{
-			digit_scores.at(writeI) = digitRecognizer.process_primary(digit_images.at(i));
+			if (i == oneIndex)
+				digit_scores.at(writeI) = digitRecognizer.process_primary_similarity(digit_images.at(i));
+			else
+				digit_scores.at(writeI) = digitRecognizer.process_primary(digit_images.at(i));
 		}
-		if (i == oneIndex && !digit_scores.at(writeI).size())
+		if (i == oneIndex && !oneConfirmed)
 		{
-			digit_scores.back().clear();
-			digit_scores.back().push_back(make_pair<double, int>(100, 1));
+			vector<pair<double, int> >& leftScores = digit_scores.at(writeI);
+			vector<pair<double, int> > rightScores = digitRecognizer.process_primary_similarity(digit_images.back());
+			bool left = false;
+			if (!leftScores.size())
+			{
+				left = false;
+			}
+			else if (!rightScores.size())
+			{
+				left = true;
+			}
+			else
+			{
+				for (int scoreIndex = 0; scoreIndex < leftScores.size(); scoreIndex++)
+				{
+					if (leftScores.at(scoreIndex).second == 1 && rightScores.at(scoreIndex).second == 1)
+					{
+						if (leftScores.at(scoreIndex).first < rightScores.at(scoreIndex).first)
+							left = false;
+						else
+							left = true;
+						break;
+					}
+					else if (leftScores.at(scoreIndex).second == 1)
+					{
+						left = true;
+						break;
+					}
+					else if (rightScores.at(scoreIndex).second == 1)
+					{
+						left = false;
+						break;
+					}
+				}
+			}
+			if (left)
+			{
+				cout << "fuckfuck" << endl;
+				digit_scores.front().clear();
+				digit_scores.front().push_back(make_pair<double, int>(100, 1));
+				writeI++;
+			}
+			else
+			{
+				digit_scores.back().clear();
+				digit_scores.back().push_back(make_pair<double, int>(100, 1));
+			}
 		}
 		else
 		{
@@ -830,6 +888,7 @@ pair<int, int> RuneDetector::chooseMnistTarget(const Mat &inputImg, const vector
 				AdjustThreshold(mnist_threshold,(void*)&data);
 				*/
 				mnistRecognizer[0].recognize_primary(temp);
+				imshow("hihi", mnistRecognizer[0].kmeanPreprocess(temp));
 				if (waitKey(0) == 'n'){
 					cout << "Next frame" << endl;
 					goToNextFrame = true;
@@ -949,23 +1008,12 @@ void RuneDetector::getUniqueResult(vector<vector<pair<double, int> > >& results,
 			if (check_index.at(k) == j)
 				continue;
 			int i = check_index.at(k);
-			// cout << "comparing" << FinalResults.at(i)->second << " " << FinalResults.at(j)->second << endl;
 			if (FinalResults.at(i)->second == FinalResults.at(j)->second)
 			{
-				// cout << "fuck1"<<endl;
 				if (FinalResults.at(i) + 1 != results.at(i).end() && FinalResults.at(i)->first < FinalResults.at(j)->first)
 				{
-					// cout << "fuck2"<<endl;
 					(FinalResults.at(i))++;
 					check_index.insert(check_index.begin() + k + 1, i);
-					/*
-					cout << "ck" << endl;
-					for (auto &b : check_index)
-					{
-						cout << b << endl;
-					}
-					cout << "ck---" << endl;
-					*/
 					break; //recompare from beginning
 				}
 				else
