@@ -525,12 +525,14 @@ int DigitRecognizer::similarityRecognize(const Mat& img)
 	return similarityRecognize_primary(img)[0].second;
 }
 
-vector<pair<double, int> > DigitRecognizer::similarityRecognize_primary(const Mat& img)
+vector<pair<double, int> > DigitRecognizer::similarityRecognize_primary(const Mat& inputImg)
 {
 #ifdef SHOW_IMAGE
 	Mat temp;
 	img.copyTo(temp);
 #endif
+	Mat img;
+	resize(inputImg, img, Size(40, 60));
 	static int digitTemplates[10][7] = {
 		{1, 1, 1, 0, 1, 1, 1},
 		{0, 0, 1, 0, 0, 1, 0},
