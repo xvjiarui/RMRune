@@ -16,6 +16,8 @@
 #include "AngleSolver.hpp"
 #include "ImgCP.hpp"
 #include "RMVideoCapture.hpp"
+#include <opencv2/opencv.hpp>
+#include <opencv2/gpu/gpu.hpp>
 
 // #define RESET_SETTINGS
 
@@ -24,6 +26,11 @@ int main(int argc, char** argv )
 	string path = "./Settings/Settings.xml";
 	string camPath = "./Settings/Camera/";
     Mat original_img;
+	if (gpu::getCudaEnabledDeviceCount())
+		gpu::setDevice(0);
+	else
+		cout << "gg" << endl;
+	//cv::gpu::GpuMat dst;
 
 	if (argc == 1)
 	{

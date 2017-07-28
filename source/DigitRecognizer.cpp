@@ -3,6 +3,8 @@
 #include <stdexcept>
 #include "DigitRecognizer.h"
 #include "RuneDetector.hpp"
+#include <opencv2/opencv.hpp>
+#include <opencv2/gpu/gpu.hpp>
 
 void binaryMat2points(const Mat & img, vector<Point> & pts)
 {

@@ -14,7 +14,7 @@
 <MaxDistance>800.0</MaxDistance>
 <ForceRuneType>2</ForceRuneType>
 <ContourThreshold>100</ContourThreshold>
-<VoterSaveTime>4</VoterSaveTime>
+<VoterSaveTime>3</VoterSaveTime>
 <SRVoterSaveTime>15</SRVoterSaveTime>
 <ExposureTime>60</ExposureTime>
 <HsvLowerBound>
@@ -28,7 +28,7 @@
 <GimbalY> 55 </GimbalY>
 <GimbalZ> -30 </GimbalZ>
 <CameraTheta> 14 </CameraTheta>
-<ShootingSpeed> 15 </ShootingSpeed>
+<ShootingSpeed> 14 </ShootingSpeed>
 <KmeansClasses> 3 </KmeansClasses>
 <KmeansItrTimes> 5 </KmeansItrTimes>
 </opencv_storage>

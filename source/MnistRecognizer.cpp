@@ -75,7 +75,7 @@ vector<pair<double, int> > MnistRecognizer::recognize_primary(const Mat& img)
 	kmeanPreprocess(inputImg).copyTo(kmeanImg);
 	fitMnist(kmeanImg, img);
 	*/
-	convert_image(img, -1.0, 1.0, 32, 32, data);
+	convert_image(img, -1.0, 1.0, 28, 28, data);
 
 	// recognize
 	auto res = nn.predict(data);

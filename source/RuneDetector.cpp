@@ -21,6 +21,8 @@ IN THE SOFTWARE.
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/calib3d/calib3d.hpp>
 #include <opencv2/features2d/features2d.hpp>
+#include <opencv2/opencv.hpp>
+#include <opencv2/gpu/gpu.hpp>
 
 #include <iostream>
 #include <string>
@@ -46,11 +48,15 @@ cv::Point2f MatDotPoint(cv::Mat M, const cv::Point2f &p)
 
 pair<int, int> RuneDetector::getTarget(const cv::Mat &image, RuneType rune_type)
 {
-	cvtColor(image, src, CV_BGR2GRAY);
+	gpu::GpuMat gpuSrc, gpuBinary;
 	Mat binary;
+	Mat src;
+	gpu::cvtColor(gpu::GpuMat(image), gpuSrc, CV_BGR2GRAY);
+	gpuSrc.download(src);
 	//threshold(src, binary, contour_threshold, 255, THRESH_BINARY);
-	GaussianBlur(src, binary, Size(13, 13), 0);
-	morphologyEx(binary, binary, MORPH_CLOSE, getStructuringElement(MORPH_RECT,Size(3,3)));
+	gpu::GaussianBlur(gpuSrc, gpuBinary, Size(13, 13), 0);
+	gpu::morphologyEx(gpuBinary, gpuBinary, MORPH_CLOSE, getStructuringElement(MORPH_RECT,Size(3,3)));
+	gpuBinary.download(binary);
 	adaptiveThreshold(binary, binary, 255, ADAPTIVE_THRESH_GAUSSIAN_C, THRESH_BINARY, 5, 0);
 //threshold(src, binary, 200, 255, THRESH_BINARY);
 #ifdef SHOW_IMAGE
@@ -594,7 +600,6 @@ void AdjustThreshold(int t, void* d)
 pair<int, int> RuneDetector::chooseMnistTarget(const Mat &inputImg, const vector<RotatedRect> &sudoku_rects)
 {
 	// get 9(cell) X 4(corner) corner, and 9 cell's center
-	
 	Mat image;
 	cvtColor(inputImg, image, CV_BGR2GRAY);
 	vector<Point2fWithIdx> centers;
@@ -738,6 +743,7 @@ pair<int, int> RuneDetector::chooseMnistTarget(const Mat &inputImg, const vector
 	adaptiveThreshold(binary, binary, 255, ADAPTIVE_THRESH_GAUSSIAN_C, THRESH_BINARY, 5, 0);
 	warpPerspective(binary, perspective_image, perspective_mat, inputImg.size());
 #else
+	gpu::GpuMat gpu_perspective_image;
 	Mat perspective_image;
 	warpPerspective(inputImg, perspective_image, perspective_mat, inputImg.size());
 #endif
@@ -949,6 +955,7 @@ pair<int, int> RuneDetector::chooseMnistTarget(const Mat &inputImg, const vector
 		}
 		img.copyTo(sudoku_imgs.at(i));
 	}
+	int st = getTickCount();
 	for (size_t i = 0; i < sudoku_imgs.size(); i++)
 	{
 		mnistThreads.push_back(thread([&, i]() {
@@ -960,6 +967,7 @@ pair<int, int> RuneDetector::chooseMnistTarget(const Mat &inputImg, const vector
 	{
 		t.join();
 	}
+	cout << "MnistTime: " << ((int)getTickCount() - st) * 1000.0 / getTickFrequency() << endl;
 /*
 
 	cout << "(";
@@ -978,7 +986,7 @@ pair<int, int> RuneDetector::chooseMnistTarget(const Mat &inputImg, const vector
 	cout << ")" << endl;
 
 	static Voter<vector<int>> mnistVoter(voteSetting.saveTime);
-	static vector<int> lastMnistResult;
+	static vector<int> lastMnistResult(9, 0);
 
 	mnistVoter.PushElement(mnistResult);
 
@@ -990,11 +998,18 @@ pair<int, int> RuneDetector::chooseMnistTarget(const Mat &inputImg, const vector
 	if (digitVoter.GetBestElement(digit_results) && mnistVoter.GetBestElement(mnistResult))
 	{
 #ifdef OPTIMIZE_VOTING
-		if (mnistResult == lastMnistResult)
+		int sameCount = 0;
+		for (int i = 0; i < mnistResult.size(); i++)
+		{
+			if (mnistResult.at(i) == lastMnistResult.at(i))
+				sameCount++;
+		}
+		if (sameCount >= 5)
 		{
 			cout << "pass" << endl;
 			return make_pair(-1, -1);
 		}
+
 #endif
 		if (lastDigitResult != digit_results)
 		{

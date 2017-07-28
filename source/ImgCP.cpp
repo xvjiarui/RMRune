@@ -216,8 +216,6 @@ void ImgCP::ImageConsumer()
 		while (pIdx - cIdx == 0);
 		Mat original_img; 
 		data[cIdx % BUFFER_SIZE].img.copyTo(original_img);
-		if (!countTime)
-			startTime = getTickCount();
 		unsigned int frameNum = data[cIdx % BUFFER_SIZE].frame;
 		++cIdx;
 #ifdef ADJUST_COORDINATE
@@ -274,7 +272,10 @@ void ImgCP::ImageConsumer()
 				default:
 					runeType = (runeGPIO == manifoldGPIO::low) ? RuneDetector::RUNE_S : RuneDetector::RUNE_B;
 			}
+			startTime = getTickCount();
 			int targetIdx = runeDetector.getTarget(original_img, runeType).second;
+			endTime = getTickCount();
+		    cout << "Frame time: " << (endTime - startTime) * 1000.0 / getTickFrequency() << endl;
 			if (targetIdx == -1)
 			{
 				countTime = true;
@@ -289,8 +290,6 @@ void ImgCP::ImageConsumer()
 				cout << targetIdx << " " << targetRect.center << endl;
 				cout << "Yaw: " << angle_x << "Pitch: " << angle_y << endl;
 			}
-			endTime = getTickCount();
-		    cout << "Frame time: " << (endTime - startTime) * 1000.0 / getTickFrequency() << endl;
 #ifndef NO_COMMUNICATION
 			setGimbalAngle(targetIdx, angle_x, angle_y);
 			cout << "sending... " << endl;
