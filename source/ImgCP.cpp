@@ -272,10 +272,10 @@ void ImgCP::ImageConsumer()
 				default:
 					runeType = (runeGPIO == manifoldGPIO::low) ? RuneDetector::RUNE_S : RuneDetector::RUNE_B;
 			}
-			startTime = getTickCount();
+			//startTime = getTickCount();
 			int targetIdx = runeDetector.getTarget(original_img, runeType).second;
-			endTime = getTickCount();
-		    cout << "Frame time: " << (endTime - startTime) * 1000.0 / getTickFrequency() << endl;
+			//endTime = getTickCount();
+		    //cout << "Frame time: " << (endTime - startTime) * 1000.0 / getTickFrequency() << endl;
 			if (targetIdx == -1)
 			{
 				countTime = true;

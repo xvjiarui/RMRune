@@ -333,119 +333,122 @@ bool RuneDetector::checkSudoku(const vector<vector<Point2i>> &contours, vector<R
 	sort(sudoku_rects.begin() + 3, sudoku_rects.begin() + 6, [](const RotatedRect& r1, const RotatedRect& r2) { return r1.center.x < r2.center.x;});
 	sort(sudoku_rects.begin() + 6, sudoku_rects.begin() + 9, [](const RotatedRect& r1, const RotatedRect& r2) { return r1.center.x < r2.center.x;});
 
-	bool *isValidRect = new bool[digit_rects.size()];
-	int validCount = 0;
-	for (int i = 0; i < digit_rects.size(); i++)
+	if (rune_type == RUNE_B)
 	{
-		if (digit_rects.at(i).center.x > sudoku_rects.at(0).center.x && 
-			digit_rects.at(i).center.x < sudoku_rects.at(2).center.x && 
-			digit_rects.at(i).center.y > sudoku_rects.at(0).center.y - 3 * (sudoku_rects.at(3).center.y - sudoku_rects.at(0).center.y) &&
-			digit_rects.at(i).center.y < sudoku_rects.at(0).center.y) 
-		{
-			isValidRect[i] = true;
-			validCount++;
-		}
-		else
-		{
-			isValidRect[i] = false;
-		}
-	}
-	if (validCount < 5) return false;
-	if (digit_rects.size() > 5 && !(oneIndex != -1 && digit_rects.size() == 6))
-	{
-		vector<RotatedRect> digit_rects_temp(5);
-		cout << "size: " << digit_rects.size() << endl;
-		cout << "sorting" << endl;
-		int lineCount; 
+		bool *isValidRect = new bool[digit_rects.size()];
+		int validCount = 0;
 		for (int i = 0; i < digit_rects.size(); i++)
 		{
-			if (!isValidRect[i]) continue;
-			lineCount = 0;
-			for (int j = 0; j < digit_rects.size(); j++)
+			if (digit_rects.at(i).center.x > sudoku_rects.at(0).center.x && 
+					digit_rects.at(i).center.x < sudoku_rects.at(2).center.x && 
+					digit_rects.at(i).center.y > sudoku_rects.at(0).center.y - 3 * (sudoku_rects.at(3).center.y - sudoku_rects.at(0).center.y) &&
+					digit_rects.at(i).center.y < sudoku_rects.at(0).center.y) 
 			{
-				if (!isValidRect[j]) continue;
-				double vDist = abs(digit_rects.at(i).center.y - digit_rects.at(j).center.y);
-				if (vDist < 10)
+				isValidRect[i] = true;
+				validCount++;
+			}
+			else
+			{
+				isValidRect[i] = false;
+			}
+		}
+		if (validCount < 5) return false;
+		if (digit_rects.size() > 5 && !(oneIndex != -1 && digit_rects.size() == 6))
+		{
+			vector<RotatedRect> digit_rects_temp(5);
+			cout << "size: " << digit_rects.size() << endl;
+			cout << "sorting" << endl;
+			int lineCount; 
+			for (int i = 0; i < digit_rects.size(); i++)
+			{
+				if (!isValidRect[i]) continue;
+				lineCount = 0;
+				for (int j = 0; j < digit_rects.size(); j++)
 				{
-					digit_rects_temp.at(lineCount++) = digit_rects.at(j);
+					if (!isValidRect[j]) continue;
+					double vDist = abs(digit_rects.at(i).center.y - digit_rects.at(j).center.y);
+					if (vDist < 10)
+					{
+						digit_rects_temp.at(lineCount++) = digit_rects.at(j);
+					}
+				}
+				if (lineCount == 5)
+				{
+					break;
 				}
 			}
-			if (lineCount == 5)
+			if (lineCount != 5)
 			{
-				break;
+				cout << "sort gg." << endl;
+				return false;
 			}
-		}
-		if (lineCount != 5)
-		{
-			cout << "sort gg." << endl;
-			return false;
-		}
-		digit_rects_temp.swap(digit_rects);
-		/*
-		for (int i = 0; i < digit_rects.size(); i++)
-		{
-			lineCount = 0;
-			for (int j = 0; j < digit_rects.size(); j++)
+			digit_rects_temp.swap(digit_rects);
+			/*
+			   for (int i = 0; i < digit_rects.size(); i++)
+			   {
+			   lineCount = 0;
+			   for (int j = 0; j < digit_rects.size(); j++)
+			   {
+			   if (dist_map[i])
+			   }
+			   }
+			   */
+			/*
+			// calculate distance of each cell center
+			for (int i = 0; i < digit_rects.size(); ++i)
 			{
-				if (dist_map[i])
-			}
-		}
-		*/
-		/*
-		// calculate distance of each cell center
-		for (int i = 0; i < digit_rects.size(); ++i)
-		{
 			for (int j = i + 1; j < digit_rects.size(); ++j)
 			{
-				float d = sqrt((digit_rects.at(i).center.x - digit_rects.at(j).center.x) * (digit_rects.at(i).center.x - digit_rects.at(j).center.x) + ((digit_rects.at(i).center.y - digit_rects.at(j).center.y) * (digit_rects.at(i).center.y - digit_rects.at(j).center.y)));
-				dist_map[i][j] = d;
-				dist_map[j][i] = d;
+			float d = sqrt((digit_rects.at(i).center.x - digit_rects.at(j).center.x) * (digit_rects.at(i).center.x - digit_rects.at(j).center.x) + ((digit_rects.at(i).center.y - digit_rects.at(j).center.y) * (digit_rects.at(i).center.y - digit_rects.at(j).center.y)));
+			dist_map[i][j] = d;
+			dist_map[j][i] = d;
 			}
-		}
+			}
 
-		// choose the minimun distance cell as center cell
-		int center_idx = 0;
-		float min_dist = 100000000;
-		for (int i = 0; i < digit_rects.size(); ++i)
-		{
+			// choose the minimun distance cell as center cell
+			int center_idx = 0;
+			float min_dist = 100000000;
+			for (int i = 0; i < digit_rects.size(); ++i)
+			{
 			float cur_d = 0;
 			for (int j = 0; j < digit_rects.size(); ++j)
 			{
-				cur_d += dist_map[i][j];
+			cur_d += dist_map[i][j];
 			}
 			if (cur_d < min_dist)
 			{
-				min_dist = cur_d;
-				center_idx = i;
+			min_dist = cur_d;
+			center_idx = i;
 			}
-		}
+			}
 #ifdef SHOW_DEBUG_DETAILS
-		cout << center_idx << endl;
+cout << center_idx << endl;
 #endif
 
-		// sort distance between each cell and the center cell
-		vector<pair<float, int>> dist_center;
-		for (int i = 0; i < digit_rects.size(); ++i)
-		{
+			// sort distance between each cell and the center cell
+			vector<pair<float, int>> dist_center;
+			for (int i = 0; i < digit_rects.size(); ++i)
+			{
 			dist_center.push_back(make_pair(dist_map[center_idx][i], i));
-		}
-		std::sort(dist_center.begin(), dist_center.end(), [](const pair<float, int> &p1, const pair<float, int> &p2) { return p1.first < p2.first; });
+			}
+			std::sort(dist_center.begin(), dist_center.end(), [](const pair<float, int> &p1, const pair<float, int> &p2) { return p1.first < p2.first; });
 
-		for (int i = 0; i < digit_rects.size(); i++)
-		{
+			for (int i = 0; i < digit_rects.size(); i++)
+			{
 			delete[] dist_map[i];
-		}
-		delete[] dist_map;
+			}
+			delete[] dist_map;
 
-		vector<RotatedRect> digit_rects_temp;
-		for (int i = 0; i < 5; ++i)
-		{
+			vector<RotatedRect> digit_rects_temp;
+			for (int i = 0; i < 5; ++i)
+			{
 			digit_rects_temp.push_back(digit_rects[dist_center[i].second]);
+			}
+			digit_rects_temp.swap(digit_rects);
+			*/
 		}
-		digit_rects_temp.swap(digit_rects);
-		*/
+		delete [] isValidRect;
 	}
-	delete [] isValidRect;
 	if (rune_type == RUNE_B && (digit_rects.size() != 5 && digit_rects.size() != 6))
 	{
 		cout << "Digit gg." << endl;
@@ -967,7 +970,6 @@ pair<int, int> RuneDetector::chooseMnistTarget(const Mat &inputImg, const vector
 		}
 		img.copyTo(sudoku_imgs.at(i));
 	}
-	int st = getTickCount();
 	for (size_t i = 0; i < sudoku_imgs.size(); i++)
 	{
 		mnistThreads.push_back(thread([&, i]() {
@@ -979,7 +981,6 @@ pair<int, int> RuneDetector::chooseMnistTarget(const Mat &inputImg, const vector
 	{
 		t.join();
 	}
-	cout << "MnistTime: " << ((int)getTickCount() - st) * 1000.0 / getTickFrequency() << endl;
 /*
 
 	cout << "(";

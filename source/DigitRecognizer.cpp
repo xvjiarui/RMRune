@@ -382,8 +382,8 @@ vector<pair<double, int> > DigitRecognizer::process_primary_similarity(const Mat
 bool DigitRecognizer::fitDigit(const Mat& inputImg, Mat& resImg)
 {
 	Mat inputCopy;
-	inputImg.copyTo(inputCopy);
-	dilate(inputCopy, inputCopy, getStructuringElement(MORPH_RECT,Size(3,3)), Point(-1, -1), 3);
+	//inputImg.copyTo(inputCopy);
+	dilate(inputImg, inputCopy, getStructuringElement(MORPH_RECT,Size(3,3)), Point(-1, -1), 3);
 	//morphologyEx(inputCopy, inputCopy, MORPH_CLOSE, getStructuringElement(MORPH_RECT,Size(3,3)));
 	//adaptiveThreshold(redImg, redImg, 255, ADAPTIVE_THRESH_GAUSSIAN_C, THRESH_BINARY, 3, 0);
 	vector<vector<Point> > contours;
@@ -401,12 +401,11 @@ bool DigitRecognizer::fitDigit(const Mat& inputImg, Mat& resImg)
 		Mat zeroImg = Mat::zeros(tempImg.rows, tempImg.rows / 60.0 * 40.0 - tempImg.cols, CV_8UC1);
 		// inputCopy = Mat(40, 60, CV_8UC1);
 		hconcat(zeroImg, tempImg, inputCopy);
-		resize(inputCopy, inputCopy, Size(40, 60));
 	}
 	else {
-		inputCopy = inputImg(boundingRect(curContoursPoly));
-		resize(inputCopy, inputCopy, Size(40, 60));
+		inputImg(boundingRect(curContoursPoly)).copyTo(inputCopy);
 	}
+	resize(inputCopy, inputCopy, Size(40, 60));
 	float data[] = {1, 0.1, 0,  0, 1, 0};
 	Mat affine(2, 3, CV_32FC1, data);
 	warpAffine( inputCopy, inputCopy, affine, inputCopy.size());
