@@ -210,6 +210,7 @@ void ImgCP::ImageConsumer()
 	pdata.runeDetector = &runeDetector;
 	pdata.settings = &settings;
 #endif
+	//double hardCodeAngleY[] = {10.0, 6.0, 1.6};
 
 	while(1)
 	{
@@ -287,6 +288,8 @@ void ImgCP::ImageConsumer()
 			double angle_x, angle_y;
 			if(angleSolverFactory.getAngle(targetRect, AngleSolverFactory::TARGET_RUNE, angle_x, angle_y, settings.gimbalSetting.ShootingSpeed, 0))
 			{
+				//angle_y += hardCodeAngleY[targetIdx / 3];
+				//angle_y /= 2.0;
 				cout << targetIdx << " " << targetRect.center << endl;
 				cout << "Yaw: " << angle_x << "Pitch: " << angle_y << endl;
 			}
@@ -308,7 +311,6 @@ void ImgCP::ImageConsumer()
 		{
 			continue;
 		}
-		cout << endl;
 	}
 	// close GPIO and UART
 	//manifoldGPIO::gpioUnexport(runeToggleButton);

@@ -12,7 +12,7 @@
 <OneHeight>6</OneHeight>
 <MinDistance>10.0</MinDistance>
 <MaxDistance>800.0</MaxDistance>
-<ForceRuneType>1</ForceRuneType>
+<ForceRuneType>0</ForceRuneType>
 <ContourThreshold>100</ContourThreshold>
 <VoterSaveTime>3</VoterSaveTime>
 <SRVoterSaveTime>15</SRVoterSaveTime>
@@ -25,10 +25,10 @@
 <ScaleY> 1.0 </ScaleY>
 <ScaleZ> 1.0 </ScaleZ>
 <GimbalX> 18 </GimbalX>
-<GimbalY> 55 </GimbalY>
+<GimbalY> -43 </GimbalY>
 <GimbalZ> -30 </GimbalZ>
-<CameraTheta> 14 </CameraTheta>
-<ShootingSpeed> 14 </ShootingSpeed>
+<CameraTheta> -14 </CameraTheta>
+<ShootingSpeed> 18 </ShootingSpeed>
 <KmeansClasses> 3 </KmeansClasses>
 <KmeansItrTimes> 5 </KmeansItrTimes>
 </opencv_storage>
