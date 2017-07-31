@@ -30,6 +30,7 @@ IN THE SOFTWARE.
 #include <cstdio>
 #include <unordered_map>
 #include "Voter.hpp"
+//#define USE_GPU
 
 using namespace cv;
 using namespace std;
@@ -48,15 +49,20 @@ cv::Point2f MatDotPoint(cv::Mat M, const cv::Point2f &p)
 
 pair<int, int> RuneDetector::getTarget(const cv::Mat &image, RuneType rune_type)
 {
-	gpu::GpuMat gpuSrc, gpuBinary;
 	Mat binary;
 	Mat src;
+#ifdef USE_GPU
+	gpu::GpuMat gpuSrc, gpuBinary;
 	gpu::cvtColor(gpu::GpuMat(image), gpuSrc, CV_BGR2GRAY);
 	gpuSrc.download(src);
-	//threshold(src, binary, contour_threshold, 255, THRESH_BINARY);
 	gpu::GaussianBlur(gpuSrc, gpuBinary, Size(13, 13), 0);
 	gpu::morphologyEx(gpuBinary, gpuBinary, MORPH_CLOSE, getStructuringElement(MORPH_RECT,Size(3,3)));
 	gpuBinary.download(binary);
+#else
+	cvtColor(image, src, CV_BGR2GRAY);
+	GaussianBlur(src, binary, Size(13, 13), 0);
+	morphologyEx(binary, binary, MORPH_CLOSE, getStructuringElement(MORPH_RECT,Size(3,3)));
+#endif
 	adaptiveThreshold(binary, binary, 255, ADAPTIVE_THRESH_GAUSSIAN_C, THRESH_BINARY, 5, 0);
 //threshold(src, binary, 200, 255, THRESH_BINARY);
 #ifdef SHOW_IMAGE
@@ -225,7 +231,7 @@ bool RuneDetector::checkSudoku(const vector<vector<Point2i>> &contours, vector<R
 		for_each(distance.begin(), distance.end(), [&](const float& a){
 			var += (a - avgDistance) * (a - avgDistance);
 		});
-		if (var > 150)
+		if (var > 100)
 		{
 			oneConfirmed = true;
 			targetXL = digit_rects.at(oneIndex - 1).center.x + avgDistance;

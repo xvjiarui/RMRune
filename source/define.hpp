@@ -18,6 +18,7 @@
 // #define ADJUST_THRESHOLD
 // #define ADJUST_COORDINATE
 // #define USE_PHYSIC_PREDICTION_IN_ANGLE_SOLVER
+//#define USE_GPU
 
 ////////////////////////////////////////
 //const area
