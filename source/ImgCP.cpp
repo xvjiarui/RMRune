@@ -22,7 +22,7 @@ manifoldGPIO::GPIO runeToggleButton = manifoldGPIO::gpio157;
 void serialSetup();
 void serialStart();
 void UART0_Close(int fd);
-void setGimbalAngle(int index, float pitch, float yaw);
+void setGimbalAngle(int index, float pitch, float yaw, float dist_z);
 void sendGimbalAngle();
 extern int fd;
 
@@ -105,7 +105,7 @@ void CalAngle(void* d)
     Mat(3,3, CV_64FC1, r_data).copyTo(r_camera_ptz);
     angleSolver.setRelationPoseCameraPTZ(r_camera_ptz, t_camera_ptz, barrel_ptz_offset_y);
 	angleSolverFactory.setSolver(&angleSolver);
-	double angle_x, angle_y;
+	double angle_x, angle_y, dist_z;
 	// cout << ptz_camera_x << ' ' << ptz_camera_y << ' ' << ptz_camera_z;
 	for (int i = 0; i < 9; i++)
 	{
@@ -129,7 +129,7 @@ void CalAngle(void* d)
 		{
 			cout << '\t';
 		}
-		if (angleSolverFactory.getAngle(runeDetector.getRotateRect(i), AngleSolverFactory::TARGET_RUNE, angle_x, angle_y, settings.gimbalSetting.ShootingSpeed, 0))
+		if (angleSolverFactory.getAngle(runeDetector.getRotateRect(i), AngleSolverFactory::TARGET_RUNE, angle_x, angle_y, dist_z, settings.gimbalSetting.ShootingSpeed, 0))
 		{
 			cout << "(" << angle_x << ", " << angle_y << ')';
 		}
@@ -191,7 +191,7 @@ void ImgCP::ImageConsumer()
 	//UART init
 	serialSetup();
 	serialStart();
-	setGimbalAngle(0, 0, 0);
+	setGimbalAngle(0, 0, 0, 0);
 	cout << "sending... " << endl;
 	sendGimbalAngle();
 #endif
@@ -285,16 +285,16 @@ void ImgCP::ImageConsumer()
 			for (int s = 0; s < 18; s++)
 				cout << "target: " << targetIdx << endl;
 			RotatedRect targetRect = runeDetector.getRotateRect(targetIdx);
-			double angle_x, angle_y;
-			if(angleSolverFactory.getAngle(targetRect, AngleSolverFactory::TARGET_RUNE, angle_x, angle_y, settings.gimbalSetting.ShootingSpeed, 0))
+			double angle_x, angle_y, dist_z;
+			if(angleSolverFactory.getAngle(targetRect, AngleSolverFactory::TARGET_RUNE, angle_x, angle_y, dist_z, settings.gimbalSetting.ShootingSpeed, 0))
 			{
 				//angle_y += hardCodeAngleY[targetIdx / 3];
 				//angle_y /= 2.0;
 				cout << targetIdx << " " << targetRect.center << endl;
-				cout << "Yaw: " << angle_x << "Pitch: " << angle_y << endl;
+				cout << "Yaw: " << angle_x << "Pitch: " << angle_y << "z: " << dist_z << endl;
 			}
 #ifndef NO_COMMUNICATION
-			setGimbalAngle(targetIdx, angle_x, angle_y);
+			setGimbalAngle(targetIdx, angle_x, angle_y, (float)dist_z);
 			cout << "sending... " << endl;
 			sendGimbalAngle();
 #endif

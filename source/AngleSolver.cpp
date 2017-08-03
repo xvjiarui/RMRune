@@ -50,7 +50,7 @@ void AngleSolver::setRelationPoseCameraPTZ(const cv::Mat & rot_camera_ptz, const
 }
 
 
-bool AngleSolver::getAngle(const cv::RotatedRect & rect, double & angle_x, double & angle_y, double bullet_speed, double current_ptz_angle, const cv::Point2f & offset){
+bool AngleSolver::getAngle(const cv::RotatedRect & rect, double & angle_x, double & angle_y, double & dist_z, double bullet_speed, double current_ptz_angle, const cv::Point2f & offset){
     if (rect.size.height < 1)
         return false;
 
@@ -79,7 +79,7 @@ bool AngleSolver::getAngle(const cv::RotatedRect & rect, double & angle_x, doubl
 //    cout << "position_in_camera: " << position_in_camera.t() << endl;
 //    cout << "position_in_ptz: " << position_in_ptz.t() << endl;
     // calculte angles to turn, so that make barrel aim at target
-    adjustPTZ2Barrel(position_in_ptz, angle_x, angle_y, bullet_speed, current_ptz_angle);
+    adjustPTZ2Barrel(position_in_ptz, angle_x, angle_y, dist_z, bullet_speed, current_ptz_angle);
 
     return true;
 }
@@ -88,9 +88,9 @@ void AngleSolver::tranformationCamera2PTZ(const cv::Mat & pos, cv::Mat & transed
     transed_pos = rot_camera2ptz * pos - trans_camera2ptz;
 }
 
-void AngleSolver::adjustPTZ2Barrel(const cv::Mat & pos_in_ptz, double & angle_x, double & angle_y, double bullet_speed, double current_ptz_angle){
+void AngleSolver::adjustPTZ2Barrel(const cv::Mat & pos_in_ptz, double & angle_x, double & angle_y, double & dist_z, double bullet_speed, double current_ptz_angle){
     const double *_xyz = (const double *)pos_in_ptz.data;
-	cout << "x: " << _xyz[0] << " y: " << _xyz[1] << " z: " << _xyz[2] << endl;
+	dist_z = _xyz[2];
 
 //#ifndef USE_PHYSIC_PREDICTION_IN_ANGLE_SOLVER
 	/*
@@ -122,14 +122,17 @@ void AngleSolver::adjustPTZ2Barrel(const cv::Mat & pos_in_ptz, double & angle_x,
 //#else
 	angle_x = atan2(_xyz[0], _xyz[2]);
 	double h = -(_xyz[1]/100.0) * scale_y;
-	double z = abs(_xyz[2]/100.0);
+	double z = sqrt(_xyz[0] * _xyz[0] + _xyz[2] * _xyz[2]) / 100.0;
 	double szh = sqrt(h * h + z * z);
 	angle_y = -0.5 * ( acos(z/szh) + asin( (h + 9.8 * z * z / (bullet_speed * bullet_speed))/szh));
+	double angle_y_ss = (atan(((9.85 * z * z) / (bullet_speed * bullet_speed) + h) / szh) - atan(-h / z ))/2 * 57.2958;
+	// cout <<  "Testing:"  <<angle_y_ss << endl;
 //	angle_y /= 2.0;
 //#endif
     //cout << "angle_x: " << angle_x << "\tangle_y: " << angle_y <<  "\talpha: " << alpha << "\ttheta: " << theta << endl;
     angle_x = -angle_x * 180 / 3.1415926;
-    angle_y = -angle_y * 180 / 3.1415926;
+	angle_y = angle_y_ss;
+    //angle_y = -angle_y_ss * 180 / 3.1415926;
 }
 
 void AngleSolver::getTarget2dPoinstion(const cv::RotatedRect & rect, vector<Point2f> & target2d, const cv::Point2f & offset){
@@ -177,7 +180,7 @@ void AngleSolverFactory::setTargetSize(double width, double height, TargetType t
     }
 }
 
-bool AngleSolverFactory::getAngle(const cv::RotatedRect & rect, TargetType type, double & angle_x, double & angle_y, double bullet_speed, double current_ptz_angle, const cv::Point2f & offset){
+bool AngleSolverFactory::getAngle(const cv::RotatedRect & rect, TargetType type, double & angle_x, double & angle_y, double & dist_z, double bullet_speed, double current_ptz_angle, const cv::Point2f & offset){
     if(slover == NULL){
         std::cerr << "slover not set\n";
         return false;
@@ -199,7 +202,7 @@ bool AngleSolverFactory::getAngle(const cv::RotatedRect & rect, TargetType type,
     cv::RotatedRect rect_rectifid = rect;
     AngleSolverFactory::adjustRect2FixedRatio(rect_rectifid, width/height);
     slover->setTargetSize(width, height);
-    return slover->getAngle(rect_rectifid, angle_x, angle_y, bullet_speed, current_ptz_angle, offset);
+    return slover->getAngle(rect_rectifid, angle_x, angle_y, dist_z, bullet_speed, current_ptz_angle, offset);
 }
 
 

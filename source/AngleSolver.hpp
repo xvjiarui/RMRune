@@ -88,7 +88,7 @@ public:
      * @param offset input rectangle offset, default (0,0)
      * @return
      */
-    bool getAngle(const cv::RotatedRect & rect, double & angle_x, double & angle_y, double bullet_speed = 0, double current_ptz_angle = 0.0, const cv::Point2f & offset = cv::Point2f());
+    bool getAngle(const cv::RotatedRect & rect, double & angle_x, double & angle_y, double & z, double bullet_speed = 0, double current_ptz_angle = 0.0, const cv::Point2f & offset = cv::Point2f());
 
     void tranformationCamera2PTZ(const cv::Mat & pos, cv::Mat & transed_pos);
 
@@ -98,7 +98,7 @@ public:
      * @param angle_x angle of x axis the PTZ should rotate
      * @param angle_y angle of y axis the PTZ should rotate
      */
-    void adjustPTZ2Barrel(const cv::Mat & pos_in_ptz, double & angle_x, double & angle_y, double bullet_speed = 0.0, double current_ptz_angle = 0.0);
+    void adjustPTZ2Barrel(const cv::Mat & pos_in_ptz, double & angle_x, double & angle_y, double & z, double bullet_speed = 0.0, double current_ptz_angle = 0.0);
 
 public:
     cv::Mat position_in_camera;
@@ -137,7 +137,7 @@ public:
         rect.size.height = rect.size.width / wh_ratio;
     }
 
-    bool getAngle(const cv::RotatedRect & rect, TargetType type, double & angle_x, double & angle_y, double bullet_speed, double current_ptz_angle, const cv::Point2f & offset = cv::Point2f());
+    bool getAngle(const cv::RotatedRect & rect, TargetType type, double & angle_x, double & angle_y, double & dist_z, double bullet_speed, double current_ptz_angle, const cv::Point2f & offset = cv::Point2f());
 
 private:
     double armor_width;

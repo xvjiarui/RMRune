@@ -12,7 +12,7 @@
 int fd = 0;
 struct timeval tv_begin;
 struct timeval tv_end;
-char* angleData = (char*)malloc(10 * sizeof(char));
+char* angleData = (char*)malloc(14 * sizeof(char));
 
 void sendGimbalAngle();
 
@@ -119,7 +119,7 @@ void serialStart() {
 /*************************
 ********** API ***********
 **************************/
-void setGimbalAngle(int index, float pitch, float yaw){
+void setGimbalAngle(int index, float pitch, float yaw, float dist_z){
 
     char header = 0xa5;
 	char shootIndex = index;
@@ -128,11 +128,12 @@ void setGimbalAngle(int index, float pitch, float yaw){
     memcpy(angleData, &header, sizeof(char));
     memcpy(angleData + 1, targetAngle, 2*sizeof(float));
 	memcpy(angleData + 9, &shootIndex, sizeof(char));
+	memcpy(angleData + 10, &dist_z, sizeof(float));
 }
 
 void sendGimbalAngle(){
  
-    int len = UART0_Send(fd, angleData, 10);
+    int len = UART0_Send(fd, angleData, 14);
 }
 
 /*
